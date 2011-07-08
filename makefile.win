@@ -1,0 +1,53 @@
+
+include makefile.rules.gcc
+
+ifdef DEBUG
+ MFLAGS = DEBUG=1
+else
+ MFLAGS = 
+endif
+
+BIN = dbtesma
+BIN_TEST = dbtesma_test
+
+DIRS = CONF DATA DATA/WRAPPER GEN HELPER
+DIRS_TEST = TESTS
+
+OBJ = main.o
+OBJ_TEST = TESTS/test_main.o TESTS/test.o TESTS/stringhelpertest.o
+
+OBJ_ALL = CONF/configparser.o CONF/configvalidator.o \
+	DATA/column.o DATA/config.o DATA/funcdep.o DATA/funcdepgraph.o DATA/table.o \
+	DATA/WRAPPER/charwrapper.o DATA/WRAPPER/datatypewrapper.o DATA/WRAPPER/intwrapper.o DATA/WRAPPER/varcharwrapper.o \
+	GEN/datagenerator.o \
+	HELPER/cliargshelper.o HELPER/filehelper.o HELPER/osabstractionhelper.o HELPER/stringhelper.o HELPER/uihelper.o
+
+ifdef TESTS
+all: $(OBJ_TEST)
+	@make $(MFLAGS) TESTS=1 -C CONF
+	@make $(MFLAGS) TESTS=1 -C DATA
+	@make $(MFLAGS) TESTS=1 -C DATA/WRAPPER
+	@make $(MFLAGS) TESTS=1 -C GEN
+	@make $(MFLAGS) TESTS=1 -C HELPER
+	@make $(MFLAGS) TESTS=1 -C TESTS
+	$(GCC) $(CFLAGS) -o $(BIN_TEST) $(OBJ_TEST) $(OBJ_ALL)
+	
+else
+all: $(OBJ)
+	@make $(MFLAGS) -C CONF
+	@make $(MFLAGS) -C DATA
+	@make $(MFLAGS) -C DATA/WRAPPER
+	@make $(MFLAGS) -C GEN
+	@make $(MFLAGS) -C HELPER
+	$(GCC) $(CFLAGS) -o $(BIN) $(OBJ) $(OBJ_ALL)
+	
+endif
+	
+clean: 
+	@del /S *.exe > NUL 2> NUL
+	@del /S *.o	> NUL 2> NUL
+	
+rebuild: clean all
+
+tests: clean
+	@make $(MFLAGS) TESTS=1

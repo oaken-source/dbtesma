@@ -1,0 +1,52 @@
+
+ +=============================================================================+                         
+ |                          dbtesma data generator                             |
+ |                                                                             |
+ |    Copyright (C) 2011  Andreas Henning                                      |
+ |                                                                             |
+ |    This program is free software: you can redistribute it and/or modify     |
+ |    it under the terms of the GNU General Public License as published by     |
+ |    the Free Software Foundation, either version 3 of the License, or        |
+ |    (at your option) any later version.                                      |
+ |                                                                             |
+ |    This program is distributed in the hope that it will be useful,          |
+ |    but WITHOUT ANY WARRANTY; without even the implied warranty of           |
+ |    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            |
+ |    GNU General Public License for more details.                             |
+ |                                                                             |
+ |    You should have received a copy of the GNU General Public License        |
+ |    along with this program.  If not, see <http://www.gnu.org/licenses/>.    |
+ +=============================================================================+
+
+ General Installation Information:
+   Dbtesma builds have been reported successful on linux and windows machines - 
+   I believe it should build fine on Mac too, but since I don't own one, I can't 
+   test it. 
+   Although, if you run into build issues on a Mac, you most likely need to 
+   install the GNU versions of gcc and make to fix it.
+   
+   NOTE: the .zip and .tar releases contain the same code. I only provided 
+     different archives for convenience reasons on different OS.
+   
+ Installation on Linux
+   1.) install gcc and make
+   2.) download and extract the source
+   3.) run ./setup.sh
+   4.) run make
+ 
+ Installation on Windows
+   You will most likely want to use the installer I provided. However, if you 
+   want to build the dbtesma on your own, here are the instructions.
+   
+   1.) install gcc and make, add the binaries to PATH
+     1.a) if you use the MinGW relase, remove the make binary, and install a 
+	      proper GNU make.
+   2.) download and extract the source
+   3.) navigate to the source directory from a command line
+   4.) run setup.bat
+   5.) run make
+   
+ The dbtesma binary should now be located in the source folder.
+ 
+ NOTE: For additional information on the dbtesma, refer to the bachelor thesis
+   paper that is located in the docs directory of the source release.
