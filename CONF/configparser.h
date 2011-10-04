@@ -51,21 +51,21 @@ public:
 	~Configparser();
 
 	/** main parsing method - starts parsing, and afterward starts validation **/
-	bool parseAndValidate(DATA::Config*);
+	bool parseAndValidate(DATA::Schema*);
 
 private:
 	
 	/** top level parsing **/
-	bool parse(DATA::Config*);
+	bool parse(DATA::Schema*);
 
 	/** line-scoped parsing - dispatches to context line-scoped methods **/
-	bool processLine(std::string&, DATA::Config*);
+	bool processLine(std::string&, DATA::Schema*);
 	
 	/** contexted line-scoped parsing methods **/
-	bool processLineContextNone(std::string&, DATA::Config*);
-	bool processLineContextTable(std::string&, DATA::Config*);
-	bool processLineContextColumn(std::string&, DATA::Config*);
-	bool processLineContextFuncDep(std::string&, DATA::Config*);
+	bool processLineContextNone(std::string&, DATA::Schema*);
+	bool processLineContextTable(std::string&, DATA::Schema*);
+	bool processLineContextColumn(std::string&, DATA::Schema*);
+	bool processLineContextFuncDep(std::string&, DATA::Schema*);
 
 	std::string _filename;
 	std::ifstream *_in;

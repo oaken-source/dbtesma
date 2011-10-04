@@ -17,7 +17,7 @@ OBJ = main.o
 OBJ_TEST = TESTS/test_main.o TESTS/test.o TESTS/stringhelpertest.o
 
 OBJ_ALL = CONF/configparser.o CONF/configvalidator.o \
-	DATA/column.o DATA/config.o DATA/funcdep.o DATA/funcdepgraph.o DATA/table.o \
+	DATA/column.o DATA/funcdep.o DATA/funcdepgraph.o DATA/table.o DATA/schema.o \
 	DATA/WRAPPER/charwrapper.o DATA/WRAPPER/datatypewrapper.o DATA/WRAPPER/intwrapper.o DATA/WRAPPER/varcharwrapper.o \
 	GEN/datagenerator.o \
 	HELPER/cliargshelper.o HELPER/filehelper.o HELPER/osabstractionhelper.o HELPER/stringhelper.o HELPER/uihelper.o

@@ -37,7 +37,7 @@ namespace CONF {
 		_in->close();
 	}
 
-	bool Configparser::parseAndValidate(DATA::Config *config)
+	bool Configparser::parseAndValidate(DATA::Schema *config)
 	{
 		CONF::Configvalidator *cv = new CONF::Configvalidator();
 
@@ -59,7 +59,7 @@ namespace CONF {
 	
 /** private *****************************************************************************************************/
 
-	bool Configparser::parse(DATA::Config *conf)
+	bool Configparser::parse(DATA::Schema *conf)
 	{
 		_context = NONE;
 		std::string line;
@@ -85,7 +85,7 @@ namespace CONF {
 		return good;
 	}
 
-	bool Configparser::processLine(std::string &in, DATA::Config *conf)
+	bool Configparser::processLine(std::string &in, DATA::Schema *conf)
 	{
 		HELPER::StringHelper::stripComments(in);
 	
@@ -108,7 +108,7 @@ namespace CONF {
 		return true;
 	}
 
-	bool Configparser::processLineContextNone(std::string &in, DATA::Config *conf)
+	bool Configparser::processLineContextNone(std::string &in, DATA::Schema *conf)
 	{		
 		// things that can happen here:
 		//   - new table expression
@@ -136,7 +136,7 @@ namespace CONF {
 		return false;
 	}
 
-	bool Configparser::processLineContextTable(std::string &in, DATA::Config *conf)
+	bool Configparser::processLineContextTable(std::string &in, DATA::Schema *conf)
 	{
 		// things that can happen here:
 		//   - name attribute
@@ -223,7 +223,7 @@ namespace CONF {
 		return false;
 	}
 
-	bool Configparser::processLineContextColumn(std::string &in, DATA::Config *conf)
+	bool Configparser::processLineContextColumn(std::string &in, DATA::Schema *conf)
 	{
 		// things that can happen here:
 		//   - name attribute
@@ -293,7 +293,7 @@ namespace CONF {
 		return false;
 	}
 	
-	bool Configparser::processLineContextFuncDep(std::string &in, DATA::Config *conf)
+	bool Configparser::processLineContextFuncDep(std::string &in, DATA::Schema *conf)
 	{
 		// things that can happen here:
 		//   - lhs attribute

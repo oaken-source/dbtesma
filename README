@@ -21,32 +21,38 @@
  General Installation Information:
    Dbtesma builds have been reported successful on linux and windows machines - 
    I believe it should build fine on Mac too, but since I don't own one, I can't 
-   test it. 
-   Although, if you run into build issues on a Mac, you most likely need to 
+   confirm it. 
+   However, if you run into build issues on a Mac, you will most likely need to 
    install the GNU versions of gcc and make to fix it.
    
    NOTE: the .zip and .tar releases contain the same code. I only provided 
-     different archives for convenience reasons on different OS.
+     different archives for convenience reasons on different operating systems.
    
  Installation on Linux
    1.) install gcc and make
    2.) download and extract the source
-   3.) run ./setup.sh
-   4.) run make
+   3.) run './setup.sh'
+   4.) run 'make'
  
  Installation on Windows
    You will most likely want to use the installer I provided. However, if you 
-   want to build the dbtesma on your own, here are the instructions.
+   want to build the dbtesma on your own, read the following instructions.
    
    1.) install gcc and make, add the binaries to PATH
      1.a) if you use the MinGW relase, remove the make binary, and install a 
-	      proper GNU make.
+       proper GNU make.
    2.) download and extract the source
-   3.) navigate to the source directory from a command line
-   4.) run setup.bat
-   5.) run make
+   3.) navigate to the source directory from a command line window
+   4.) run 'setup.bat'
+   5.) run 'make'
    
- The dbtesma binary should now be located in the source folder.
+ After completing the build, the binary should be located in the source folder.
  
  NOTE: For additional information on the dbtesma, refer to the bachelor thesis
-   paper that is located in the docs directory of the source release.
+   paper that is located in the 'docs' directory of the source release.
+
+ Last but not least, if you happen to have ay feedback on the dbtesma, on the
+   build process or about anything, feel free to send an email to:  
+     a.henning.dev@gmail.com
+
+

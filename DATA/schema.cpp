@@ -17,19 +17,19 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#include "config.h"
+#include "schema.h"
 
 namespace DATA {
 
 /** public ******************************************************************************************************/
 
-	void Config::newTable()
+	void Schema::newTable()
 	{	
 		DATA::Table *newTable = new DATA::Table();
 		_tables.push_back(newTable);
 	}	
 
-	void Config::dumpToStdout()
+	void Schema::dumpToStdout()
 	{
 		std::vector<DATA::Table*>::iterator i;
 		for(i = _tables.begin(); i != _tables.end(); i++)
@@ -75,7 +75,7 @@ namespace DATA {
 		}
 	}
 
-	void Config::buildSchema()
+	void Schema::buildSchema()
 	{
 		std::vector<DATA::Table*>::iterator i;
 		for(i = _tables.begin(); i != _tables.end(); i++)
@@ -123,7 +123,7 @@ namespace DATA {
 		}
 	}
 	
-	void Config::buildSchemaWithoutDatatypes()
+	void Schema::buildSchemaWithoutDatatypes()
 	{
 		std::vector<DATA::Table*>::iterator i;
 		for(i = _tables.begin(); i != _tables.end(); i++)
@@ -155,7 +155,7 @@ namespace DATA {
 		}		
 	}
 	
-	void Config::buildSchemaAsJSON()
+	void Schema::buildSchemaAsJSON()
 	{
 		std::cout << "{\"tables\":[";
 	
@@ -205,7 +205,7 @@ namespace DATA {
 		std::cout << "], \"InclusionDependencies\":[]}" << std::endl;
 	}
 	
-	DATA::Table* Config::findTableByName(std::string &in)
+	DATA::Table* Schema::findTableByName(std::string &in)
 	{
 		std::vector<DATA::Table*>::iterator i;
 		std::string tableName;

@@ -20,7 +20,7 @@
 #ifndef DATAGENERATOR_H
 #define DATAGENERATOR_H
 
-#include "../DATA/config.h"
+#include "../DATA/schema.h"
 #include "../HELPER/uihelper.h"
 
 namespace GEN {
@@ -36,7 +36,7 @@ class DataGenerator
 
 public:
 
-	DataGenerator(DATA::Config *conf) : _conf(conf) { srand(time(NULL)); };
+	DataGenerator(DATA::Schema *conf) : _conf(conf) { srand(time(NULL)); };
 	DataGenerator(const DataGenerator &obj) : _conf(obj._conf) {};
 	DataGenerator& operator=(const DataGenerator&);
 	~DataGenerator();
@@ -49,7 +49,7 @@ public:
 private:
 
 	/** config **/ 
-	DATA::Config *_conf;
+	DATA::Schema *_conf;
 };
 
 } // namespaces

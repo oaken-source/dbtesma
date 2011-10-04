@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 	else if(flags.find(CP_Schema) != flags.end())
 	{
 		/** --schema was set **/
-		DATA::Config* config = new DATA::Config();
+		DATA::Schema* config = new DATA::Schema();
 		CONF::Configparser* cp = new CONF::Configparser(tesmafile);
 		
 		srand(time(NULL));
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 	else if(flags.find(CP_Offsets) != flags.end())
 	{
 		/** --offsets was set **/
-		DATA::Config* config = new DATA::Config();
+		DATA::Schema* config = new DATA::Schema();
 		CONF::Configparser* cp = new CONF::Configparser(tesmafile);
 		
 		srand(time(NULL));
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
 			/** all signals green **/ 
 			HELPER::UiHelper::println(" - parsing configuration...");
 
-			DATA::Config* config = new DATA::Config();
+			DATA::Schema* config = new DATA::Schema();
 			CONF::Configparser* cp = new CONF::Configparser(tesmafile);
 			
 			srand(time(NULL));

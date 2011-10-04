@@ -34,7 +34,7 @@ namespace CONF {
 
 	}
 
-	bool Configvalidator::validate(DATA::Config *conf)
+	bool Configvalidator::validate(DATA::Schema *conf)
 	{
 		_conf = conf;
 

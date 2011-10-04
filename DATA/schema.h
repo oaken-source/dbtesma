@@ -17,8 +17,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef SCHEMA_H
+#define SCHEMA_H
 
 #include "table.h"
 
@@ -27,18 +27,18 @@
 
 namespace DATA {
 
-class Config
+class Schema
 {
 
 	/**
-	Config Data Class
+	Schema Data Class
 	tasks:
 		contains the top-level schema information
 	**/
 
 public:
-	Config() : _error(""), _tables(std::vector<DATA::Table*>()), _hardened_fds(false) {};
-	~Config() { };
+	Schema() : _error(""), _tables(std::vector<DATA::Table*>()), _hardened_fds(false) {};
+	~Schema() { };
 
 	void setErrorString(std::string &in) { _error = in; }
 	std::string getErrorString() { return _error; }
@@ -51,6 +51,9 @@ public:
 	void setFuncdepLhs(std::string lhs) { _tables.back()->setFuncdepLhs(lhs); }
 	void setFuncdepRhs(std::string rhs) { _tables.back()->setFuncdepRhs(rhs); }
 	
+	/** process **/
+	void processTables(bool);
+	void processTablesOffsetsOnly(bool);
 
 	/** debug **/
 	void dumpToStdout();
@@ -81,4 +84,4 @@ private:
 
 } // namespaces
 
-#endif // CONFIG_H
+#endif

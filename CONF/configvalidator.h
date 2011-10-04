@@ -20,7 +20,7 @@
 #ifndef CONFIGVALIDATOR_H
 #define CONFIGVALIDATOR_H
 
-#include "../DATA/config.h"
+#include "../DATA/schema.h"
 
 namespace CONF {
 
@@ -42,7 +42,7 @@ public:
 	~Configvalidator();
 
 	/** top level validation - calls medium level validation methods **/
-	bool validate(DATA::Config*);
+	bool validate(DATA::Schema*);
 
 private:
 
@@ -84,7 +84,7 @@ private:
 	bool validateHardenedFds();
 	bool validateHardenedFds(DATA::Table*);
 	
-	DATA::Config* _conf;
+	DATA::Schema* _conf;
 	
 };
 

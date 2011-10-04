@@ -20,23 +20,20 @@
 #ifndef MACROS_H
 #define MACROS_H
 
-	/**
-	  define global object macros for predefined configuration - under continuous change so don't hard-code them somewhere
-	**/
 
 /** default values **/
 #define DEFAULT_VALUE_LENGTH 11
 
 /** set debug flag **/
 #ifdef HAVE_DEBUG
-	#define DEBUG 1
+  #define DEBUG 1
 #else
-	#define DEBUG 0
+  #define DEBUG 0
 #endif
-	
+  
 /** set some string constants **/
-#define VERSION_STR 		"  dbtesma version 1.0.4"
-#define ABOUT_STR   		"  coded by Andreas Henning, BP2010N1"
+#define VERSION_STR     "  dbtesma version 1.0.4"
+#define ABOUT_STR       "  written by Andreas Henning - a.henning.dev@gmail.com"
 
 #define USAGE_STR "\n\
   usage:         DBTesMa [OPTIONS] [PARAMS]\n\
@@ -52,7 +49,7 @@
     --offsets    like --asJSON, data is generated and printed as offset \n\
     --verbose    increase program output\n\
     --noheader   omits header when generating tables\n\
-	--hardenFDs  eliminates any false positives functional dependencies \n\
+    --hardenFDs  eliminates any false positives functional dependencies \n\
 \n\
     --help       show this page\n\
     --version    display program version\n\
@@ -60,7 +57,7 @@
 \n\
 "
 
-#define TESMAFILE_STR	"\
+#define TESMAFILE_STR  "\
 ###############################################################\n\
 #       example structure file for dbtesma v. >= 1.0.3        #\n\
 ###############################################################\n\
@@ -77,100 +74,100 @@
 ###############################################################\n\
 \n\
 table={\n\
-	name=\"extern_info\"\n\
-	rows=\"500\"\n\
-	column={\n\
-		name=\"id1\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		key=\"primary\"\n\
-		key_group=\"1\"\n\
-	}\n\
-	column={\n\
-		name=\"id2\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		key=\"primary\"\n\
-		key_group=\"1\"\n\
-	}\n\
-	column={\n\
-		name=\"comment\"\n\
-		datatype=\"varchar\"\n\
-		length=\"50\"\n\
-		unique=\"10\"\n\
-	}\n\
-	column={\n\
-		name=\"extra\"\n\
-		datatype=\"int\"\n\
-		length=\"5\"\n\
-	}\n\
-	functional_dep={\n\
-		lhs=\"comment\"\n\
-		rhs=\"extra\"\n\
-	}\n\
+  name=\"extern_info\"\n\
+  rows=\"500\"\n\
+  column={\n\
+    name=\"id1\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    key=\"primary\"\n\
+    key_group=\"1\"\n\
+  }\n\
+  column={\n\
+    name=\"id2\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    key=\"primary\"\n\
+    key_group=\"1\"\n\
+  }\n\
+  column={\n\
+    name=\"comment\"\n\
+    datatype=\"varchar\"\n\
+    length=\"50\"\n\
+    unique=\"10\"\n\
+  }\n\
+  column={\n\
+    name=\"extra\"\n\
+    datatype=\"int\"\n\
+    length=\"5\"\n\
+  }\n\
+  functional_dep={\n\
+    lhs=\"comment\"\n\
+    rhs=\"extra\"\n\
+  }\n\
 }\n\
 \n\
 table={\n\
-	name=\"main\"\n\
-	rows=\"1000000\"\n\
-	column={\n\
-		name=\"id\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		basevalue=\"1\"\n\
-		key=\"primary\"\n\
-	}\n\
-	column={\n\
-		name=\"fkey_id1\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		foreignkey=\"extern_info:id1\"\n\
-	}\n\
-	column={\n\
-		name=\"fkey_id2\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		foreignkey=\"extern_info:id2\"\n\
-	}\n\
-	column={\n\
-		name=\"fd1\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		unique=\"10\"\n\
-	}\n\
-	column={\n\
-		name=\"fd2\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-		unique=\"10\"\n\
-	}\n\
-	column={\n\
-		name=\"fd3\"\n\
-		datatype=\"varchar\"\n\
-		length=\"11\"\n\
-	}\n\
-	column={\n\
-		name=\"fd4\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-	}\n\
-	column={\n\
-		name=\"fd5\"\n\
-		datatype=\"int\"\n\
-		length=\"11\"\n\
-	}\n\
-	functional_dep={\n\
-		lhs=\"fd1,fd2\"\n\
-		rhs=\"fd3\"\n\
-	}\n\
-	functional_dep={\n\
-		lhs=\"fd5\"\n\
-		rhs=\"fd3\"\n\
-	}\n\
-	functional_dep={\n\
-		lhs=\"fd3\"\n\
-		rhs=\"fd4\"\n\
-	}\n\
+  name=\"main\"\n\
+  rows=\"1000000\"\n\
+  column={\n\
+    name=\"id\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    basevalue=\"1\"\n\
+    key=\"primary\"\n\
+  }\n\
+  column={\n\
+    name=\"fkey_id1\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    foreignkey=\"extern_info:id1\"\n\
+  }\n\
+  column={\n\
+    name=\"fkey_id2\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    foreignkey=\"extern_info:id2\"\n\
+  }\n\
+  column={\n\
+    name=\"fd1\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    unique=\"10\"\n\
+  }\n\
+  column={\n\
+    name=\"fd2\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+    unique=\"10\"\n\
+  }\n\
+  column={\n\
+    name=\"fd3\"\n\
+    datatype=\"varchar\"\n\
+    length=\"11\"\n\
+  }\n\
+  column={\n\
+    name=\"fd4\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+  }\n\
+  column={\n\
+    name=\"fd5\"\n\
+    datatype=\"int\"\n\
+    length=\"11\"\n\
+  }\n\
+  functional_dep={\n\
+    lhs=\"fd1,fd2\"\n\
+    rhs=\"fd3\"\n\
+  }\n\
+  functional_dep={\n\
+    lhs=\"fd5\"\n\
+    rhs=\"fd3\"\n\
+  }\n\
+  functional_dep={\n\
+    lhs=\"fd3\"\n\
+    rhs=\"fd4\"\n\
+  }\n\
 }\
 "
 
