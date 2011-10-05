@@ -32,11 +32,9 @@ namespace HELPER {
 class Ui
 {
 
-  /**
-  User Interaction class
+  /** User Interaction class
   tasks:
-    handles command line output for convenience and continuity
-  **/
+    handles command line output for convenience and continuity **/
 
 public:
 
@@ -59,9 +57,9 @@ public:
 
 private:
 
-
 };
 
 } // namespaces
 
 #endif
+

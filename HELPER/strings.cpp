@@ -21,175 +21,160 @@
 
 namespace HELPER {
 
-/** public ******************************************************************************************************/
+/** public ********************************************************************/
 
-	const char *Strings::_whitespace = " \t\r\n";
-	const char *Strings::_commentDelimiter = "#";
-	
+  const char *Strings::_whitespace = " \t\r\n";
+  const char *Strings::_commentDelimiter = "#";
+  
 
-	void Strings::stripComments(std::string &in)
-	{
-		std::string::size_type pos;
+  void Strings::stripComments(std::string &in)
+  {
+    std::string::size_type pos;
 
-		pos = in.find(_commentDelimiter);
-		if(pos != in.npos)
-			in.erase(pos);
-	}
-	
-	void Strings::trim(std::string &in)
-	{
-		trimleft(in);
-		trimright(in);
-	}
-	
-	void Strings::trimleft(std::string &in)
-	{
-		std::string::size_type pos;
+    pos = in.find(_commentDelimiter);
+    if(pos != in.npos)
+      in.erase(pos);
+  }
+  
+  void Strings::trim(std::string &in)
+  {
+    trimleft(in);
+    trimright(in);
+  }
+  
+  void Strings::trimleft(std::string &in)
+  {
+    std::string::size_type pos;
 
-		pos = in.find_first_not_of(_whitespace);
-		if(pos != in.npos)
-			in.erase(0, pos);
-		else
-			in.erase(0);
-	}
-	
-	void Strings::trimright(std::string &in)
-	{
-		std::string::size_type pos;
+    pos = in.find_first_not_of(_whitespace);
+    if(pos != in.npos)
+      in.erase(0, pos);
+    else
+      in.erase(0);
+  }
+  
+  void Strings::trimright(std::string &in)
+  {
+    std::string::size_type pos;
 
-		pos = in.find_last_not_of(_whitespace);
-		if(pos != in.npos)
-			in.erase(pos + 1);
-		else
-			in.erase(0);
-	}
-	
-	bool Strings::empty(std::string &in)
-	{
-		return in.length() == 0;
-	}
+    pos = in.find_last_not_of(_whitespace);
+    if(pos != in.npos)
+      in.erase(pos + 1);
+    else
+      in.erase(0);
+  }
+  
+  bool Strings::empty(std::string &in)
+  {
+    return in.length() == 0;
+  }
 
-	bool Strings::stripleft(std::string &in, std::string &sub)
-	{
-		std::string::size_type pos;
-		pos = in.find(sub);
-		if(pos == 0)
-		{
-			in.erase(0,sub.length());
-			trimleft(in);
-			return true;
-		}
-		else
-			return false;
-	}
+  bool Strings::stripleft(std::string &in, std::string &sub)
+  {
+    std::string::size_type pos;
+    pos = in.find(sub);
+    if(pos == 0)
+    {
+      in.erase(0,sub.length());
+      trimleft(in);
+      return true;
+    }
+    else
+      return false;
+  }
 
-	bool Strings::popQuotedValue(std::string &in, std::string &value)
-	{
-		std::string key;
-		key = "\"";
-		if(stripleft(in, key))
-		{
-			std::string::size_type pos;
-			pos = in.find(key);
-			
-			if(pos != in.npos)
-			{
-				value = in.substr(0, pos);
-				in.erase(0, pos+1);
-				trimleft(in);
-				return true;
-			}
-		}
-		
-		return false;
-	}
+  bool Strings::popQuotedValue(std::string &in, std::string &value)
+  {
+    std::string key;
+    key = "\"";
+    if(stripleft(in, key))
+    {
+      std::string::size_type pos;
+      pos = in.find(key);
+      
+      if(pos != in.npos)
+      {
+        value = in.substr(0, pos);
+        in.erase(0, pos+1);
+        trimleft(in);
+        return true;
+      }
+    }
+    
+    return false;
+  }
 
-	bool Strings::popTableName(std::string &in, std::string &value)
-	{
-		std::string key;
-		key = ":";
+  bool Strings::popTableName(std::string &in, std::string &value)
+  {
+    std::string key;
+    key = ":";
 
-		std::string::size_type pos;
-		pos = in.find(key);
-			
-		if(pos != in.npos && pos > 0)
-		{
-			value = in.substr(0, pos);
-			in.erase(0, pos+1);
-			trimleft(in);
-			return true;
-		}
-		else
-			return false;
-	}
-	
-	bool Strings::popCSV(std::string &in, std::string &value)
-	{
-		if(empty(in))
-			return false;
-			
-		std::string key;
-		key = ",";
+    std::string::size_type pos;
+    pos = in.find(key);
+      
+    if(pos != in.npos && pos > 0)
+    {
+      value = in.substr(0, pos);
+      in.erase(0, pos+1);
+      trimleft(in);
+      return true;
+    }
+    else
+      return false;
+  }
+  
+  bool Strings::popCSV(std::string &in, std::string &value)
+  {
+    if(empty(in))
+      return false;
+      
+    std::string key;
+    key = ",";
 
-		std::string::size_type pos;
-		pos = in.find(key);
-			
-		value = in.substr(0, pos);
-		
-		if(pos == in.npos)
-			in.clear();
-		else
-			in.erase(0, pos+1);
-		trimleft(in);
+    std::string::size_type pos;
+    pos = in.find(key);
+      
+    value = in.substr(0, pos);
+    
+    if(pos == in.npos)
+      in.clear();
+    else
+      in.erase(0, pos+1);
+    trimleft(in);
 
-		return true;
-	}
+    return true;
+  }
 
-	int Strings::intval(std::string &in)
-	{
-		std::stringstream sst(in);
-		int x;
-		sst >> x;
-		return x;
-	}
+  int Strings::intval(std::string &in)
+  {
+    std::stringstream sst(in);
+    int x;
+    sst >> x;
+    return x;
+  }
 
-	unsigned long long Strings::ullval(std::string &in)
-	{
-		std::stringstream sst(in);
-		unsigned long long x;
-		sst >> x;
-		return x;
-	}
+  unsigned long long Strings::ullval(std::string &in)
+  {
+    std::stringstream sst(in);
+    unsigned long long x;
+    sst >> x;
+    return x;
+  }
 
-	void Strings::strval(std::string &in, unsigned long long value)
-	{
-		std::stringstream sst;
-		sst << value;
-		in = sst.str();
-	}
+  void Strings::strval(std::string &in, unsigned long long value)
+  {
+    std::stringstream sst;
+    sst << value;
+    in = sst.str();
+  }
 
-	int Strings::getIndexFromAlphabet(const char *alphabet, char in, unsigned int length)
-	{
-		unsigned int i;
-		for(i = 0; i < length; i++)
-			if(alphabet[i] == in) return i;
-		return -1;
-	}
-	
-/** tests *******************************************************************************************************/
-
+  int Strings::getIndexFromAlphabet(const char *a, char in, unsigned int length)
+  {
+    unsigned int i;
+    for(i = 0; i < length; i++)
+      if(a[i] == in) return i;
+    return -1;
+  }
 
 } // namespaces
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -23,10 +23,10 @@
 #include <string>
 
 #ifdef _WIN32
-	#include <windows.h>
+  #include <windows.h>
 #else
-	#include <unistd.h>
-	#include <iostream>
+  #include <unistd.h>
+  #include <iostream>
 #endif
 
 namespace HELPER {
@@ -34,26 +34,23 @@ namespace HELPER {
 class FontColor
 {
 
-	/**
-	Operating Systems Abstraction helper class
-	tasks:
-		handles all the operating system dependent code, e.g. coloured output to stdout
-	note:
-		every method declared here has different implementations for windows/linux. see the .cpp file for details
-	**/
+  /** Font Colour helper class
+  tasks:
+    handles coloured output to stdout **/
 
 public:
 
-	/** stdout color handling **/
-	static void red();
-	static void green();
-	static void yellow();
-	static void reset();
+  /** stdout color handling **/
+  static void red();
+  static void green();
+  static void yellow();
+  static void reset();
 
 private:
-	
+  
 };
 
 } // namespaces
 
 #endif
+

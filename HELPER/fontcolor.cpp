@@ -25,65 +25,54 @@ namespace HELPER {
 
 #ifdef _WIN32
 
-	void FontColor::red()
-	{
-		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(h, FOREGROUND_RED);
-	}
-	
-	void FontColor::green()
-	{
-		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE); 
-		SetConsoleTextAttribute(h, FOREGROUND_GREEN);
-	}
-	
-	void FontColor::yellow()
-	{
-		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE); 
-		SetConsoleTextAttribute(h, (FOREGROUND_RED | FOREGROUND_GREEN));
-	}
-	
-	void FontColor::reset()
-	{
-		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);		
-		SetConsoleTextAttribute(h, (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN));
-	}
+  void FontColor::red()
+  {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(h, FOREGROUND_RED);
+  }
+  
+  void FontColor::green()
+  {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE); 
+    SetConsoleTextAttribute(h, FOREGROUND_GREEN);
+  }
+  
+  void FontColor::yellow()
+  {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE); 
+    SetConsoleTextAttribute(h, (FOREGROUND_RED | FOREGROUND_GREEN));
+  }
+  
+  void FontColor::reset()
+  {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);    
+    SetConsoleTextAttribute(h, (FOREGROUND_RED | FOREGROUND_BLUE 
+      | FOREGROUND_GREEN));
+  }
 
 #else
 
-	void FontColor::red()
-	{
-		std::cout << "\033[1;" << 31 << "m";
-	}
-	
-	void FontColor::green()
-	{
-		std::cout << "\033[1;" << 32 << "m";
-	}
-	
-	void FontColor::yellow()
-	{
-		std::cout << "\033[1;" << 33 << "m";
-	}
-	
-	void FontColor::reset()
-	{
-		std::cout << "\033[0m";
-	}
-	
+  void FontColor::red()
+  {
+    std::cout << "\033[1;" << 31 << "m";
+  }
+  
+  void FontColor::green()
+  {
+    std::cout << "\033[1;" << 32 << "m";
+  }
+  
+  void FontColor::yellow()
+  {
+    std::cout << "\033[1;" << 33 << "m";
+  }
+  
+  void FontColor::reset()
+  {
+    std::cout << "\033[0m";
+  }
+  
 #endif
-	
+  
 } // namespaces
-
-
-
-
-
-
-
-
-
-
-
-
 

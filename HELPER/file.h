@@ -28,25 +28,24 @@ namespace HELPER {
 class File
 {
 
-  /**
-  Files helper class
+  /** Files helper class
   tasks:
-    helper class for file management methods
-  **/
+    helper class for file management methods **/
 
 public:
 
   static bool exists(std::string);
   static bool writeRaw(std::string, const char[]);
 
-	static void makeAbsolute(std::string&);
+  static void makeAbsolute(std::string&);
 
 private:
 
-	static std::string getCwd();
+  static std::string getCwd();
 
 };
 
 } // namespaces
 
 #endif
+
