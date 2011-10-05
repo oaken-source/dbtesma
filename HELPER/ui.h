@@ -17,8 +17,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#ifndef UIHELPER_H
-#define UIHELPER_H
+#ifndef UI_H
+#define UI_H
 
 #include "../macros.h"
 #include "osabstractionhelper.h"
@@ -29,33 +29,33 @@
 
 namespace HELPER {
 
-class UiHelper
+class Ui
 {
 
-	/**
-	User Interaction class
-	tasks:
-		handles command line output for convenience and continuity
-	**/
+  /**
+  User Interaction class
+  tasks:
+    handles command line output for convenience and continuity
+  **/
 
 public:
 
-	static void println(const char[]);
-	static void printlnspaced(const char[], unsigned int);
-	static void overrln(const char[]);
-	static void emptyln();
-	static void printraw(const char[]);
+  static void println(const char[]);
+  static void printlnspaced(const char[], unsigned int);
+  static void overrln(const char[]);
+  static void emptyln();
+  static void printraw(const char[]);
 
-	static void printerr(const char[], ...);
-	static void printwrn(const char[], ...);
-	static void printok();
+  static void printerr(const char[], ...);
+  static void printwrn(const char[], ...);
+  static void printok();
 
-	static void overrok();
-	static void overrfail();
+  static void overrok();
+  static void overrfail();
 
-	static void printTime();
-	
-	static void startProgress(const char[]);
+  static void printTime();
+  
+  static void startProgress(const char[]);
 
 private:
 
@@ -64,4 +64,4 @@ private:
 
 } // namespaces
 
-#endif // UIHELPER_H
+#endif

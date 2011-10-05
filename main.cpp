@@ -32,24 +32,24 @@ int main(int argc, char *argv[])
 
 
   if(cah->flag(CP_Help)) // print help
-    HELPER::UiHelper::printraw(USAGE_STR);
+    HELPER::Ui::printraw(USAGE_STR);
   else if(cah->flag(CP_Version)) // print version
-    HELPER::UiHelper::println(VERSION_STR);
+    HELPER::Ui::println(VERSION_STR);
   else if(cah->flag(CP_About)) // print 'about' stuff
-    HELPER::UiHelper::println(ABOUT_STR);
+    HELPER::Ui::println(ABOUT_STR);
   else if(cah->flag(CP_Schema)) // print schema information to stdout
   {    
     if(!exists)
-      HELPER::UiHelper::printerr("'%s' not found", file.c_str());
+      HELPER::Ui::printerr("'%s' not found", file.c_str());
     if(cah->hasError() || !exists) // quit on error
     {
       std::pair<std::string, bool> msg = cah->popMsg();
       while(msg.first.length() > 0)
       {
         if(msg.second)
-          HELPER::UiHelper::printerr(msg.first.c_str());
+          HELPER::Ui::printerr(msg.first.c_str());
         else
-          HELPER::UiHelper::printwrn(msg.first.c_str());
+          HELPER::Ui::printwrn(msg.first.c_str());
         
         msg = cah->popMsg();
       }
@@ -73,14 +73,14 @@ int main(int argc, char *argv[])
         config->buildSchema();
     }
     else // invalid schema
-      HELPER::UiHelper::printerr(config->getErrorString().c_str());
+      HELPER::Ui::printerr(config->getErrorString().c_str());
   }
   else // real data generation
   {
-    HELPER::UiHelper::printTime();
+    HELPER::Ui::printTime();
     
-    HELPER::UiHelper::println(" DBTesMa data generator");
-    HELPER::UiHelper::println(" - starting up...");
+    HELPER::Ui::println(" DBTesMa data generator");
+    HELPER::Ui::println(" - starting up...");
     
     if(cah->hasMsg()) // errors/warnings during parsing?
     {
@@ -88,35 +88,35 @@ int main(int argc, char *argv[])
       while(msg.first.length() > 0)
       {
         if(msg.second)
-          HELPER::UiHelper::printerr(msg.first.c_str());
+          HELPER::Ui::printerr(msg.first.c_str());
         else
-          HELPER::UiHelper::printwrn(msg.first.c_str());
+          HELPER::Ui::printwrn(msg.first.c_str());
         
         msg = cah->popMsg();
       }
     }
     if(cah->hasError()) // quit on error
     {
-      HELPER::UiHelper::printraw(USAGE_STR);
+      HELPER::Ui::printraw(USAGE_STR);
       return 1;
     }
         
     if(!exists && !cah->flag(CP_Generate)) // file not found warning
-      HELPER::UiHelper::printwrn("'%s' not found", file.c_str());
+      HELPER::Ui::printwrn("'%s' not found", file.c_str());
     else
-      HELPER::UiHelper::printok();
+      HELPER::Ui::printok();
 
     if(cah->flag(CP_Generate) || !exists) // generate example tesmafile
     {
-      HELPER::UiHelper::println(" - generating tesmafile...");
+      HELPER::Ui::println(" - generating tesmafile...");
       if(HELPER::File::writeRaw(file, TESMAFILE_STR))
-        HELPER::UiHelper::printok();
+        HELPER::Ui::printok();
       else
-        HELPER::UiHelper::printerr("failed to write to file '%s'", file.c_str());
+        HELPER::Ui::printerr("failed to write to file '%s'", file.c_str());
     }
     else // initiate generation
     {
-      HELPER::UiHelper::println(" - parsing configuration...");
+      HELPER::Ui::println(" - parsing configuration...");
 
       DATA::Schema* config = new DATA::Schema();
       CONF::Configparser* cp = new CONF::Configparser(file);
@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
         if(DEBUG)
           config->dumpToStdout();
 
-        HELPER::UiHelper::printok();
-        HELPER::UiHelper::println(" - generating tables...");  
+        HELPER::Ui::printok();
+        HELPER::Ui::println(" - generating tables...");  
 
         bool noHeader = (cah->flag(CP_NoHeader));
         
@@ -144,15 +144,15 @@ int main(int argc, char *argv[])
       else
       {
         /** schema was not valid **/
-        HELPER::UiHelper::printerr(config->getErrorString().c_str());
+        HELPER::Ui::printerr(config->getErrorString().c_str());
       }
     }
 
-    HELPER::UiHelper::println(" - shutting down...");
-    HELPER::UiHelper::printok();
-    HELPER::UiHelper::println(" DBTesMa finished");
+    HELPER::Ui::println(" - shutting down...");
+    HELPER::Ui::printok();
+    HELPER::Ui::println(" DBTesMa finished");
 
-    HELPER::UiHelper::printTime();
+    HELPER::Ui::printTime();
   }
 
   return 0;

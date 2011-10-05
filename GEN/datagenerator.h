@@ -21,7 +21,7 @@
 #define DATAGENERATOR_H
 
 #include "../DATA/schema.h"
-#include "../HELPER/uihelper.h"
+#include "../HELPER/ui.h"
 
 namespace GEN {
 

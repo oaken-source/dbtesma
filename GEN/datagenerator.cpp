@@ -41,9 +41,9 @@ namespace GEN {
 		{
 			std::string name;
 			(*i)->getAttribute(DATA::Table::ATTR_NAME, name);
-			HELPER::UiHelper::startProgress(name.c_str());
+			HELPER::Ui::startProgress(name.c_str());
 			(*i)->print(noHeader, _conf->hasHardenedFds());
-			HELPER::UiHelper::overrok();			
+			HELPER::Ui::overrok();			
 		}
 	}
 
