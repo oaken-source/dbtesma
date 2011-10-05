@@ -17,42 +17,32 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#include "filehelper.h"
+#ifndef FILE_H
+#define FILE_H
+
+#include <string>
+#include <fstream>
 
 namespace HELPER {
 
-/** public ******************************************************************************************************/
+class File
+{
 
-	bool FileHelper::isExistingFile(std::string& filename)
-	{
-		std::ifstream file(filename.c_str());
-		return(file);
-	}
+  /**
+  Files helper class
+  tasks:
+    helper class for file management methods
+  **/
 
-	bool FileHelper::writeRaw(std::string& filename, const char in[])
-	{
-		bool good = true;
-		std::ofstream tesmafile;
-		tesmafile.open(filename.c_str());
-		if(tesmafile.good())
-			tesmafile << in;
-		else
-			good = false;
-		tesmafile.close();
-		return good;
-	}
-		
+public:
+
+  static bool exists(std::string);
+  static bool writeRaw(std::string, const char[]);
+
+private:
+
+};
+
 } // namespaces
 
-
-
-
-
-
-
-
-
-
-
-
-
+#endif

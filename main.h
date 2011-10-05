@@ -20,7 +20,7 @@
 #include "CONF/configparser.h"
 #include "GEN/datagenerator.h"
 #include "HELPER/cliargs.h"
-#include "HELPER/filehelper.h"
+#include "HELPER/file.h"
 
   /** enumeration of cli parameters **/
   enum e_CliParams

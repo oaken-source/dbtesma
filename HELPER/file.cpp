@@ -17,34 +17,40 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#ifndef FILEHELPER_H
-#define FILEHELPER_H
-
-#include <string>
-#include <fstream>
+#include "file.h"
 
 namespace HELPER {
 
-class FileHelper
-{
+/** public ********************************************************************/
 
-	/**
-	Files helper class
-	tasks:
-		helper class for file management methods
-	todo:
-		Yes, it's a lazy class. More file functionality has to be outsourced in the future.
-	**/
+  bool File::exists(std::string filename)
+  {
+    std::ifstream file(filename.c_str());
+    return(file);
+  }
 
-public:
-
-	static bool isExistingFile(std::string&);
-	static bool writeRaw(std::string&, const char[]);
-
-private:
-
-};
-
+  bool File::writeRaw(std::string filename, const char str[])
+  {
+    std::ofstream of;
+    of.open(filename.c_str());
+    if(!of.good())
+      return false;
+    of << str;
+    of.close();
+    return true;
+  }
+    
 } // namespaces
 
-#endif // FILEHELPER_H
+
+
+
+
+
+
+
+
+
+
+
+

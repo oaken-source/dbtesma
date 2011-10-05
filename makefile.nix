@@ -20,7 +20,7 @@ OBJ_ALL = CONF/configparser.o CONF/configvalidator.o \
 	DATA/column.o DATA/funcdep.o DATA/funcdepgraph.o DATA/table.o DATA/schema.o \
 	DATA/WRAPPER/charwrapper.o DATA/WRAPPER/datatypewrapper.o DATA/WRAPPER/intwrapper.o DATA/WRAPPER/varcharwrapper.o \
 	GEN/datagenerator.o \
-	HELPER/cliargs.o HELPER/filehelper.o HELPER/osabstractionhelper.o HELPER/stringhelper.o HELPER/uihelper.o
+	HELPER/cliargs.o HELPER/file.o HELPER/osabstractionhelper.o HELPER/stringhelper.o HELPER/uihelper.o
 
 ifdef TESTS
 all: $(OBJ_TEST)

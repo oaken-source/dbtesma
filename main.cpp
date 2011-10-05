@@ -27,15 +27,13 @@ int main(int argc, char *argv[])
 
   cah->parse(argc, argv);
 
-  std::vector<std::string> values;
-
   std::string error;
   bool good = true;
 
   std::string tesmafile = cah->pair(CP_F);
     
   /** file exists? **/
-  bool file_exists = HELPER::FileHelper::isExistingFile(tesmafile);
+  bool file_exists = HELPER::File::exists(tesmafile);
     
   /** dispatch application task **/
   if(cah->flag(CP_Help))
@@ -132,7 +130,7 @@ int main(int argc, char *argv[])
     if(cah->flag(CP_Generate) || !file_exists)
     {
       HELPER::UiHelper::println(" - generating tesmafile...");
-      if(HELPER::FileHelper::writeRaw(tesmafile, TESMAFILE_STR))
+      if(HELPER::File::writeRaw(tesmafile, TESMAFILE_STR))
         HELPER::UiHelper::printok();
       else
       {
