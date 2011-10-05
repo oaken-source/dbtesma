@@ -46,7 +46,6 @@
     --schema     print parsed schema to stdout\n\
     --hidden     requires --schema, omits datatype information \n\
     --asJSON     requires --schema, prints schma information as JSON \n\
-    --offsets    like --asJSON, data is generated and printed as offset \n\
     --verbose    increase program output\n\
     --noheader   omits header when generating tables\n\
     --hardenFDs  eliminates any false positives functional dependencies \n\

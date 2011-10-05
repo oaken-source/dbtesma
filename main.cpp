@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
 
   cah->parse(argc, argv);
 
+  // stay silent if certain parameter conditions are met
+  //bool silent 
+
   std::string error;
   bool good = true;
 
@@ -69,34 +72,6 @@ int main(int argc, char *argv[])
         config->buildSchemaAsJSON();
       else
         config->buildSchema();
-    }
-    else
-    {
-      /** schema was not valid **/
-      HELPER::UiHelper::printerr(config->getErrorString().c_str());
-    }
-  }
-  else if(cah->flag(CP_Offsets))
-  {
-    /** --offsets was set **/
-    DATA::Schema* config = new DATA::Schema();
-    CONF::Configparser* cp = new CONF::Configparser(tesmafile);
-    
-    srand(time(NULL));
-    
-    config->setHardenFdFlag(cah->flag(CP_HardenFds));
-    
-    /** process schema config **/
-    if(cp->parseAndValidate(config))
-    {
-      /** valid schema - start data generation for offets only **/
-      GEN::DataGenerator* dg = new GEN::DataGenerator(config);      
-      
-      config->buildSchemaAsJSON();
-
-      bool noHeader = (cah->flag(CP_NoHeader));
-      
-      dg->processTablesOffsetsOnly(noHeader);  
     }
     else
     {
@@ -194,7 +169,6 @@ void setupCliArgs(HELPER::CliArgs* cah)
   cah->addFlag("--schema", CP_Schema);
   cah->addFlag("--hidden", CP_Hidden);
   cah->addFlag("--asJSON", CP_AsJson);
-  cah->addFlag("--offsets", CP_Offsets);
   cah->addFlag("--noheader", CP_NoHeader);
   cah->addFlag("--hardenFDs", CP_HardenFds);
   cah->addFlag("--help", CP_Help);  

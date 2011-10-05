@@ -101,11 +101,6 @@ namespace DATA { namespace WRAPPER {
 		}
 	}
 
-	void VarcharWrapper::printOffset()
-	{
-		(*_out) << _intvalue;
-	}
-
 	void VarcharWrapper::resetToBasevalue()
 	{
 		free(_value);

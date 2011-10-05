@@ -91,7 +91,6 @@ public:
 	void incrementTempSmall();
 	void resetTemp();
 	void print();
-	void printOffset();
 	
 	/** getter / setter for actual attributes **/
 	void setDatatype(DATATYPES);

@@ -133,28 +133,6 @@ namespace DATA {
 		closeOutstream();
 	}
 
-	void Table::printOffsetsOnly(bool noHeader, bool hardenFds)	
-	{
-		openOutstream();
-
-		if(!noHeader)
-			printHeader();
-
-		nextNoIncrement();
-		printRowOffsetsOnly();
-		unsigned long long i;
-		for(i = 1; i < _rows; i++)
-		{
-			next();
-			printRowOffsetsOnly();
-		}
-		
-		if(hardenFds)
-			hardenOffsetsOnly();
-		
-		closeOutstream();
-	}
-
 	void Table::setRowCount(unsigned long long rows)
 	{
 		_rows = rows;
@@ -237,20 +215,6 @@ namespace DATA {
 		}
 		(*_out) << std::endl;
 	}
-	
-	void Table::printRowOffsetsOnly()
-	{
-		std::vector<DATA::Column*>::iterator i = _columns.begin();
-
-		(*i)->printOffset();
-		i++;
-		for(; i != _columns.end(); i++)
-		{
-			(*_out) << ",";
-			(*i)->printOffset();
-		}
-		(*_out) << std::endl;
-	}
 
 	void Table::harden()
 	{
@@ -323,84 +287,6 @@ namespace DATA {
 			{
 				(*_out) << ",";
 				(*c)->print();
-				if(indexByColumn[*c] == index)
-					(*c)->resetTemp();
-			}
-			(*_out) << std::endl;
-		}
-	}
-	
-	void Table::hardenOffsetsOnly()
-	{
-		/** build lookup index **/
-		std::map<DATA::Column*, unsigned int> indexByColumn = std::map<DATA::Column*, unsigned int>();
-		std::vector<DATA::Column*> rhsCols = std::vector<DATA::Column*>();
-		
-		std::vector<DATA::Funcdep*>::iterator fd = _funcdeps.begin();
-		int lhs_index = 1;
-		for(; fd != _funcdeps.end(); fd++)
-		{
-			indexByColumn[*((*fd)->rhs_begin())] = 0;
-			rhsCols.push_back(*((*fd)->rhs_begin()));
-			std::vector<DATA::Column*>::iterator lhs = (*fd)->lhs_begin();
-			for(; lhs != (*fd)->lhs_end(); lhs++)
-			{
-				indexByColumn[*lhs] = lhs_index;
-				lhs_index++;
-			}
-		}
-		
-		unsigned int index;
-		std::vector<DATA::Column*>::iterator c;
-		/** first pass **/
-		for(index = 1; index <= _rowsToHarden; index++)
-		{
-			for(c = _columns.begin(); c != _columns.end(); c++)
-			{
-				if(indexByColumn.find(*c) == indexByColumn.end())
-					(*c)->nextHarden();
-				else if(indexByColumn[*c] == index)
-					(*c)->incrementTemp();
-			}
-			for(c = rhsCols.begin(); c != rhsCols.end(); c++)
-				(*c)->next();
-
-			c = _columns.begin();
-			
-			(*c)->printOffset();
-			if(indexByColumn[*c] == index)
-				(*c)->resetTemp();
-			c++;
-			for(; c != _columns.end(); c++)
-			{
-				(*_out) << ",";
-				(*c)->printOffset();
-				if(indexByColumn[*c] == index)
-					(*c)->resetTemp();
-			}
-			(*_out) << std::endl;
-		}
-		/** second pass **/
-		for(index = 1; index <= _rowsToHarden; index++)
-		{
-			for(c = _columns.begin(); c != _columns.end(); c++)
-			{
-				if(indexByColumn.find(*c) == indexByColumn.end())
-					(*c)->nextHarden();
-				else if(indexByColumn[*c] == index)
-					(*c)->incrementTempSmall();
-			}
-			for(c = rhsCols.begin(); c != rhsCols.end(); c++)
-				(*c)->next();
-
-			c = _columns.begin();
-			
-			(*c)->printOffset();
-			c++;
-			for(; c != _columns.end(); c++)
-			{
-				(*_out) << ",";
-				(*c)->printOffset();
 				if(indexByColumn[*c] == index)
 					(*c)->resetTemp();
 			}

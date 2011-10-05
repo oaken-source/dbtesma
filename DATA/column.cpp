@@ -99,11 +99,6 @@ namespace DATA {
 	{
 		_wrapper->print();
 	}
-
-	void Column::printOffset()
-	{
-		_wrapper->printOffset();
-	}
 	
 	void Column::setDatatype(Column::DATATYPES type)
 	{

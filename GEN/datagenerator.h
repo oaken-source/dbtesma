@@ -43,8 +43,6 @@ public:
 
 	/** standard table processing **/
 	void processTables(bool);
-	/** offset-only table processing **/
-	void processTablesOffsetsOnly(bool);
 
 private:
 

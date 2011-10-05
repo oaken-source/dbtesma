@@ -40,7 +40,6 @@ public:
 	void generateRandomInRange();
 	void generateRandom();
 	void print();
-	void printOffset();
 	void resetToBasevalue();
 	
 	void getBasevalue(std::string&);

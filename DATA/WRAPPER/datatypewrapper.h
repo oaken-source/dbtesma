@@ -50,7 +50,6 @@ public:
 	virtual void generateRandomInRange() = 0;
 	virtual void generateRandom() = 0;
 	virtual void print() = 0;
-	virtual void printOffset() = 0;
 
 	virtual void resetToBasevalue() = 0;
 	

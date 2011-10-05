@@ -47,13 +47,6 @@ namespace GEN {
 		}
 	}
 
-	void DataGenerator::processTablesOffsetsOnly(bool noHeader)
-	{
-		std::vector<DATA::Table*>::iterator i;
-		for(i = _conf->begin(); i != _conf->end(); i++)
-			(*i)->printOffsetsOnly(noHeader, _conf->hasHardenedFds());	
-	}
-
 /** private *****************************************************************************************************/
 
 } // namespaces

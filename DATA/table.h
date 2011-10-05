@@ -75,7 +75,6 @@ public:
 	bool resortColumns();
 
 	void print(bool, bool);
-	void printOffsetsOnly(bool, bool);
 
 	std::vector<DATA::Column*>::iterator columns_begin() { return _columns.begin(); }
 	std::vector<DATA::Column*>::iterator columns_end() { return _columns.end(); }
@@ -96,10 +95,8 @@ private:
 	void next();
 	void nextNoIncrement();
 	void printRow();
-	void printRowOffsetsOnly();
 	
 	void harden();
-	void hardenOffsetsOnly();
 	
 	int getKeyGroupPos(DATA::Column*);
 	int getKeyGroupSize(DATA::Column*);

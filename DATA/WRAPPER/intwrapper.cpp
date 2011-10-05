@@ -41,11 +41,6 @@ namespace DATA { namespace WRAPPER {
 	{	
 		(*_out) << _value;
 	}
-	
-	void IntWrapper::printOffset()
-	{
-		(*_out) << _value - _basevalue;
-	}
 
 	void IntWrapper::resetToBasevalue()
 	{

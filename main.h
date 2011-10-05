@@ -31,7 +31,6 @@
     CP_Schema,
     CP_Hidden,
     CP_AsJson,
-    CP_Offsets,
     CP_NoHeader,
     CP_HardenFds,
     CP_Help,

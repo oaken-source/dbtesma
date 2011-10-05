@@ -100,11 +100,6 @@ namespace DATA { namespace WRAPPER {
 		}
 	}
 
-	void CharWrapper::printOffset()
-	{
-		(*_out) << _intvalue;
-	}
-
 	void CharWrapper::resetToBasevalue()
 	{
 		free(_value);
