@@ -27,38 +27,18 @@ int main(int argc, char *argv[])
 
   cah->parse(argc, argv);
 
-  // stay silent if certain parameter conditions are met
-  //bool silent 
+  std::string file = cah->pair(CP_F);
 
-  std::string error;
-  bool good = true;
-
-  std::string tesmafile = cah->pair(CP_F);
-    
-  /** file exists? **/
-  bool file_exists = HELPER::File::exists(tesmafile);
-    
-  /** dispatch application task **/
-  if(cah->flag(CP_Help))
-  {
-    /** --help was set **/
+  if(cah->flag(CP_Help)) // print help
     HELPER::UiHelper::printraw(USAGE_STR);
-  }
-  else if(cah->flag(CP_Version))
-  {
-    /** --version was set **/
+  else if(cah->flag(CP_Version)) // print version
     HELPER::UiHelper::println(VERSION_STR);
-  }
-  else if(cah->flag(CP_About))
-  {
-    /** --about was set **/
+  else if(cah->flag(CP_About)) // print 'about' stuff
     HELPER::UiHelper::println(ABOUT_STR);
-  }
-  else if(cah->flag(CP_Schema))
+  else if(cah->flag(CP_Schema)) // print schema information to stdout
   {
-    /** --schema was set **/
     DATA::Schema* config = new DATA::Schema();
-    CONF::Configparser* cp = new CONF::Configparser(tesmafile);
+    CONF::Configparser* cp = new CONF::Configparser(file);
     
     srand(time(NULL));
     
@@ -73,53 +53,44 @@ int main(int argc, char *argv[])
       else
         config->buildSchema();
     }
-    else
-    {
-      /** schema was not valid **/
+    else // invalid schema
       HELPER::UiHelper::printerr(config->getErrorString().c_str());
-    }
   }
-  else
+  else // real data generation
   {
-    /** no additional generation flags set - standard procedure **/
     HELPER::UiHelper::printTime();
     
     HELPER::UiHelper::println(" DBTesMa data generator");
     HELPER::UiHelper::println(" - starting up...");
     
-    /** test for invalid cli args configuration **/
-    if(!good)
+    if(cah->hasMsg()) // errors/warnings during parsing?
     {
-      HELPER::UiHelper::printerr(error.c_str());
+      //TODO: implement error printing
+    }
+    if(cah->hasError()) // quit on error
       return 1;
-    }
-    else if(!file_exists && !cah->flag(CP_Generate))
-    {
-      error = "\"" + tesmafile + "\" was not found. Trying to generate...";
-      HELPER::UiHelper::printwrn(error.c_str());
-    }
+    
+    bool exists = HELPER::File::exists(file);
+    
+    if(!exists && !cah->flag(CP_Generate)) // file not found warning
+      HELPER::UiHelper::printwrn("'%s' not found", file.c_str());
     else
       HELPER::UiHelper::printok();
 
-    /** need to generate example tesmafile? then do it. **/
-    if(cah->flag(CP_Generate) || !file_exists)
+    if(cah->flag(CP_Generate) || !exists) // generate example tesmafile
     {
       HELPER::UiHelper::println(" - generating tesmafile...");
-      if(HELPER::File::writeRaw(tesmafile, TESMAFILE_STR))
+      if(HELPER::File::writeRaw(file, TESMAFILE_STR))
         HELPER::UiHelper::printok();
       else
-      {
-        error = "failed to write to file \"" + tesmafile + "\"";
-        HELPER::UiHelper::printerr(error.c_str());
-      }
+        HELPER::UiHelper::printerr("failed to write to file '%s'", file.c_str());
     }
-    else
+    else // initiate generation
     {
-      /** all signals green **/ 
       HELPER::UiHelper::println(" - parsing configuration...");
 
       DATA::Schema* config = new DATA::Schema();
-      CONF::Configparser* cp = new CONF::Configparser(tesmafile);
+      CONF::Configparser* cp = new CONF::Configparser(file);
       
       srand(time(NULL));
 
@@ -155,8 +126,6 @@ int main(int argc, char *argv[])
     HELPER::UiHelper::printTime();
   }
 
-  /** finished **/
-  
   return 0;
 }
 

@@ -64,6 +64,11 @@ public:
   std::string pair(int);
   std::string popValue();
   
+  /** fetch error/warning states **/ 
+  bool hasError() { return _error; }
+  bool hasMsg() { return _msg.size(); }
+  std::pair<std::string, bool> popMsg();
+  
 private:
 
   /** specific adding methods for flag and pair parameters **/
@@ -74,11 +79,8 @@ private:
   void clear();
 
   /** errors and warnings handling **/
-  bool hasErrors() { return _error; }
-  bool hasMsg() { return _msg.size(); }
   void setError(const char*, ...);
   void setWarning(const char*, ...);
-  std::pair<std::string, bool> popMsg();
 
   /** store parameter information **/ 
   std::map<std::string, int> _flag;

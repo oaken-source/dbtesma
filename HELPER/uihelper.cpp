@@ -19,6 +19,8 @@
  
 #include "uihelper.h"
 
+#include <cstdarg>
+
 namespace HELPER {
 
 /** public ******************************************************************************************************/
@@ -51,22 +53,34 @@ namespace HELPER {
 		std::cout << in << std::flush;
 	}
 
-	void UiHelper::printerr(const char in[])
+	void UiHelper::printerr(const char in[], ...)
 	{
 		std::cout << "      [";
 		HELPER::OsAbstractionHelper::setColorRed();
 		std::cout << " !! ";
 		HELPER::OsAbstractionHelper::unsetColor();
-		std::cout << "]  -  Error: " << in << std::endl;
+		std::cout << "]  -  Err: ";
+    va_list(vl);
+		va_start(vl, in);
+		char buf[512];
+		vsnprintf(buf, 512, in, vl);
+		std::cout << buf << std::endl;
+		va_end(vl);
 	}
 
-	void UiHelper::printwrn(const char in[])
+	void UiHelper::printwrn(const char in[], ...)
 	{
 		std::cout << "      [";
 		HELPER::OsAbstractionHelper::setColorYellow();
 		std::cout << " -- ";
 		HELPER::OsAbstractionHelper::unsetColor();
-		std::cout << "]  -  Warning: " << in << std::endl;
+		std::cout << "]  -  Wrn: ";
+    va_list(vl);
+		va_start(vl, in);
+		char buf[512];
+		vsnprintf(buf, 512, in, vl);
+		std::cout << buf << std::endl;
+		va_end(vl);
 	}
 
 	void UiHelper::printok()

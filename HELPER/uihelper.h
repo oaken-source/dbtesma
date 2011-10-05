@@ -46,8 +46,8 @@ public:
 	static void emptyln();
 	static void printraw(const char[]);
 
-	static void printerr(const char[]);
-	static void printwrn(const char[]);
+	static void printerr(const char[], ...);
+	static void printwrn(const char[], ...);
 	static void printok();
 
 	static void overrok();
