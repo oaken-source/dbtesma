@@ -21,10 +21,11 @@
 
 namespace CONF {
 
-/** public ******************************************************************************************************/
+/** public ********************************************************************/
 
   Parser& Parser::operator=(const Parser &rhs)
   {
+    _conf = rhs._conf;
     _filename = rhs._filename;
     _in = rhs._in;
     _context = rhs._context;
@@ -37,78 +38,47 @@ namespace CONF {
     _in->close();
   }
 
-  bool Parser::parseAndValidate(DATA::Schema *config)
+  bool Parser::parseAndValidate()
   {
     CONF::Validator *cv = new CONF::Validator();
 
-    bool good = false;
-    while(1)
-    {
-      if(!parse(config))
-        break;
-      if(!cv->validate(config))
-        break;
-
-      good = true;
-  
-      break;
-    }
-
-    return good;  
+    return (parse() && cv->validate(_conf));
   }
   
-/** private *****************************************************************************************************/
+/** private *******************************************************************/
 
-  bool Parser::parse(DATA::Schema *conf)
+  bool Parser::parse()
   {
     _context = C_None;
     std::string line;
     unsigned int lineNo = 0;    
 
-    bool good = true;
-
-    while (_in->good() && good)
+    while (_in->good())
     {
       lineNo++;
       getline((*_in),line);
-      good = processLine(line, conf);
-    }
-
-    if(!good)
-    {
-      std::stringstream sst;
-      sst << "invalid syntax at line " << lineNo << " near '" << line << "'";
-      std::string st = sst.str();
-      conf->setErrorString(st);
-    }
-
-    return good;
-  }
-
-  bool Parser::processLine(std::string &in, DATA::Schema *conf)
-  {
-    HELPER::Strings::stripComments(in);
-  
-    HELPER::Strings::trim(in);
-
-    if(!HELPER::Strings::empty(in))
-    {
-      switch(_context)
+      if(!processLine(line))
       {
-        case C_None:
-          return processLineContextNone(in, conf);
-        case C_Table:
-          return processLineContextTable(in, conf);
-        case C_Column:
-          return processLineContextColumn(in, conf);
-        case C_Funcdep:
-          return processLineContextFuncDep(in, conf);
+        _conf->setError("%u: syntax error near '%s'", lineNo, line.c_str());
+        return false;
       }
     }
+    
     return true;
   }
 
-  bool Parser::processLineContextNone(std::string &in, DATA::Schema *conf)
+  bool Parser::processLine(std::string &in)
+  {
+    HELPER::Strings::stripComments(in);
+    HELPER::Strings::trim(in);
+
+    if(!HELPER::Strings::empty(in))
+      return (this->*(_processContext[_context]))(in);
+    else
+      return true;
+  }
+
+  bool Parser::processLineContextNone(std::string &in)
   {    
     // things that can happen here:
     //   - new table expression
@@ -125,7 +95,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->newTable();
+            _conf->newTable();
             _context = C_Table;
             return true;
           }
@@ -136,7 +106,7 @@ namespace CONF {
     return false;
   }
 
-  bool Parser::processLineContextTable(std::string &in, DATA::Schema *conf)
+  bool Parser::processLineContextTable(std::string &in)
   {
     // things that can happen here:
     //   - name attribute
@@ -165,7 +135,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->setTableAttribute(type, value);
+            _conf->setTableAttribute(type, value);
             return true;
           }
         }
@@ -183,7 +153,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->newColumn();
+            _conf->newColumn();
             _context = C_Column;
             return true;
           }
@@ -202,7 +172,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->newFuncdep();
+            _conf->newFuncdep();
             _context = C_Funcdep;
             return true;
           }
@@ -223,7 +193,7 @@ namespace CONF {
     return false;
   }
 
-  bool Parser::processLineContextColumn(std::string &in, DATA::Schema *conf)
+  bool Parser::processLineContextColumn(std::string &in)
   {
     // things that can happen here:
     //   - name attribute
@@ -273,7 +243,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->setColumnAttribute(type, value);
+            _conf->setColumnAttribute(type, value);
             return true;
           }
         }
@@ -293,7 +263,7 @@ namespace CONF {
     return false;
   }
   
-  bool Parser::processLineContextFuncDep(std::string &in, DATA::Schema *conf)
+  bool Parser::processLineContextFuncDep(std::string &in)
   {
     // things that can happen here:
     //   - lhs attribute
@@ -313,7 +283,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->setFuncdepLhs(value);
+            _conf->setFuncdepLhs(value);
             return true;
           }
         }
@@ -332,7 +302,7 @@ namespace CONF {
         {
           if(HELPER::Strings::empty(in))
           {
-            conf->setFuncdepRhs(value);
+            _conf->setFuncdepRhs(value);
             return true;
           }
         }

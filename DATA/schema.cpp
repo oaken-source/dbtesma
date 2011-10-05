@@ -19,9 +19,21 @@
  
 #include "schema.h"
 
+#include <cstdarg>
+
 namespace DATA {
 
 /** public ******************************************************************************************************/
+
+  void Schema::setError(const char f[], ...)
+  {
+    va_list vl;
+    va_start(vl, f);
+    char buf[512];
+    vsnprintf(buf, 512, f, vl);
+    _error = std::string(buf);
+    va_end(vl);
+  }
 
 	void Schema::newTable()
 	{	

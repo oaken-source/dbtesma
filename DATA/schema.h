@@ -40,6 +40,8 @@ public:
 	Schema() : _error(""), _tables(std::vector<DATA::Table*>()), _hardened_fds(false) {};
 	~Schema() { };
 
+  void setError(const char[], ...);
+  /** TODO: reove old error handling **/
 	void setErrorString(std::string &in) { _error = in; }
 	std::string getErrorString() { return _error; }
 

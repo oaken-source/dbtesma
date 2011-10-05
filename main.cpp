@@ -57,12 +57,12 @@ int main(int argc, char *argv[])
     }
 
     DATA::Schema* config = new DATA::Schema();
-    CONF::Parser* cp = new CONF::Parser(file);
+    CONF::Parser* cp = new CONF::Parser(file, config);
     
     srand(time(NULL));
     
     /** procss schema config **/ 
-    if(cp->parseAndValidate(config))
+    if(cp->parseAndValidate())
     {
       /** valid schema - print schema information to stdout **/
       if(cah->flag(CP_Hidden))
@@ -119,14 +119,14 @@ int main(int argc, char *argv[])
       HELPER::Ui::println(" - parsing configuration...");
 
       DATA::Schema* config = new DATA::Schema();
-      CONF::Parser* cp = new CONF::Parser(file);
+      CONF::Parser* cp = new CONF::Parser(file, config);
       
       srand(time(NULL));
 
       config->setHardenFdFlag(cah->flag(CP_HardenFds));
       
       /** process schema config **/
-      if(cp->parseAndValidate(config))
+      if(cp->parseAndValidate())
       {
         /** valid schema configuration - start generation **/
         if(DEBUG)

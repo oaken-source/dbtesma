@@ -21,6 +21,7 @@
 #define PARSER_H
 
 #include "validator.h"
+#include <initializer_list>
 
 namespace CONF {
 
@@ -43,32 +44,45 @@ class Parser
   
 public:
 
-  Parser(std::string &in) : _filename(in), _in(new std::ifstream(in.c_str())), _context(C_None) {};
-  Parser(const Parser &obj) : _filename(obj._filename), _in(obj._in), _context(obj._context) {};
+  Parser(std::string &in, DATA::Schema *conf) : _conf(conf), _filename(in), 
+    _in(new std::ifstream(in.c_str())), _context(C_None), 
+    _processContext(std::map<e_Context, bool (Parser::*)(std::string&)>())
+  {
+    _processContext[C_None] = &Parser::processLineContextNone;
+    _processContext[C_Table] = &Parser::processLineContextTable;
+    _processContext[C_Column] = &Parser::processLineContextColumn;
+    _processContext[C_Funcdep] = &Parser::processLineContextFuncDep; 
+  };
+  Parser(const Parser &obj) : _conf(obj._conf), _filename(obj._filename), 
+    _in(obj._in), _context(obj._context), 
+    _processContext(obj._processContext) {};
   Parser& operator=(const Parser&);
   ~Parser();
 
   /** main parsing method - starts parsing, and afterward starts validation **/
-  bool parseAndValidate(DATA::Schema*);
+  bool parseAndValidate();
 
 private:
   
   /** top level parsing **/
-  bool parse(DATA::Schema*);
+  bool parse();
 
   /** line-scoped parsing - dispatches to context line-scoped methods **/
-  bool processLine(std::string&, DATA::Schema*);
+  bool processLine(std::string&);
   
   /** contexted line-scoped parsing methods **/
-  bool processLineContextNone(std::string&, DATA::Schema*);
-  bool processLineContextTable(std::string&, DATA::Schema*);
-  bool processLineContextColumn(std::string&, DATA::Schema*);
-  bool processLineContextFuncDep(std::string&, DATA::Schema*);
+  bool processLineContextNone(std::string&);
+  bool processLineContextTable(std::string&);
+  bool processLineContextColumn(std::string&);
+  bool processLineContextFuncDep(std::string&);
 
+
+  DATA::Schema *_conf;  
   std::string _filename;
   std::ifstream *_in;
   e_Context _context;
   
+  std::map<e_Context, bool (Parser::*)(std::string&)> _processContext;
 };
 
 } // namespaces
