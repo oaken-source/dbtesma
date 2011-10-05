@@ -9,6 +9,6 @@ ifdef DEBUG
 	CFLAGS += -DHAVE_DEBUG
 endif
 
-%.o: %.cpp
+%.o: %.cpp %.h
 	$(GCC) $(CFLAGS) -c $<
 
