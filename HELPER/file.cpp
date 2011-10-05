@@ -39,7 +39,58 @@ namespace HELPER {
     of.close();
     return true;
   }
-    
+
+#ifdef _WIN32
+	
+	void File::makeAbsolute(std::string &in)
+	{
+		std::string path = getCwd();
+		path += "\\";
+		path += in;
+		
+		std::string::size_type position = path.find("\\");
+		while (position != path.npos) 
+		{
+			path.replace(position, 1, "\\\\");
+			position = path.find("\\", position + 2);
+		} 
+		
+		in = path;
+	}
+
+#else
+
+	void File::makeAbsolute(std::string &in)
+	{
+		std::string path = getCwd();
+		path += "/";
+		path += in;
+		in = path;
+	}
+	
+#endif
+	
+/** private *******************************************************************/
+
+#ifdef _WIN32
+
+	std::string File::getCwd()
+	{
+		char buffer[1024];
+		GetCurrentDirectory(1024, buffer);
+		return std::string(buffer);
+	}
+
+#else
+
+	std::string File::getCwd()
+	{
+		char buffer[1024];
+		return std::string(getcwd(buffer, 1024));
+	}
+
+#endif
+ 
 } // namespaces
 
 

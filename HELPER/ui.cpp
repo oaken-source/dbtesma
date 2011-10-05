@@ -56,9 +56,9 @@ namespace HELPER {
   void Ui::printerr(const char in[], ...)
   {
     std::cout << "      [";
-    HELPER::OsAbstractionHelper::setColorRed();
+    HELPER::FontColor::red();
     std::cout << " !! ";
-    HELPER::OsAbstractionHelper::unsetColor();
+    HELPER::FontColor::reset();
     std::cout << "]  ";
     va_list(vl);
     va_start(vl, in);
@@ -71,9 +71,9 @@ namespace HELPER {
   void Ui::printwrn(const char in[], ...)
   {
     std::cout << "      [";
-    HELPER::OsAbstractionHelper::setColorYellow();
+    HELPER::FontColor::yellow();
     std::cout << " -- ";
-    HELPER::OsAbstractionHelper::unsetColor();
+    HELPER::FontColor::reset();
     std::cout << "]  ";
     va_list(vl);
     va_start(vl, in);
@@ -86,27 +86,27 @@ namespace HELPER {
   void Ui::printok()
   {
     std::cout << "      [";
-    HELPER::OsAbstractionHelper::setColorGreen();
+    HELPER::FontColor::green();
     std::cout << " ok ";
-    HELPER::OsAbstractionHelper::unsetColor();
+    HELPER::FontColor::reset();
     std::cout << "]" << std::endl;
   }
 
   void Ui::overrok()
   {
     std::cout << "\r" << "      [";
-    HELPER::OsAbstractionHelper::setColorGreen();
+    HELPER::FontColor::green();
     std::cout << " ok ";
-    HELPER::OsAbstractionHelper::unsetColor();
+    HELPER::FontColor::reset();
     std::cout << "]" << std::endl;
   }
 
   void Ui::overrfail()
   {
     std::cout << "\r" << "      [";
-    HELPER::OsAbstractionHelper::setColorRed();
+    HELPER::FontColor::red();
     std::cout << " !! ";
-    HELPER::OsAbstractionHelper::unsetColor();
+    HELPER::FontColor::reset();
     std::cout << "]" << std::endl;
   }
   

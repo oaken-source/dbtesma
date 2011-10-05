@@ -39,7 +39,11 @@ public:
   static bool exists(std::string);
   static bool writeRaw(std::string, const char[]);
 
+	static void makeAbsolute(std::string&);
+
 private:
+
+	static std::string getCwd();
 
 };
 

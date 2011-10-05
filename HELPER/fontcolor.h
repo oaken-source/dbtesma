@@ -17,8 +17,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#ifndef OSABSTRACTIONHELPER_H
-#define OSABSTRACTIONHELPER_H
+#ifndef FONTCOLOR_H
+#define FONTCOLOR_H
 
 #include <string>
 
@@ -31,7 +31,7 @@
 
 namespace HELPER {
 
-class OsAbstractionHelper
+class FontColor
 {
 
 	/**
@@ -45,21 +45,15 @@ class OsAbstractionHelper
 public:
 
 	/** stdout color handling **/
-	static void setColorRed();
-	static void setColorGreen();
-	static void setColorYellow();
-	static void unsetColor();
-	
-	/** makes a relative file path originating from the current working directory absolute **/ 
-	static void makeAbsolute(std::string&);
+	static void red();
+	static void green();
+	static void yellow();
+	static void reset();
 
 private:
-
-	/** get the current working directory **/
-	static std::string getCurrentWorkingDirectory();
 	
 };
 
 } // namespaces
 
-#endif // OSABSTRACTIONHELPER_H
+#endif

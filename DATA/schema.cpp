@@ -117,7 +117,7 @@ namespace DATA {
 			
 			std::string pathName = tableName;
 			pathName += ".csv";
-			HELPER::OsAbstractionHelper::makeAbsolute(pathName);
+			HELPER::File::makeAbsolute(pathName);
 
 			std::cout << "load data infile \"" << pathName << "\" into table " << tableName << " fields terminated by ',';" << std::endl;
 		}
@@ -149,7 +149,7 @@ namespace DATA {
 			
 			std::string pathName = tableName;
 			pathName += ".csv";
-			HELPER::OsAbstractionHelper::makeAbsolute(pathName);
+			HELPER::File::makeAbsolute(pathName);
 
 			std::cout << "load data infile \"" << pathName << "\" into table " << tableName << " fields terminated by ',';" << std::endl;
 		}		
