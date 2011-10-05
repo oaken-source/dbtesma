@@ -20,7 +20,7 @@
 #ifndef DATATYPEWRAPPER_H
 #define DATATYPEWRAPPER_H
 
-#include "../../HELPER/stringhelper.h"
+#include "../../HELPER/strings.h"
 
 #include <string.h>
 #include <cstdlib>

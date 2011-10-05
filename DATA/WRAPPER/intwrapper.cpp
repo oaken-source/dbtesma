@@ -49,14 +49,14 @@ namespace DATA { namespace WRAPPER {
 
 	void IntWrapper::getBasevalue(std::string &in)
 	{
-		HELPER::StringHelper::strval(in, _basevalue);
+		HELPER::Strings::strval(in, _basevalue);
 	}
 
 	bool IntWrapper::setBasevalue(std::string &in)
 	{
 		if(in.length() <= _width)
 		{
-			_basevalue = HELPER::StringHelper::ullval(in);
+			_basevalue = HELPER::Strings::ullval(in);
 			resetToBasevalue();
 			return true;
 		}

@@ -17,8 +17,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#ifndef STRINGHELPER_H
-#define STRINGHELPER_H
+#ifndef STRINGS_H
+#define STRINGS_H
 
 /** include testing functionality, if building the test suite **/
 #ifdef MAKE_TESTS
@@ -30,7 +30,7 @@
 
 namespace HELPER {
 
-class StringHelper
+class Strings
 {
 
 	/**
@@ -40,7 +40,7 @@ class StringHelper
 	**/
 	
 	#ifdef MAKE_TESTS
-		friend class StringHelperTest;
+		friend class StringsTest;
 	#endif
 	
 public:

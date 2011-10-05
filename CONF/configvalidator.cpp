@@ -124,7 +124,7 @@ namespace CONF {
 			std::string rows_str;
 			if((*i)->getAttribute(DATA::Table::ATTR_ROWS, rows_str))
 			{
-				unsigned long long rows = HELPER::StringHelper::intval(rows_str);
+				unsigned long long rows = HELPER::Strings::intval(rows_str);
 				(*i)->setRowCount(rows);
 			}
 			else
@@ -314,7 +314,7 @@ namespace CONF {
 			std::string length_str;
 			if((*i)->getAttribute(DATA::Column::ATTR_LENGTH, length_str))
 			{
-				unsigned long long length = HELPER::StringHelper::intval(length_str);
+				unsigned long long length = HELPER::Strings::intval(length_str);
 				(*i)->setLength(length);
 			}
 			else
@@ -344,7 +344,7 @@ namespace CONF {
 			while(1)
 			{
 				std::string column;
-				if(HELPER::StringHelper::popCSV(columnsString, column))
+				if(HELPER::Strings::popCSV(columnsString, column))
 				{
 					
 					DATA::Column *c = table->findColumnByName(column);
@@ -370,7 +370,7 @@ namespace CONF {
 					return false;
 				}
 
-				if(HELPER::StringHelper::empty(columnsString))
+				if(HELPER::Strings::empty(columnsString))
 					break;
 			}
 			
@@ -379,7 +379,7 @@ namespace CONF {
 			while(1)
 			{
 				std::string column;
-				if(HELPER::StringHelper::popCSV(columnsString, column))
+				if(HELPER::Strings::popCSV(columnsString, column))
 				{
 					
 					DATA::Column *c = table->findColumnByName(column);
@@ -405,7 +405,7 @@ namespace CONF {
 					return false;
 				}
 
-				if(HELPER::StringHelper::empty(columnsString))
+				if(HELPER::Strings::empty(columnsString))
 					break;
 			}
 			
@@ -690,7 +690,7 @@ namespace CONF {
 			std::string unique_str;
 			if((*i)->getAttribute(DATA::Column::ATTR_UNIQUE, unique_str))
 			{
-				unsigned long long uniques = HELPER::StringHelper::ullval(unique_str);
+				unsigned long long uniques = HELPER::Strings::ullval(unique_str);
 				(*i)->setUniqueValueCount(uniques);				
 				(*i)->setGenerationType(DATA::Column::RANGED);
 			}
@@ -726,7 +726,7 @@ namespace CONF {
 			if((*i)->getAttribute(DATA::Column::ATTR_FOREIGNKEY, foreignkey_str))
 			{
 				std::string table_name;
-				if(HELPER::StringHelper::popTableName(foreignkey_str, table_name))
+				if(HELPER::Strings::popTableName(foreignkey_str, table_name))
 				{
 					DATA::Table *t = _conf->findTableByName(table_name);
 					if(t == 0)

@@ -125,7 +125,7 @@ namespace DATA { namespace WRAPPER {
 			unsigned int i;
 			for(i = 0; i < length; i++)
 			{
-				int index = HELPER::StringHelper::getIndexFromAlphabet(_alphabet, in[i], _alphabetSize);
+				int index = HELPER::Strings::getIndexFromAlphabet(_alphabet, in[i], _alphabetSize);
 				if(index >= 0)
 					_basevalue[i] = index;
 				else

@@ -87,11 +87,11 @@ namespace CONF {
 
 	bool Configparser::processLine(std::string &in, DATA::Schema *conf)
 	{
-		HELPER::StringHelper::stripComments(in);
+		HELPER::Strings::stripComments(in);
 	
-		HELPER::StringHelper::trim(in);
+		HELPER::Strings::trim(in);
 
-		if(!HELPER::StringHelper::empty(in))
+		if(!HELPER::Strings::empty(in))
 		{
 			switch(_context)
 			{
@@ -115,15 +115,15 @@ namespace CONF {
 		std::string key;
 
 		key = "table";
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				key = "{";
-				if(HELPER::StringHelper::stripleft(in, key))
+				if(HELPER::Strings::stripleft(in, key))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->newTable();
 						_context = TABLE;
@@ -150,20 +150,20 @@ namespace CONF {
 		key_name = "name";
 		key_rows = "rows";
 
-		if(HELPER::StringHelper::stripleft(in, key_name))
+		if(HELPER::Strings::stripleft(in, key_name))
 			type = DATA::Table::ATTR_NAME;
-		else if(HELPER::StringHelper::stripleft(in, key_rows))
+		else if(HELPER::Strings::stripleft(in, key_rows))
 			type = DATA::Table::ATTR_ROWS;
 	
 		if(type != DATA::Table::ATTR_NONE)
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				std::string value;
-				if(HELPER::StringHelper::popQuotedValue(in, value))
+				if(HELPER::Strings::popQuotedValue(in, value))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->setTableAttribute(type, value);
 						return true;
@@ -173,15 +173,15 @@ namespace CONF {
 		}
 
 		key = "column";
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				key = "{";
-				if(HELPER::StringHelper::stripleft(in, key))
+				if(HELPER::Strings::stripleft(in, key))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->newColumn();
 						_context = COLUMN;
@@ -192,15 +192,15 @@ namespace CONF {
 		}
 		
 		key = "functional_dep";
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				key = "{";
-				if(HELPER::StringHelper::stripleft(in, key))
+				if(HELPER::Strings::stripleft(in, key))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->newFuncdep();
 						_context = FUNCDEP;
@@ -211,9 +211,9 @@ namespace CONF {
 		}
 
 		key = "}";
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
-			if(HELPER::StringHelper::empty(in))
+			if(HELPER::Strings::empty(in))
 			{
 				_context = NONE;
 				return true;
@@ -246,32 +246,32 @@ namespace CONF {
 		key_unique = "unique";
 		key_foreignkey = "foreignkey";
 
-		if(HELPER::StringHelper::stripleft(in, key_name))
+		if(HELPER::Strings::stripleft(in, key_name))
 			type = DATA::Column::ATTR_NAME;
-		else if(HELPER::StringHelper::stripleft(in, key_datatype))
+		else if(HELPER::Strings::stripleft(in, key_datatype))
 			type = DATA::Column::ATTR_DATATYPE;
-		else if(HELPER::StringHelper::stripleft(in, key_length))
+		else if(HELPER::Strings::stripleft(in, key_length))
 			type = DATA::Column::ATTR_LENGTH;
-		else if(HELPER::StringHelper::stripleft(in, key_key_group))
+		else if(HELPER::Strings::stripleft(in, key_key_group))
 			type = DATA::Column::ATTR_KEY_GROUP;
-		else if(HELPER::StringHelper::stripleft(in, key_key))
+		else if(HELPER::Strings::stripleft(in, key_key))
 			type = DATA::Column::ATTR_KEY;
-		else if(HELPER::StringHelper::stripleft(in, key_basevalue))
+		else if(HELPER::Strings::stripleft(in, key_basevalue))
 			type = DATA::Column::ATTR_BASEVALUE;
-		else if(HELPER::StringHelper::stripleft(in, key_unique))
+		else if(HELPER::Strings::stripleft(in, key_unique))
 			type = DATA::Column::ATTR_UNIQUE;
-		else if(HELPER::StringHelper::stripleft(in, key_foreignkey))
+		else if(HELPER::Strings::stripleft(in, key_foreignkey))
 			type = DATA::Column::ATTR_FOREIGNKEY;
 
 		if(type != DATA::Column::ATTR_NONE)
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				std::string value;
-				if(HELPER::StringHelper::popQuotedValue(in, value))
+				if(HELPER::Strings::popQuotedValue(in, value))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->setColumnAttribute(type, value);
 						return true;
@@ -281,9 +281,9 @@ namespace CONF {
 		}
 
 		key = "}";
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
-			if(HELPER::StringHelper::empty(in))
+			if(HELPER::Strings::empty(in))
 			{
 				_context = TABLE;
 				return true;
@@ -303,15 +303,15 @@ namespace CONF {
 
 		key = "lhs";
 		
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				std::string value;
-				if(HELPER::StringHelper::popQuotedValue(in, value))
+				if(HELPER::Strings::popQuotedValue(in, value))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->setFuncdepLhs(value);
 						return true;
@@ -322,15 +322,15 @@ namespace CONF {
 		
 		key = "rhs";
 		
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
 			key = "=";
-			if(HELPER::StringHelper::stripleft(in, key))
+			if(HELPER::Strings::stripleft(in, key))
 			{
 				std::string value;
-				if(HELPER::StringHelper::popQuotedValue(in, value))
+				if(HELPER::Strings::popQuotedValue(in, value))
 				{
-					if(HELPER::StringHelper::empty(in))
+					if(HELPER::Strings::empty(in))
 					{
 						conf->setFuncdepRhs(value);
 						return true;
@@ -340,9 +340,9 @@ namespace CONF {
 		}
 
 		key = "}";
-		if(HELPER::StringHelper::stripleft(in, key))
+		if(HELPER::Strings::stripleft(in, key))
 		{
-			if(HELPER::StringHelper::empty(in))
+			if(HELPER::Strings::empty(in))
 			{
 				_context = TABLE;
 				return true;

@@ -17,17 +17,17 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
  
-#include "stringhelper.h"
+#include "strings.h"
 
 namespace HELPER {
 
 /** public ******************************************************************************************************/
 
-	const char *StringHelper::_whitespace = " \t\r\n";
-	const char *StringHelper::_commentDelimiter = "#";
+	const char *Strings::_whitespace = " \t\r\n";
+	const char *Strings::_commentDelimiter = "#";
 	
 
-	void StringHelper::stripComments(std::string &in)
+	void Strings::stripComments(std::string &in)
 	{
 		std::string::size_type pos;
 
@@ -36,13 +36,13 @@ namespace HELPER {
 			in.erase(pos);
 	}
 	
-	void StringHelper::trim(std::string &in)
+	void Strings::trim(std::string &in)
 	{
 		trimleft(in);
 		trimright(in);
 	}
 	
-	void StringHelper::trimleft(std::string &in)
+	void Strings::trimleft(std::string &in)
 	{
 		std::string::size_type pos;
 
@@ -53,7 +53,7 @@ namespace HELPER {
 			in.erase(0);
 	}
 	
-	void StringHelper::trimright(std::string &in)
+	void Strings::trimright(std::string &in)
 	{
 		std::string::size_type pos;
 
@@ -64,12 +64,12 @@ namespace HELPER {
 			in.erase(0);
 	}
 	
-	bool StringHelper::empty(std::string &in)
+	bool Strings::empty(std::string &in)
 	{
 		return in.length() == 0;
 	}
 
-	bool StringHelper::stripleft(std::string &in, std::string &sub)
+	bool Strings::stripleft(std::string &in, std::string &sub)
 	{
 		std::string::size_type pos;
 		pos = in.find(sub);
@@ -83,7 +83,7 @@ namespace HELPER {
 			return false;
 	}
 
-	bool StringHelper::popQuotedValue(std::string &in, std::string &value)
+	bool Strings::popQuotedValue(std::string &in, std::string &value)
 	{
 		std::string key;
 		key = "\"";
@@ -104,7 +104,7 @@ namespace HELPER {
 		return false;
 	}
 
-	bool StringHelper::popTableName(std::string &in, std::string &value)
+	bool Strings::popTableName(std::string &in, std::string &value)
 	{
 		std::string key;
 		key = ":";
@@ -123,7 +123,7 @@ namespace HELPER {
 			return false;
 	}
 	
-	bool StringHelper::popCSV(std::string &in, std::string &value)
+	bool Strings::popCSV(std::string &in, std::string &value)
 	{
 		if(empty(in))
 			return false;
@@ -145,7 +145,7 @@ namespace HELPER {
 		return true;
 	}
 
-	int StringHelper::intval(std::string &in)
+	int Strings::intval(std::string &in)
 	{
 		std::stringstream sst(in);
 		int x;
@@ -153,7 +153,7 @@ namespace HELPER {
 		return x;
 	}
 
-	unsigned long long StringHelper::ullval(std::string &in)
+	unsigned long long Strings::ullval(std::string &in)
 	{
 		std::stringstream sst(in);
 		unsigned long long x;
@@ -161,14 +161,14 @@ namespace HELPER {
 		return x;
 	}
 
-	void StringHelper::strval(std::string &in, unsigned long long value)
+	void Strings::strval(std::string &in, unsigned long long value)
 	{
 		std::stringstream sst;
 		sst << value;
 		in = sst.str();
 	}
 
-	int StringHelper::getIndexFromAlphabet(const char *alphabet, char in, unsigned int length)
+	int Strings::getIndexFromAlphabet(const char *alphabet, char in, unsigned int length)
 	{
 		unsigned int i;
 		for(i = 0; i < length; i++)
