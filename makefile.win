@@ -16,7 +16,7 @@ DIRS_TEST = TESTS
 OBJ = main.o
 OBJ_TEST = TESTS/test_main.o TESTS/test.o TESTS/stringhelpertest.o
 
-OBJ_ALL = CONF/configparser.o CONF/configvalidator.o \
+OBJ_ALL = CONF/parser.o CONF/validator.o \
 	DATA/column.o DATA/funcdep.o DATA/funcdepgraph.o DATA/table.o DATA/schema.o \
 	DATA/WRAPPER/charwrapper.o DATA/WRAPPER/datatypewrapper.o DATA/WRAPPER/intwrapper.o DATA/WRAPPER/varcharwrapper.o \
 	HELPER/cliargs.o HELPER/file.o HELPER/fontcolor.o HELPER/strings.o HELPER/ui.o

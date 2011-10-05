@@ -17,7 +17,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "CONF/configparser.h"
+#include "CONF/parser.h"
 #include "DATA/schema.h"
 #include "HELPER/ui.h"
 #include "HELPER/cliargs.h"

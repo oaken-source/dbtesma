@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     }
 
     DATA::Schema* config = new DATA::Schema();
-    CONF::Configparser* cp = new CONF::Configparser(file);
+    CONF::Parser* cp = new CONF::Parser(file);
     
     srand(time(NULL));
     
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
       HELPER::Ui::println(" - parsing configuration...");
 
       DATA::Schema* config = new DATA::Schema();
-      CONF::Configparser* cp = new CONF::Configparser(file);
+      CONF::Parser* cp = new CONF::Parser(file);
       
       srand(time(NULL));
 
@@ -134,8 +134,6 @@ int main(int argc, char *argv[])
 
         HELPER::Ui::printok();
         HELPER::Ui::println(" - generating tables...");  
-
-        bool noHeader = (cah->flag(CP_NoHeader));
         
 		    std::vector<DATA::Table*>::iterator i;
 		    for(i = config->begin(); i != config->end(); i++)
@@ -143,7 +141,7 @@ int main(int argc, char *argv[])
 			    std::string name;
 			    (*i)->getAttribute(DATA::Table::ATTR_NAME, name);
 			    HELPER::Ui::startProgress(name.c_str());
-			    (*i)->print(noHeader, config->hasHardenedFds());
+			    (*i)->print(cah->flag(CP_NoHeader), config->hasHardenedFds());
 			    HELPER::Ui::overrok();			
 		    }
       }

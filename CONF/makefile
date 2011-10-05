@@ -1,7 +1,7 @@
 
 include ../makefile.rules.gcc
 
-OBJ				= configparser.o configvalidator.o
+OBJ				= parser.o validator.o
 
 all: $(OBJ)
 
