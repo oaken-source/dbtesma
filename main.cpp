@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
   cah->parse(argc, argv);
 
   std::string file = cah->pair(CP_F);
+  bool exists = HELPER::File::exists(file);
+
 
   if(cah->flag(CP_Help)) // print help
     HELPER::UiHelper::printraw(USAGE_STR);
@@ -36,7 +38,24 @@ int main(int argc, char *argv[])
   else if(cah->flag(CP_About)) // print 'about' stuff
     HELPER::UiHelper::println(ABOUT_STR);
   else if(cah->flag(CP_Schema)) // print schema information to stdout
-  {
+  {    
+    if(!exists)
+      HELPER::UiHelper::printerr("'%s' not found", file.c_str());
+    if(cah->hasError() || !exists) // quit on error
+    {
+      std::pair<std::string, bool> msg = cah->popMsg();
+      while(msg.first.length() > 0)
+      {
+        if(msg.second)
+          HELPER::UiHelper::printerr(msg.first.c_str());
+        else
+          HELPER::UiHelper::printwrn(msg.first.c_str());
+        
+        msg = cah->popMsg();
+      }
+      return 1;
+    }
+
     DATA::Schema* config = new DATA::Schema();
     CONF::Configparser* cp = new CONF::Configparser(file);
     
@@ -65,13 +84,23 @@ int main(int argc, char *argv[])
     
     if(cah->hasMsg()) // errors/warnings during parsing?
     {
-      //TODO: implement error printing
+      std::pair<std::string, bool> msg = cah->popMsg();
+      while(msg.first.length() > 0)
+      {
+        if(msg.second)
+          HELPER::UiHelper::printerr(msg.first.c_str());
+        else
+          HELPER::UiHelper::printwrn(msg.first.c_str());
+        
+        msg = cah->popMsg();
+      }
     }
     if(cah->hasError()) // quit on error
+    {
+      HELPER::UiHelper::printraw(USAGE_STR);
       return 1;
-    
-    bool exists = HELPER::File::exists(file);
-    
+    }
+        
     if(!exists && !cah->flag(CP_Generate)) // file not found warning
       HELPER::UiHelper::printwrn("'%s' not found", file.c_str());
     else

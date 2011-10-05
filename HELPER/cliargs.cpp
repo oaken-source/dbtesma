@@ -117,6 +117,18 @@ namespace HELPER {
       return std::string("");
   }
 
+  std::pair<std::string, bool> CliArgs::popMsg()
+  {
+    if(_msg.size() > 0)
+    {
+      std::pair<std::string, bool> p = _msg.front();
+      _msg.pop_front();
+      return p;
+    }
+    else
+      return std::pair<std::string, bool>(std::string(""), false);
+  }
+
 /** private *******************************************************************/
 
   void CliArgs::clear()
@@ -154,12 +166,5 @@ namespace HELPER {
     va_end(vl);
   }
   
-  std::pair<std::string, bool> CliArgs::popMsg()
-  {
-    std::pair<std::string, bool> p = _msg.front();
-    _msg.pop_front();
-    return p;
-  }
-
 } // namespaces
 

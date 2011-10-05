@@ -59,7 +59,7 @@ namespace HELPER {
 		HELPER::OsAbstractionHelper::setColorRed();
 		std::cout << " !! ";
 		HELPER::OsAbstractionHelper::unsetColor();
-		std::cout << "]  -  Err: ";
+		std::cout << "]  ";
     va_list(vl);
 		va_start(vl, in);
 		char buf[512];
@@ -74,7 +74,7 @@ namespace HELPER {
 		HELPER::OsAbstractionHelper::setColorYellow();
 		std::cout << " -- ";
 		HELPER::OsAbstractionHelper::unsetColor();
-		std::cout << "]  -  Wrn: ";
+		std::cout << "]  ";
     va_list(vl);
 		va_start(vl, in);
 		char buf[512];
