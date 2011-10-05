@@ -18,7 +18,8 @@
  ******************************************************************************/
 
 #include "CONF/configparser.h"
-#include "GEN/datagenerator.h"
+#include "DATA/schema.h"
+#include "HELPER/ui.h"
 #include "HELPER/cliargs.h"
 #include "HELPER/file.h"
 
@@ -39,3 +40,4 @@
   };
 
   void setupCliArgs(HELPER::CliArgs*);
+  

@@ -129,8 +129,6 @@ int main(int argc, char *argv[])
       if(cp->parseAndValidate(config))
       {
         /** valid schema configuration - start generation **/
-        GEN::DataGenerator* dg = new GEN::DataGenerator(config);      
-        
         if(DEBUG)
           config->dumpToStdout();
 
@@ -139,7 +137,15 @@ int main(int argc, char *argv[])
 
         bool noHeader = (cah->flag(CP_NoHeader));
         
-        dg->processTables(noHeader);
+		    std::vector<DATA::Table*>::iterator i;
+		    for(i = config->begin(); i != config->end(); i++)
+		    {
+			    std::string name;
+			    (*i)->getAttribute(DATA::Table::ATTR_NAME, name);
+			    HELPER::Ui::startProgress(name.c_str());
+			    (*i)->print(noHeader, config->hasHardenedFds());
+			    HELPER::Ui::overrok();			
+		    }
       }
       else
       {
@@ -175,5 +181,4 @@ void setupCliArgs(HELPER::CliArgs* cah)
   
   cah->addPair("-f", CP_F, "tesmafile");
 }
-
 
