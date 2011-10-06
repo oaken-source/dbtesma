@@ -30,17 +30,17 @@ class Validator
   /** Config Validation Class
   tasks:
     validates data in config
-  todo:
+  TODO:
     this class is a monster! tame it! **/
 
 public:
-  Validator() : _conf(NULL) {};
+  Validator(DATA::Schema *conf) : _conf(conf) {};
   Validator(const Validator &obj) : _conf(obj._conf) {};
   Validator& operator=(const Validator&);
-  ~Validator();
+  ~Validator() {};
 
   /** top level validation - calls medium level validation methods **/
-  bool validate(DATA::Schema*);
+  bool validate();
 
 private:
 

@@ -41,8 +41,6 @@ public:
 	~Schema() { };
 
   void setError(const char[], ...);
-  /** TODO: reove old error handling **/
-	void setErrorString(std::string &in) { _error = in; }
 	std::string getErrorString() { return _error; }
 
 	void newTable();

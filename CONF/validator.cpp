@@ -21,7 +21,7 @@
 
 namespace CONF {
 
-/** public ******************************************************************************************************/
+/** public ********************************************************************/
 
   Validator& Validator::operator=(const Validator &rhs)
   {
@@ -29,54 +29,26 @@ namespace CONF {
     return *this;
   }
 
-  Validator::~Validator() 
+  bool Validator::validate()
   {
-
+    return (validateTableCount()
+      && validateTableNames()
+      && validateTableAttributes()
+      && validateTableColumns()
+      && validateTableFuncdeps()
+      && validateForeignKeyConstraints()
+      && revalidateFuncdeps()
+      && (!_conf->hasHardenedFds() || validateHardenedFds()));
   }
 
-  bool Validator::validate(DATA::Schema *conf)
-  {
-    _conf = conf;
-
-    bool good = false;
-
-    while(1)
-    {  
-      if(!validateTableCount())
-        break;
-      if(!validateTableNames())
-        break;
-      if(!validateTableAttributes())
-        break;
-      if(!validateTableColumns())
-        break;
-      if(!validateTableFuncdeps())
-        break;
-      if(!validateForeignKeyConstraints())
-        break;
-      if(!revalidateFuncdeps())
-        break;
-        
-      good = true;
-
-      break; // anyway
-    }
-    
-    if(conf->hasHardenedFds())
-      good = validateHardenedFds();
-  
-    return good;
-  }
-
-/** private *****************************************************************************************************/
+/** private *******************************************************************/
 
   bool Validator::validateTableCount()
   {
     /** ensure we have at least one table in table set **/
     if(_conf->size() == 0)
     {
-      std::string error = "no tables";
-      _conf->setErrorString(error);
+      _conf->setError("no tables");
       return false;
     }
     else
@@ -98,15 +70,13 @@ namespace CONF {
           tableNames[name] = true;
         else
         {
-          std::string error = name + ": name not unique";
-          _conf->setErrorString(error);
+          _conf->setError("%s: name not unique", name.c_str());
           return false;
         }
       }
       else
       {
-        std::string error = "unnamed table";
-        _conf->setErrorString(error);
+        _conf->setError("unnamed table");
         return false;
       }
       i++;
@@ -131,8 +101,7 @@ namespace CONF {
       {
         std::string name;
         (*i)->getAttribute(DATA::Table::ATTR_NAME, name);
-        std::string error = name + ": row count required";
-        _conf->setErrorString(error);
+        _conf->setError("%s: row count missing", name.c_str());
         return false;
       }
 
@@ -217,8 +186,7 @@ namespace CONF {
     {
       std::string tableName;
       table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      std::string error = tableName + ": no columns";
-      _conf->setErrorString(error);
+      _conf->setError("%s: no columns in set", tableName.c_str());
       return false;
     }
     else
@@ -240,8 +208,8 @@ namespace CONF {
         {
           std::string tableName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": " + name + ": name must not contain character ','";
-          _conf->setErrorString(error);
+          _conf->setError("%s: %s: invalid charcter ',' in name", 
+            tableName.c_str(), name.c_str());
           return false;          
         }
         else if(columnNames.find(name) == columnNames.end())
@@ -250,8 +218,8 @@ namespace CONF {
         {
           std::string tableName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": " + name + ": name not unique";
-          _conf->setErrorString(error);
+          _conf->setError("%s: %s: name not unique", tableName.c_str(), 
+            name.c_str());
           return false;
         }
       }
@@ -259,8 +227,7 @@ namespace CONF {
       {
         std::string tableName;
         table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        std::string error = tableName + ": unnamed column";
-        _conf->setErrorString(error);
+        _conf->setError("%s: unnamed column", tableName.c_str());
         return false;
       }
       i++;
@@ -289,8 +256,8 @@ namespace CONF {
           std::string columnName, tableName;
           (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": " + columnName + ": unrecognized datatype \"" + datatype + "\"";
-          _conf->setErrorString(error);
+          _conf->setError("%s: %s: unrecognized datatype '%s'", 
+            tableName.c_str(), columnName.c_str(), datatype.c_str());
           return false;
         }
       }
@@ -322,8 +289,8 @@ namespace CONF {
         std::string columnName, tableName;
         (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
         table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        std::string error = tableName + ": " + columnName + ": column width required";
-        _conf->setErrorString(error);
+        _conf->setError("%s: %s: column width required", tableName.c_str(), 
+          columnName.c_str());
         return false;
       }
 
@@ -352,8 +319,8 @@ namespace CONF {
           {
             std::string tableName;
             table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            std::string error = tableName + ": functional_dep: \"" + column + "\" is not valid";
-            _conf->setErrorString(error);
+            _conf->setError("%s: functional_dep: '%s' is not valid", 
+              tableName.c_str(), column.c_str());
             return false;
           }
           else
@@ -365,8 +332,8 @@ namespace CONF {
         {
           std::string tableName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": functional_dep: no lhs column specified";
-          _conf->setErrorString(error);
+          _conf->setError("%s: functional_dep: no lhs column specified", 
+            tableName.c_str());
           return false;
         }
 
@@ -387,8 +354,8 @@ namespace CONF {
           {
             std::string tableName;
             table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            std::string error = tableName + ": functional_dep: \"" + column + "\" is not valid";
-            _conf->setErrorString(error);
+            _conf->setError("%s: functional_dep: '%s' is not valid", 
+              tableName.c_str(), column.c_str());
             return false;
           }
           else
@@ -400,8 +367,8 @@ namespace CONF {
         {
           std::string tableName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": functional_dep: no rhs column specified";
-          _conf->setErrorString(error);
+          _conf->setError("%s: functional_dep: no rhs column specified", 
+            tableName.c_str());
           return false;
         }
 
@@ -449,8 +416,8 @@ namespace CONF {
           std::string tableName, columnName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
           (*((*i)->rhs_begin()))->getAttribute(DATA::Column::ATTR_NAME, columnName);
-          std::string error = tableName + ": functional_dep: rhs column \"" + columnName + "\" has self references";
-          _conf->setErrorString(error);
+          _conf->setError("%s: functional_dep: rhs column '%s' self reference", 
+            tableName.c_str(), columnName.c_str());
           return false;
         }
       }
@@ -513,8 +480,7 @@ namespace CONF {
               std::string tableName, columnName;
               table->getAttribute(DATA::Table::ATTR_NAME, tableName);
               rhs->getAttribute(DATA::Column::ATTR_NAME, columnName);
-              std::string error = tableName + ": functional_dep: could not resolve dependencies for \"" + columnName + "\"";
-              _conf->setErrorString(error);
+              _conf->setError("%s: functional_dep: could not resolve dependencies for '%s'", tableName.c_str(), columnName.c_str());
               return false;
             }
           }
@@ -546,8 +512,7 @@ namespace CONF {
     {
       std::string tableName, columnName;
       table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      std::string error = tableName + ": circular functional dependencies";
-      _conf->setErrorString(error);
+      _conf->setError("%s: circular functional dependencies", tableName.c_str());
       return false;
     }
     
@@ -586,8 +551,7 @@ namespace CONF {
         std::string tableName, columnName;
         table->getAttribute(DATA::Table::ATTR_NAME, tableName);
         (*((*i)->rhs_begin()))->getAttribute(DATA::Column::ATTR_NAME, columnName);
-        std::string error = tableName + ": functional_dep: rhs column \"" + columnName + "\" member of f-key";
-        _conf->setErrorString(error);
+        _conf->setError("%s: functional_dep: rhs_column '%s' member of foreign key", tableName.c_str(), columnName.c_str());
         return false;
       }
       i++;
@@ -597,8 +561,7 @@ namespace CONF {
     {
       std::string tableName, columnName;
       table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      std::string error = tableName + ": conflicting f-keys and functional deps";
-      _conf->setErrorString(error);
+      _conf->setError("%s: conflicting foreign keys and functional dependencies", tableName.c_str());
       return false;
     }
     
@@ -636,8 +599,7 @@ namespace CONF {
           std::string columnName, tableName;
           (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": " + columnName + ": unrecognized key type \"" + key + "\"";
-          _conf->setErrorString(error);
+          _conf->setError("%s: %s: unrecognized key type '%s'", tableName.c_str(), columnName.c_str(), key.c_str());
           return false;
         }
       }
@@ -665,8 +627,7 @@ namespace CONF {
           std::string columnName, tableName;
           (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": " + columnName + ": invalid basevalue \"" + basevalue_str + "\"";
-          _conf->setErrorString(error);
+          _conf->setError("%s: %s: invalid basevalue '%s'", tableName.c_str(), columnName.c_str(), basevalue_str.c_str());
           return false;
         }
       }
@@ -734,8 +695,7 @@ namespace CONF {
             std::string columnName, tableName;
             (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
             table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            std::string error = tableName + ": " + columnName + ": table not found: \"" + table_name + "\"";
-            _conf->setErrorString(error);
+            _conf->setError("%s: %s: table not found: '%s'", tableName.c_str(), columnName.c_str(), table_name.c_str());
             return false;
           }
           DATA::Column *c = t->findColumnByName(foreignkey_str);
@@ -744,8 +704,7 @@ namespace CONF {
             std::string columnName, tableName;
             (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
             table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            std::string error = tableName + ": " + columnName + ": column not found: \"" + foreignkey_str + "\"";
-            _conf->setErrorString(error);
+            _conf->setError("%s: %s: column not found: '%s'", tableName.c_str(), columnName.c_str(), foreignkey_str.c_str());
             return false;
           }
           std::string key_group;
@@ -760,8 +719,7 @@ namespace CONF {
               std::string columnName, tableName;
               (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
               table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-              std::string error = tableName + ": " + columnName + ": calculated column not referencing primary key head column";
-              _conf->setErrorString(error);
+              _conf->setError("%s: %s: calculated column not referencing primary key head column", tableName.c_str(), columnName.c_str());
               return false;
             }
             // push foreign key group element into lookup vector
@@ -801,8 +759,7 @@ namespace CONF {
           std::string columnName, tableName;
           (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": " + columnName + ": invalid foreign key: \"" + foreignkey_str + "\"";
-          _conf->setErrorString(error);
+          _conf->setError("%s: %s: invalid foreign key: '%s'", tableName.c_str(), columnName.c_str(), foreignkey_str.c_str());
           return false;
         }
       }
@@ -820,8 +777,7 @@ namespace CONF {
         {
           std::string tableName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": unreferenced primary key head column in foreign key";
-          _conf->setErrorString(error);
+          _conf->setError("%s: unreferenced primary key head column in foreign key", tableName.c_str());
           return false;
         }
         
@@ -896,8 +852,7 @@ namespace CONF {
         {
           std::string tableName;
           table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          std::string error = tableName + ": hardened fds not available for interferencing functional dependencies";
-          _conf->setErrorString(error);
+          _conf->setError("%s: hardened fds not available for interferencing functional dependencies", tableName.c_str());
           return false;
         }
         usedCols[*c] = true;
@@ -906,8 +861,7 @@ namespace CONF {
       {
         std::string tableName;
         table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        std::string error = tableName + ": hardened fds not available for interferencing functional dependencies";
-        _conf->setErrorString(error);
+        _conf->setError("%s: hardened fds not available for interferencing functional dependencies", tableName.c_str());
         return false;
       }
       usedCols[*((*i)->rhs_begin())] = true;
@@ -918,8 +872,7 @@ namespace CONF {
     {
       std::string tableName;
       table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      std::string error = tableName + ": insufficient row count for hardening functional dependencies";
-      _conf->setErrorString(error);
+      _conf->setError("%s: insufficient row count for hardening functional dependencies", tableName.c_str());
       return false;
     }
     table->setRowCount(table->getRowCount() - rowsToHarden * 2);

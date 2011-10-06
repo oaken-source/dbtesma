@@ -40,9 +40,9 @@ namespace CONF {
 
   bool Parser::parseAndValidate()
   {
-    CONF::Validator *cv = new CONF::Validator();
+    CONF::Validator *cv = new CONF::Validator(_conf);
 
-    return (parse() && cv->validate(_conf));
+    return (parse() && cv->validate());
   }
   
 /** private *******************************************************************/

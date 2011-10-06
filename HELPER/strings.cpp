@@ -84,20 +84,6 @@ namespace HELPER {
       return false;
   }
 
-/*  bool Strings::stripleft(std::string &in, std::string sub)
-  { 
-    std::string::size_type pos;
-    pos = in.find(sub);
-    if(pos == 0)
-    {
-      in.erase(0,sub.length());
-      trimleft(in);
-      return true;
-    }
-    else
-      return false;
-  }*/
-
   bool Strings::popQuotedValue(std::string &in, std::string &value)
   {
     if(stripleft(in, "\""))
