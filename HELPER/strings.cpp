@@ -69,8 +69,23 @@ namespace HELPER {
     return in.length() == 0;
   }
 
-  bool Strings::stripleft(std::string &in, std::string &sub)
+  bool Strings::stripleft(std::string &in, const char sub[])
   {
+    std::string s = sub;
+    std::string::size_type pos;
+    pos = in.find(s);
+    if(pos == 0)
+    {
+      in.erase(0,s.length());
+      trimleft(in);
+      return true;
+    }
+    else
+      return false;
+  }
+
+/*  bool Strings::stripleft(std::string &in, std::string sub)
+  { 
     std::string::size_type pos;
     pos = in.find(sub);
     if(pos == 0)
@@ -81,16 +96,14 @@ namespace HELPER {
     }
     else
       return false;
-  }
+  }*/
 
   bool Strings::popQuotedValue(std::string &in, std::string &value)
   {
-    std::string key;
-    key = "\"";
-    if(stripleft(in, key))
+    if(stripleft(in, "\""))
     {
       std::string::size_type pos;
-      pos = in.find(key);
+      pos = in.find("\"");
       
       if(pos != in.npos)
       {

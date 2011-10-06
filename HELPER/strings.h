@@ -57,7 +57,8 @@ public:
     param1:  string to be checked
     param2:  substring to be searched
     returns  true, if substring has been found and erased, false otherwise **/
-  static bool stripleft(std::string&, std::string&);
+  static bool stripleft(std::string&, const char[]);
+  //static bool stripleft(std::string&, std::string);
 
   /** if param1 starts with an enquoted value, pop the value to param2
     param1: string to be checked

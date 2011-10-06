@@ -80,114 +80,77 @@ namespace CONF {
 
   bool Parser::processLineContextNone(std::string &in)
   {    
-    // things that can happen here:
-    //   - new table expression
-    std::string key;
-
-    key = "table";
-    if(HELPER::Strings::stripleft(in, key))
+    /** new Table expression **/
+    if(HELPER::Strings::stripleft(in, "table")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::stripleft(in, "{"))
     {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        key = "{";
-        if(HELPER::Strings::stripleft(in, key))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->newTable();
-            _context = C_Table;
-            return true;
-          }
-        }
-      }
+      _conf->newTable();
+      _context = C_Table;
+      if(!HELPER::Strings::empty(in))
+        return processLineContextTable(in);
+      else
+        return true;
     }
-
     return false;
   }
 
   bool Parser::processLineContextTable(std::string &in)
   {
-    // things that can happen here:
-    //   - name attribute
-    //   - rows attribute
-    //   - new column expression
-    //   - new founctional dependency expression
-    //   - end table expression 
-    std::string key, key_name, key_rows;
+    /** attribute expression **/
     DATA::Table::ATTRIBUTES type = DATA::Table::ATTR_NONE;
-
-    key_name = "name";
-    key_rows = "rows";
-
-    if(HELPER::Strings::stripleft(in, key_name))
+    if(HELPER::Strings::stripleft(in, "name"))
       type = DATA::Table::ATTR_NAME;
-    else if(HELPER::Strings::stripleft(in, key_rows))
+    else if(HELPER::Strings::stripleft(in, "rows"))
       type = DATA::Table::ATTR_ROWS;
   
-    if(type != DATA::Table::ATTR_NONE)
+    std::string value;
+  
+    if(type != DATA::Table::ATTR_NONE
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::popQuotedValue(in, value))
     {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        std::string value;
-        if(HELPER::Strings::popQuotedValue(in, value))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->setTableAttribute(type, value);
-            return true;
-          }
-        }
-      }
+      _conf->setTableAttribute(type, value);
+      if(!HELPER::Strings::empty(in))
+        return processLineContextTable(in);
+      else
+        return true;
     }
 
-    key = "column";
-    if(HELPER::Strings::stripleft(in, key))
+    /** new Column expression **/
+    if(HELPER::Strings::stripleft(in, "column")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::stripleft(in, "{"))
     {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        key = "{";
-        if(HELPER::Strings::stripleft(in, key))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->newColumn();
-            _context = C_Column;
-            return true;
-          }
-        }
-      }
+      _conf->newColumn();
+      _context = C_Column;
+      if(!HELPER::Strings::empty(in))
+        processLineContextColumn(in);      
+      else
+        return true;
     }
     
-    key = "functional_dep";
-    if(HELPER::Strings::stripleft(in, key))
+    /** new Functional Dependency expression **/
+    if(HELPER::Strings::stripleft(in, "functional_dep")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::stripleft(in, "{"))
     {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        key = "{";
-        if(HELPER::Strings::stripleft(in, key))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->newFuncdep();
-            _context = C_Funcdep;
-            return true;
-          }
-        }
-      }
+      _conf->newFuncdep();
+      _context = C_Funcdep;
+      if(!HELPER::Strings::empty(in))
+        processLineContextFuncDep(in);
+      else
+        return true;
     }
 
-    key = "}";
-    if(HELPER::Strings::stripleft(in, key))
+    /** end Table expression **/
+    if(HELPER::Strings::stripleft(in, "}"))
     {
-      if(HELPER::Strings::empty(in))
-      {
-        _context = C_None;
+      _context = C_None;    
+      if(!HELPER::Strings::empty(in))
+        processLineContextNone(in);
+      else
         return true;
-      }
     }
 
     return false;
@@ -195,69 +158,46 @@ namespace CONF {
 
   bool Parser::processLineContextColumn(std::string &in)
   {
-    // things that can happen here:
-    //   - name attribute
-    //   - datatype attribute
-    //   - length attribute
-    //   - key attribute
-    //   - basevalue attribute
-    //   - unique attribute
-    //   - foreignkey attribute
-    //   - end column expression
-    std::string key, key_name, key_datatype, key_length, key_key, key_basevalue, key_key_group, key_unique, key_foreignkey;
+    /** attribute expression **/
     DATA::Column::ATTRIBUTES type = DATA::Column::ATTR_NONE;
-
-    key_name = "name";
-    key_datatype = "datatype";
-    key_length = "length";
-    key_key_group="key_group";
-    key_key = "key";
-    key_basevalue = "basevalue";
-    key_unique = "unique";
-    key_foreignkey = "foreignkey";
-
-    if(HELPER::Strings::stripleft(in, key_name))
+    if(HELPER::Strings::stripleft(in, "name"))
       type = DATA::Column::ATTR_NAME;
-    else if(HELPER::Strings::stripleft(in, key_datatype))
+    else if(HELPER::Strings::stripleft(in, "datatype"))
       type = DATA::Column::ATTR_DATATYPE;
-    else if(HELPER::Strings::stripleft(in, key_length))
+    else if(HELPER::Strings::stripleft(in, "length"))
       type = DATA::Column::ATTR_LENGTH;
-    else if(HELPER::Strings::stripleft(in, key_key_group))
+    else if(HELPER::Strings::stripleft(in, "key_group"))
       type = DATA::Column::ATTR_KEY_GROUP;
-    else if(HELPER::Strings::stripleft(in, key_key))
+    else if(HELPER::Strings::stripleft(in, "key"))
       type = DATA::Column::ATTR_KEY;
-    else if(HELPER::Strings::stripleft(in, key_basevalue))
+    else if(HELPER::Strings::stripleft(in, "basevalue"))
       type = DATA::Column::ATTR_BASEVALUE;
-    else if(HELPER::Strings::stripleft(in, key_unique))
+    else if(HELPER::Strings::stripleft(in, "unique"))
       type = DATA::Column::ATTR_UNIQUE;
-    else if(HELPER::Strings::stripleft(in, key_foreignkey))
+    else if(HELPER::Strings::stripleft(in, "foreignkey"))
       type = DATA::Column::ATTR_FOREIGNKEY;
 
-    if(type != DATA::Column::ATTR_NONE)
+    std::string value;
+
+    if(type != DATA::Column::ATTR_NONE
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::popQuotedValue(in, value))
     {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        std::string value;
-        if(HELPER::Strings::popQuotedValue(in, value))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->setColumnAttribute(type, value);
-            return true;
-          }
-        }
-      }
+      _conf->setColumnAttribute(type, value);
+      if(!HELPER::Strings::empty(in))
+        processLineContextColumn(in);
+      else
+        return true;
     }
 
-    key = "}";
-    if(HELPER::Strings::stripleft(in, key))
+    /** end Column expression **/
+    if(HELPER::Strings::stripleft(in, "}"))
     {
-      if(HELPER::Strings::empty(in))
-      {
-        _context = C_Table;
+      _context = C_Table;
+      if(!HELPER::Strings::empty(in))
+        processLineContextTable(in);
+      else
         return true;
-      }
     }
 
     return false;
@@ -265,58 +205,39 @@ namespace CONF {
   
   bool Parser::processLineContextFuncDep(std::string &in)
   {
-    // things that can happen here:
-    //   - lhs attribute
-    //   - rhs attribute
-
-    std::string key;
-
-    key = "lhs";
+    /** attribute expression **/
+    std::string value;
     
-    if(HELPER::Strings::stripleft(in, key))
+    if(HELPER::Strings::stripleft(in, "lhs")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::popQuotedValue(in, value))
     {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        std::string value;
-        if(HELPER::Strings::popQuotedValue(in, value))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->setFuncdepLhs(value);
-            return true;
-          }
-        }
-      }
-    }
-    
-    key = "rhs";
-    
-    if(HELPER::Strings::stripleft(in, key))
-    {
-      key = "=";
-      if(HELPER::Strings::stripleft(in, key))
-      {
-        std::string value;
-        if(HELPER::Strings::popQuotedValue(in, value))
-        {
-          if(HELPER::Strings::empty(in))
-          {
-            _conf->setFuncdepRhs(value);
-            return true;
-          }
-        }
-      }
-    }
-
-    key = "}";
-    if(HELPER::Strings::stripleft(in, key))
-    {
-      if(HELPER::Strings::empty(in))
-      {
-        _context = C_Table;
+      _conf->setFuncdepLhs(value);
+      if(!HELPER::Strings::empty(in))
+        processLineContextFuncDep(in);
+      else
         return true;
-      }
+    }
+    
+    if(HELPER::Strings::stripleft(in, "rhs")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::popQuotedValue(in, value))
+    {
+      _conf->setFuncdepRhs(value);
+      if(!HELPER::Strings::empty(in))
+        processLineContextFuncDep(in);
+      else
+        return true;
+    }
+
+    /** end Functioal Dependency expression **/ 
+    if(HELPER::Strings::stripleft(in, "}"))
+    {
+      _context = C_Table;      
+      if(!HELPER::Strings::empty(in))
+        processLineContextTable(in);
+      else
+        return true;
     }
 
     return false;
