@@ -20,6 +20,7 @@
 #include "ui.h"
 
 #include <cstdarg>
+#include <cstdio>
 
 namespace HELPER {
 

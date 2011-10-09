@@ -19,6 +19,10 @@
  
 #include "file.h"
 
+#ifdef _WIN32
+  #include <windows.h>
+#endif
+
 namespace HELPER {
 
 /** public ********************************************************************/

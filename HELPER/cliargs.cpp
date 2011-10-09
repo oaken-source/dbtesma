@@ -20,6 +20,7 @@
 #include "cliargs.h"
 
 #include <cstdarg>
+#include <cstdio>
 
 namespace HELPER {
 
