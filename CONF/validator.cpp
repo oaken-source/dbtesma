@@ -56,7 +56,7 @@ namespace CONF {
     for(; i != _conf->end(); i++)
     {
       std::string name;
-      if((*i)->getAttribute(DATA::Table::ATTR_NAME, name))
+      if((*i)->getAttribute(DATA::Table::A_Name, name))
       {
         if(tableNames.find(name) == tableNames.end())
           tableNames[name] = true;
@@ -82,7 +82,7 @@ namespace CONF {
     for(; i != _conf->end(); i++)
     {
       std::string name;
-      (*i)->getAttribute(DATA::Table::ATTR_NAME, name);    
+      (*i)->getAttribute(DATA::Table::A_Name, name);    
     
       if(!validateTableAttributes((*i), name.c_str())
         || !validateTableColumnCount((*i), name.c_str())
@@ -101,7 +101,7 @@ namespace CONF {
   bool Validator::validateTableAttributes(DATA::Table *t, const char tn[])
   {
     std::string rows_str;
-    if(!t->getAttribute(DATA::Table::ATTR_ROWS, rows_str))
+    if(!t->getAttribute(DATA::Table::A_Rows, rows_str))
     {
       _conf->setError("%s: missing required attribute 'rows'", tn);
       return false;

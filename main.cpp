@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 		    for(i = config->begin(); i != config->end(); i++)
 		    {
 			    std::string name;
-			    (*i)->getAttribute(DATA::Table::ATTR_NAME, name);
+			    (*i)->getAttribute(DATA::Table::A_Name, name);
 			    HELPER::Ui::startProgress(name.c_str());
 			    (*i)->print(cah->flag(CP_NoHeader), config->hasHardenedFds());
 			    HELPER::Ui::overrok();			

@@ -98,15 +98,15 @@ namespace CONF {
   bool Parser::processLineContextTable(std::string &in)
   {
     /** attribute expression **/
-    DATA::Table::ATTRIBUTES type = DATA::Table::ATTR_NONE;
+    DATA::Table::e_Attributes type = DATA::Table::A_None;
     if(HELPER::Strings::stripleft(in, "name"))
-      type = DATA::Table::ATTR_NAME;
+      type = DATA::Table::A_Name;
     else if(HELPER::Strings::stripleft(in, "rows"))
-      type = DATA::Table::ATTR_ROWS;
+      type = DATA::Table::A_Rows;
   
     std::string value;
   
-    if(type != DATA::Table::ATTR_NONE
+    if(type != DATA::Table::A_None
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
     {
