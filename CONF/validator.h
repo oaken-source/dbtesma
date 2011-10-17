@@ -44,43 +44,33 @@ public:
 
 private:
 
-  /** table related validation **/
+  /** top level validation **/
   bool validateTableCount();
   bool validateTableNames();
-  bool validateTableAttributes();
-  bool validateTableColumns();
-  bool validateTableFuncdeps();
-
-  /** column related validation **/
-  bool validateColumnCount(DATA::Table*);
-  bool validateColumnNames(DATA::Table*);
-  bool validateColumnDatatypes(DATA::Table*);
-  bool validateColumnSize(DATA::Table*);
-
-  /** functional dependencies - first pass **/
-  bool validateFuncdepColumns(DATA::Table*);
+  bool validateTables();
+  
+  /** table level validation **/
+  bool validateTableAttributes(DATA::Table*, const char*);
+  bool validateTableColumnCount(DATA::Table*, const char*);
+  bool validateTableColumnNames(DATA::Table*, const char*);
+  bool validateTableColumns(DATA::Table*, const char*);
+  bool validateTableFuncdeps(DATA::Table*, const char*);
+  bool validateTableForeignKeys(DATA::Table*, const char*);
+  bool revalidateTableFuncdeps(DATA::Table*, const char*);
+  bool validateTableHarden(DATA::Table*, const char*);
+  
   void explodeFuncdeps(DATA::Table*);
-  bool validateFuncdeps(DATA::Table*);
+  bool validateFuncdeps(DATA::Table*, const char*);
   
-  /** functional dependencies - second pass **/
-  bool revalidateFuncdeps();
-  bool revalidateTableFuncdeps(DATA::Table*);
+  /** column level validation **/
+  bool validateColumnLength(DATA::Column*, const char*, const char*);
+  bool validateColumnDatatype(DATA::Column*, const char*, const char*);
+  bool validateColumnKey(DATA::Column*, DATA::Table*, const char*, const char*);
+  bool validateColumnBasevalue(DATA::Column*, const char*, const char*);
+  void validateColumnUniqueCount(DATA::Column*, DATA::Table*);
   
-  /** datatype preparation **/
-  void populateDatatypeWrappers(DATA::Table*);
-
-  /** bottom-level column related validation **/
-  bool validateColumnKey(DATA::Table*);
-  bool validateColumnBasevalue(DATA::Table*);
-  bool validateColumnUniqueCount(DATA::Table*);
-
-  /** foreign key validation **/
-  bool validateForeignKeyConstraints();
-  bool validateForeignKeyConstraints(DATA::Table*);
-
-  /** harden fd validation - more strict than basic fd validation **/
-  bool validateHardenedFds();
-  bool validateHardenedFds(DATA::Table*);
+  /** functional dependency level validation **/
+  bool validateFuncdepColumns(DATA::Funcdep*, DATA::Table*, const char*);
   
   DATA::Schema* _conf;
   

@@ -33,35 +33,27 @@ namespace CONF {
   {
     return (validateTableCount()
       && validateTableNames()
-      && validateTableAttributes()
-      && validateTableColumns()
-      && validateTableFuncdeps()
-      && validateForeignKeyConstraints()
-      && revalidateFuncdeps()
-      && (!_conf->hasHardenedFds() || validateHardenedFds()));
+      && validateTables());
   }
 
 /** private *******************************************************************/
 
   bool Validator::validateTableCount()
   {
-    /** ensure we have at least one table in table set **/
     if(_conf->size() == 0)
     {
-      _conf->setError("no tables");
+      _conf->setError("missing table definition");
       return false;
     }
-    else
-      return true;
+    return true;
   }
-
+  
   bool Validator::validateTableNames()
   {
-    /** ensure unique table names in table set **/
     std::map<std::string, bool> tableNames;
     
     std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
+    for(; i != _conf->end(); i++)
     {
       std::string name;
       if((*i)->getAttribute(DATA::Table::ATTR_NAME, name))
@@ -70,365 +62,322 @@ namespace CONF {
           tableNames[name] = true;
         else
         {
-          _conf->setError("%s: name not unique", name.c_str());
+          _conf->setError("invalid tablename '%s': not unique", name.c_str());
           return false;
         }
       }
       else
       {
-        _conf->setError("unnamed table");
+        _conf->setError("missing name definition in table");
         return false;
       }
-      i++;
     }    
 
-    return true;
+    return true;  
   }
 
-  bool Validator::validateTableAttributes()
+  bool Validator::validateTables()
   {
-    /** fill missing row count values in table set **/
     std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
-    {
-      std::string rows_str;
-      if((*i)->getAttribute(DATA::Table::ATTR_ROWS, rows_str))
-      {
-        unsigned long long rows = HELPER::Strings::intval(rows_str);
-        (*i)->setRowCount(rows);
-      }
-      else
-      {
-        std::string name;
-        (*i)->getAttribute(DATA::Table::ATTR_NAME, name);
-        _conf->setError("%s: row count missing", name.c_str());
-        return false;
-      }
-
-      i++;
-    }    
-
-    return true;
-  }
-
-  bool Validator::validateTableColumns()
-  {
-    bool good = false;
-    /** ensure column data is valid **/
-    
-    std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
-    {
-      while(1)
-      {  
-        good = false;
-
-        if(!validateColumnCount(*i))
-          break;
-        if(!validateColumnNames(*i))
-          break;
-        if(!validateColumnDatatypes(*i))
-          break;
-        if(!validateColumnSize(*i))
-          break;
-        
-        populateDatatypeWrappers(*i);
-        
-        if(!validateColumnKey(*i))
-          break;
-        if(!validateColumnBasevalue(*i))
-          break;
-        if(!validateColumnUniqueCount(*i))
-          break;
-
-        (*i)->normalize();
-  
-        good = true;
-  
-        break; // anyway
-      }
-
-      if(!good)
-        break;
-
-      i++;
-    }    
-
-    return good;
-  }
-  
-  bool Validator::validateTableFuncdeps()
-  {
-    bool good = true;
-    /** ensure functional dependencies are valid **/
-    
-    std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
-    {
-      if(!(good &= validateFuncdepColumns(*i)))
-        break;
-      
-      explodeFuncdeps(*i);
-      
-      if(!(good &= validateFuncdeps(*i)))
-        break;
-      
-      i++;
-    }    
-
-    return good;  
-  }
-
-  bool Validator::validateColumnCount(DATA::Table *table)
-  {
-    /** ensure we have at least one table in table set **/
-    if((int)table->columns_size() == 0)
-    {
-      std::string tableName;
-      table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      _conf->setError("%s: no columns in set", tableName.c_str());
-      return false;
-    }
-    else
-      return true;
-  }
-
-  bool Validator::validateColumnNames(DATA::Table *table)
-  {
-    /** ensure unique column names in column set **/
-    std::map<std::string, bool> columnNames;
-
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
+    for(; i != _conf->end(); i++)
     {
       std::string name;
-      if((*i)->getAttribute(DATA::Column::ATTR_NAME, name))
-      {
-        if(name.find(",") != name.npos)
-        {
-          std::string tableName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: %s: invalid charcter ',' in name", 
-            tableName.c_str(), name.c_str());
-          return false;          
-        }
-        else if(columnNames.find(name) == columnNames.end())
-          columnNames[name] = true;
-        else
-        {
-          std::string tableName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: %s: name not unique", tableName.c_str(), 
-            name.c_str());
-          return false;
-        }
-      }
-      else
-      {
-        std::string tableName;
-        table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        _conf->setError("%s: unnamed column", tableName.c_str());
+      (*i)->getAttribute(DATA::Table::ATTR_NAME, name);    
+    
+      if(!validateTableAttributes((*i), name.c_str())
+        || !validateTableColumnCount((*i), name.c_str())
+        || !validateTableColumnNames((*i), name.c_str())
+        || !validateTableColumns((*i), name.c_str())
+        || !validateTableFuncdeps((*i), name.c_str())
+        || !validateTableForeignKeys((*i), name.c_str())
+        || !revalidateTableFuncdeps((*i), name.c_str())
+        || (_conf->hasHardenedFds() 
+          && !validateTableHarden((*i), name.c_str())))
         return false;
-      }
-      i++;
     }
-
     return true;
   }
 
-  bool Validator::validateColumnDatatypes(DATA::Table *table)
+  bool Validator::validateTableAttributes(DATA::Table *t, const char tn[])
   {
-    /** ensure columns have only valid datatypes **/
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
+    std::string rows_str;
+    if(!t->getAttribute(DATA::Table::ATTR_ROWS, rows_str))
     {
-      std::string datatype;
-      if((*i)->getAttribute(DATA::Column::ATTR_DATATYPE, datatype))
-      {
-        if(datatype.compare("int") == 0)
-          (*i)->setDatatype(DATA::Column::INT);
-        else if(datatype.compare("varchar") == 0)
-          (*i)->setDatatype(DATA::Column::VARCHAR);
-        else if(datatype.compare("char") == 0)
-          (*i)->setDatatype(DATA::Column::CHAR);
-        else
-        {
-          std::string columnName, tableName;
-          (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: %s: unrecognized datatype '%s'", 
-            tableName.c_str(), columnName.c_str(), datatype.c_str());
-          return false;
-        }
-      }
-      else
-      {
-        (*i)->setDatatype(DATA::Column::INT);
-      }
-
-      i++;
+      _conf->setError("%s: missing required attribute 'rows'", tn);
+      return false;
     }
-
+    unsigned long long rows = HELPER::Strings::intval(rows_str);
+    t->setRowCount(rows);
     return true;
   }
 
-  bool Validator::validateColumnSize(DATA::Table *table)
+  bool Validator::validateTableColumnCount(DATA::Table *t, const char tn[])
   {
-    /** fill missing column value length in column set **/
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
+    if(!t->columns_size())
     {
-      std::string length_str;
-      if((*i)->getAttribute(DATA::Column::ATTR_LENGTH, length_str))
+      _conf->setError("%s: missing column definition", tn);
+      return false;
+    }
+    return true;
+  }
+
+  bool Validator::validateTableColumnNames(DATA::Table *t, const char tn[])
+  {
+    std::map<std::string, bool> columnNames;
+
+    std::vector<DATA::Column*>::iterator i = t->columns_begin();
+    for(; i != t->columns_end(); i++)
+    {
+      std::string name;
+      if(!(*i)->getAttribute(DATA::Column::ATTR_NAME, name))
       {
-        unsigned long long length = HELPER::Strings::intval(length_str);
-        (*i)->setLength(length);
-      }
-      else
-      {
-        std::string columnName, tableName;
-        (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-        table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        _conf->setError("%s: %s: column width required", tableName.c_str(), 
-          columnName.c_str());
+        _conf->setError("%s: missing name definition in column", tn);
         return false;
       }
-
-      i++;
+      if(name.find(",") != name.npos)
+      {
+        _conf->setError("%s: %s: invalid charcter ','", tn, name.c_str());
+        return false;          
+      }
+      if(columnNames.find(name) != columnNames.end())
+      {
+        _conf->setError("%s: invalid columnname '%s': not unique", tn, 
+          name.c_str());
+        return false;
+      }
+      columnNames[name] = true;
     }
+    return true;  
+  }
 
+  bool Validator::validateTableColumns(DATA::Table *t, const char tn[])
+  {
+    std::vector<DATA::Column*>::iterator i = t->columns_begin();
+    for(; i != t->columns_end(); i++)
+    {
+      std::string name;
+      (*i)->getAttribute(DATA::Column::ATTR_NAME, name);
+      
+      if(!validateColumnLength((*i), tn, name.c_str())
+        || !validateColumnDatatype((*i), tn, name.c_str())
+        || !validateColumnKey((*i), t, tn, name.c_str())
+        || !validateColumnBasevalue((*i), tn, name.c_str()))
+        return false;        
+        
+      validateColumnUniqueCount((*i), t);
+    }    
+    t->normalize();
     return true;
   }
   
-  bool Validator::validateFuncdepColumns(DATA::Table *table)
+  bool Validator::validateColumnLength(DATA::Column *c, const char tn[],
+    const char cn[])
   {
-    std::vector<DATA::Funcdep*>::iterator i = table->funcdeps_begin();
-    while(i != table->funcdeps_end())
+    std::string length_str;
+    if(!c->getAttribute(DATA::Column::ATTR_LENGTH, length_str))
     {
-      std::string columnsString;
-      (*i)->getLhsString(columnsString);
-      
-      while(1)
-      {
-        std::string column;
-        if(HELPER::Strings::popCSV(columnsString, column))
-        {
-          
-          DATA::Column *c = table->findColumnByName(column);
-          if(c == 0)
-          {
-            std::string tableName;
-            table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            _conf->setError("%s: functional_dep: '%s' is not valid", 
-              tableName.c_str(), column.c_str());
-            return false;
-          }
-          else
-          {
-            (*i)->addLhsColumn(c);
-          }
-        }
-        else
-        {
-          std::string tableName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: functional_dep: no lhs column specified", 
-            tableName.c_str());
-          return false;
-        }
-
-        if(HELPER::Strings::empty(columnsString))
-          break;
-      }
-      
-      (*i)->getRhsString(columnsString);
-      
-      while(1)
-      {
-        std::string column;
-        if(HELPER::Strings::popCSV(columnsString, column))
-        {
-          
-          DATA::Column *c = table->findColumnByName(column);
-          if(c == 0)
-          {
-            std::string tableName;
-            table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            _conf->setError("%s: functional_dep: '%s' is not valid", 
-              tableName.c_str(), column.c_str());
-            return false;
-          }
-          else
-          {
-            (*i)->addRhsColumn(c);
-          }
-        }
-        else
-        {
-          std::string tableName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: functional_dep: no rhs column specified", 
-            tableName.c_str());
-          return false;
-        }
-
-        if(HELPER::Strings::empty(columnsString))
-          break;
-      }
-      
-      i++;
+      _conf->setError("%s: %s: missing required attribute 'length'", tn, cn);
+      return false;
     }
-    
+    unsigned long long length = HELPER::Strings::intval(length_str);
+    c->setLength(length);
     return true;
   }
 
-  void Validator::explodeFuncdeps(DATA::Table *table)
+  bool Validator::validateColumnDatatype(DATA::Column *c, const char tn[], 
+    const char cn[])
+  {
+    std::string datatype;
+    if(c->getAttribute(DATA::Column::ATTR_DATATYPE, datatype))
+    {
+      if(datatype.compare("int") == 0)
+        c->setDatatype(DATA::Column::INT);
+      else if(datatype.compare("varchar") == 0)
+        c->setDatatype(DATA::Column::VARCHAR);
+      else if(datatype.compare("char") == 0)
+        c->setDatatype(DATA::Column::CHAR);
+      else
+      {
+        _conf->setError("%s: %s: invalid value for 'datatype': '%s'", tn, cn,
+          datatype.c_str());
+        return false;
+      }
+    }
+    else
+      c->setDatatype(DATA::Column::INT);
+    return true;
+  }
+
+  bool Validator::validateColumnKey(DATA::Column *c, DATA::Table *t,
+    const char tn[], const char cn[])
+  {
+    std::string key;
+    if(c->getAttribute(DATA::Column::ATTR_KEY, key))
+    {
+      if(!key.compare("primary"))
+      {
+        c->setKey(DATA::Column::KEY_PRIMARY);
+        c->setGenerationType(DATA::Column::STORED);
+        std::string key_group;
+        if(c->getAttribute(DATA::Column::ATTR_KEY_GROUP, key_group))
+          t->addColumnToPrimaryKeyGroup(key_group, c);
+      }
+      else
+      {
+        _conf->setError("%s: %s: invalid value for 'key': '%s'", tn, cn, 
+          key.c_str());
+        return false;
+      }
+    }
+    else
+      c->setKey(DATA::Column::KEY_NONE);
+    return true;
+  }
+  
+  bool Validator::validateColumnBasevalue(DATA::Column *c, const char tn[],
+    const char cn[])
+  {
+    std::string basevalue;
+    if(c->getAttribute(DATA::Column::ATTR_BASEVALUE, basevalue))
+    {
+      if(!c->setBasevalue(basevalue))
+      {
+        _conf->setError("%s: %s: invalid value for 'basevalue': '%s'", tn, cn,
+          basevalue.c_str());
+        return false;
+      }
+    }
+    else
+      c->seedBasevalue();
+    return true;
+  }
+  
+  void Validator::validateColumnUniqueCount(DATA::Column *c, DATA::Table *t)
+  {
+    std::string unique_str;
+    if(c->getAttribute(DATA::Column::ATTR_UNIQUE, unique_str))
+    {
+      unsigned long long uniques = HELPER::Strings::ullval(unique_str);
+      c->setUniqueValueCount(uniques);        
+      c->setGenerationType(DATA::Column::RANGED);
+    }
+    else
+      c->setUniqueValueCount(t->getRowCount());
+  }
+  
+  bool Validator::validateTableFuncdeps(DATA::Table *t, const char tn[])
+  {
+    std::vector<DATA::Funcdep*>::iterator i = t->funcdeps_begin();
+    for(; i != t->funcdeps_end(); i++)
+    {
+      if(!validateFuncdepColumns((*i), t, tn))
+        return false;
+    }
+    
+    explodeFuncdeps(t);
+    
+    if(!validateFuncdeps(t, tn))
+      return false;
+    
+    return true;
+  }
+  
+  bool Validator::validateFuncdepColumns(DATA::Funcdep *f, DATA::Table *t, 
+    const char tn[])
+  {
+    std::string columnsString;
+    f->getLhsString(columnsString);
+    
+    while(!HELPER::Strings::empty(columnsString))
+    {
+      std::string column;
+      if(HELPER::Strings::popCSV(columnsString, column))
+      {
+        DATA::Column *c = t->findColumnByName(column);
+        if(!c)
+        {
+          _conf->setError("%s: fd: invalid column: '%s'", tn, column.c_str());
+          return false;
+        }
+        else
+          f->addLhsColumn(c);
+      }
+      else
+      {
+        _conf->setError("%s: fd: missing lhs column definition", tn);
+        return false;
+      }
+    }
+    
+    f->getRhsString(columnsString);
+    
+    while(!HELPER::Strings::empty(columnsString))
+    {
+      std::string column;
+      if(HELPER::Strings::popCSV(columnsString, column))
+      {
+        
+        DATA::Column *c = t->findColumnByName(column);
+        if(!c)
+        {
+          _conf->setError("%s: fd: invalid column: '%s'", tn, column.c_str());
+          return false;
+        }
+        else
+          f->addRhsColumn(c);
+      }
+      else
+      {
+        _conf->setError("%s: fd: missing rhs column definition", tn);
+        return false;
+      }
+    }
+    return true;
+  }  
+  
+  void Validator::explodeFuncdeps(DATA::Table *t)
   {
     std::vector<DATA::Funcdep*> newFuncdeps;
-    std::vector<DATA::Funcdep*>::iterator i = table->funcdeps_begin();
-    while(i != table->funcdeps_end())
+    std::vector<DATA::Funcdep*>::iterator i = t->funcdeps_begin();
+    for(; i != t->funcdeps_end(); i++)
     {
       std::vector<DATA::Column*>::iterator j = (*i)->rhs_begin();
       for(; j != (*i)->rhs_end(); j++)
       {
-        DATA::Funcdep *fd = new DATA::Funcdep(*(*i));
+        DATA::Funcdep *fd = new DATA::Funcdep(**i);
         fd->replaceRhs(*j);
         newFuncdeps.push_back(fd);
       }
-      
-      i++;
     }
-    
-    table->setFuncdeps(newFuncdeps);
-  }
+    t->setFuncdeps(newFuncdeps);
+  }  
   
-  bool Validator::validateFuncdeps(DATA::Table *table)
+  bool Validator::validateFuncdeps(DATA::Table *t, const char tn[])
   {
     /** remove self-references **/
-    std::vector<DATA::Funcdep*>::iterator i = table->funcdeps_begin();
-    while(i != table->funcdeps_end())
+    std::vector<DATA::Funcdep*>::iterator i = t->funcdeps_begin();
+    for(; i != t->funcdeps_end(); i++)
     {
-      if((*i)->lhs_find(*((*i)->rhs_begin())) != (*i)->lhs_end())
+      DATA::Column *rhs = *((*i)->rhs_begin()); // dereference iterator!
+      if((*i)->lhs_find(rhs) != (*i)->lhs_end())
       {
-        (*i)->lhs_erase((*i)->lhs_find(*((*i)->rhs_begin())));
+        (*i)->lhs_erase((*i)->lhs_find(rhs));
         if((*i)->lhs_size() == 0)
         {
-          std::string tableName, columnName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          (*((*i)->rhs_begin()))->getAttribute(DATA::Column::ATTR_NAME, columnName);
-          _conf->setError("%s: functional_dep: rhs column '%s' self reference", 
-            tableName.c_str(), columnName.c_str());
+          std::string cn;
+          (rhs)->getAttribute(DATA::Column::ATTR_NAME, cn);
+          _conf->setError("%s: fd: self reference on column '%s'", tn, 
+            cn.c_str());
           return false;
         }
       }
-      i++;
     }
     
     /** validate funcdep generation direction **/
     std::map<DATA::Column*, std::vector<DATA::Funcdep*> > rhsvalues;
     
-    i = table->funcdeps_begin();
-    while(i != table->funcdeps_end())
+    i = t->funcdeps_begin();
+    for(; i != t->funcdeps_end(); i++)
     {
       DATA::Column *rhs = *((*i)->rhs_begin());
       if(rhsvalues.find(rhs) == rhsvalues.end())
@@ -438,15 +387,13 @@ namespace CONF {
       }
       else
         rhsvalues[rhs].push_back(*i);
-
-      i++;
     }
 
     std::vector<DATA::Funcdep*> newFuncdeps = std::vector<DATA::Funcdep*>();
     std::map<DATA::Column*, bool> occupiedColumns = std::map<DATA::Column*, bool>();
     
-    std::map<DATA::Column*, std::vector<DATA::Funcdep*> >::iterator r = rhsvalues.begin();
-    for(; r != rhsvalues.end(); r++)
+    std::map<DATA::Column*, std::vector<DATA::Funcdep*> >::iterator r;
+    for(r = rhsvalues.begin(); r != rhsvalues.end(); r++)
     {
       DATA::Column *rhs = (*r).first;
       if((*r).second.size() == 1)
@@ -465,11 +412,13 @@ namespace CONF {
           bool good = true;
           std::vector<DATA::Column*>::iterator c = (*f)->lhs_begin();
           for(; c != (*f)->lhs_end(); c++)
-            good &= ((occupiedColumns.find(*c) == occupiedColumns.end()) && (rhsvalues.find(*c) == rhsvalues.end()) && ((*c)->isIndependent()));
+            good &= ((occupiedColumns.find(*c) == occupiedColumns.end()) 
+              && (rhsvalues.find(*c) == rhsvalues.end()) 
+              && ((*c)->isIndependent()));
             
           if(!good)
           {
-            if(head_fd == 0)
+            if(!head_fd)
             {
               head_fd = (*f);
               newFuncdeps.push_back(*f);
@@ -477,14 +426,14 @@ namespace CONF {
             }
             else
             {
-              std::string tableName, columnName;
-              table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-              rhs->getAttribute(DATA::Column::ATTR_NAME, columnName);
-              _conf->setError("%s: functional_dep: could not resolve dependencies for '%s'", tableName.c_str(), columnName.c_str());
+              std::string cn;
+              rhs->getAttribute(DATA::Column::ATTR_NAME, cn);              
+              _conf->setError("%s: fd: unresolvable dependencies for '%s'", tn,
+                cn.c_str());
               return false;
             }
           }
-          else if((head_fd == 0) && ((*f) == last_fd))
+          else if((!head_fd) && ((*f) == last_fd))
           {
             head_fd = (*f);
             newFuncdeps.push_back(*f);
@@ -506,182 +455,23 @@ namespace CONF {
       }
     }
     
-    table->setFuncdeps(newFuncdeps);
+    t->setFuncdeps(newFuncdeps);
 
-    if(!table->sortColumns())
+    if(!t->sortColumns())
     {
-      std::string tableName, columnName;
-      table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      _conf->setError("%s: circular functional dependencies", tableName.c_str());
+      _conf->setError("%s: circular functional dependencies", tn);
       return false;
     }
     
     return true;
   }
   
-  bool Validator::revalidateFuncdeps()
-  {
-    bool good = true;
-    /** ensure dependencies are still valid after processing of mc fkeys **/
-    
-    std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
-    {
-      if(!(good &= revalidateTableFuncdeps(*i)))
-        break;
-      
-      i++;
-    }    
-
-    return good;  
-  }
-  
-  bool Validator::revalidateTableFuncdeps(DATA::Table *table)
-  {
-    /** ensure unique rhs **/
-    std::map<DATA::Column*, bool> rhsvalues;
-    
-    std::vector<DATA::Funcdep*>::iterator i = table->funcdeps_begin();
-    while(i != table->funcdeps_end())
-    {
-      if(rhsvalues.find(*((*i)->rhs_begin())) == rhsvalues.end())
-        rhsvalues[*((*i)->rhs_begin())] = true;  
-      else
-      {
-        std::string tableName, columnName;
-        table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        (*((*i)->rhs_begin()))->getAttribute(DATA::Column::ATTR_NAME, columnName);
-        _conf->setError("%s: functional_dep: rhs_column '%s' member of foreign key", tableName.c_str(), columnName.c_str());
-        return false;
-      }
-      i++;
-    }    
-    
-    if(!table->resortColumns())
-    {
-      std::string tableName, columnName;
-      table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      _conf->setError("%s: conflicting foreign keys and functional dependencies", tableName.c_str());
-      return false;
-    }
-    
-    return true;  
-  }
-  
-  void Validator::populateDatatypeWrappers(DATA::Table *table)
-  {
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    for(; i != table->columns_end(); i++)
-      (*i)->populateDatatypeWrapper();
-  }
-
-  bool Validator::validateColumnKey(DATA::Table *table)
-  {
-    /** ensure columns have only valid key types **/
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
-    {
-      std::string key;
-      if((*i)->getAttribute(DATA::Column::ATTR_KEY, key))
-      {
-        if(key.compare("primary") == 0)
-        {
-          (*i)->setKey(DATA::Column::KEY_PRIMARY);
-          (*i)->setGenerationType(DATA::Column::STORED);
-          std::string key_group;
-          if((*i)->getAttribute(DATA::Column::ATTR_KEY_GROUP, key_group))
-          {
-            table->addColumnToPrimaryKeyGroup(key_group, (*i));
-          }
-        }
-        else
-        {
-          std::string columnName, tableName;
-          (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: %s: unrecognized key type '%s'", tableName.c_str(), columnName.c_str(), key.c_str());
-          return false;
-        }
-      }
-      else
-      {
-        (*i)->setKey(DATA::Column::KEY_NONE);
-      }
-
-      i++;
-    }
-
-    return true;
-  }
-
-  bool Validator::validateColumnBasevalue(DATA::Table *table)
-  {
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
-    {
-      std::string basevalue_str;
-      if((*i)->getAttribute(DATA::Column::ATTR_BASEVALUE, basevalue_str))
-      {
-        if(!(*i)->setBasevalue(basevalue_str))
-        {
-          std::string columnName, tableName;
-          (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: %s: invalid basevalue '%s'", tableName.c_str(), columnName.c_str(), basevalue_str.c_str());
-          return false;
-        }
-      }
-      else
-      {
-        (*i)->seedBasevalue();
-      }
-
-      i++;
-    }
-
-    return true;
-  }
-
-  bool Validator::validateColumnUniqueCount(DATA::Table *table)
-  {
-    /** ensure columns have only valid unique counts **/
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
-    {
-      std::string unique_str;
-      if((*i)->getAttribute(DATA::Column::ATTR_UNIQUE, unique_str))
-      {
-        unsigned long long uniques = HELPER::Strings::ullval(unique_str);
-        (*i)->setUniqueValueCount(uniques);        
-        (*i)->setGenerationType(DATA::Column::RANGED);
-      }
-      else
-        (*i)->setUniqueValueCount(table->getRowCount());
-      i++;
-    }
-
-    return true;
-  }
-
-  bool Validator::validateForeignKeyConstraints()
-  {
-    std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
-    {
-      if(!validateForeignKeyConstraints(*i))
-        return false;
-      i++;
-    }    
-  
-    return true;
-  }
-
-  bool Validator::validateForeignKeyConstraints(DATA::Table *table)
+  bool Validator::validateTableForeignKeys(DATA::Table *t, const char tn[])
   {
     std::map<DATA::Table*, std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > > > FKDepGraph = std::map<DATA::Table*, std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > > >();
     
-    std::vector<DATA::Column*>::iterator i = table->columns_begin();
-    while(i != table->columns_end())
+    std::vector<DATA::Column*>::iterator i = t->columns_begin();
+    for(; i != t->columns_end(); i++)
     {
       std::string foreignkey_str;
       if((*i)->getAttribute(DATA::Column::ATTR_FOREIGNKEY, foreignkey_str))
@@ -689,48 +479,47 @@ namespace CONF {
         std::string table_name;
         if(HELPER::Strings::popTableName(foreignkey_str, table_name))
         {
-          DATA::Table *t = _conf->findTableByName(table_name);
-          if(t == 0)
+          DATA::Table *tx = _conf->findTableByName(table_name);
+          if(!tx)
           {
-            std::string columnName, tableName;
-            (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-            table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            _conf->setError("%s: %s: table not found: '%s'", tableName.c_str(), columnName.c_str(), table_name.c_str());
+            std::string cn;
+            (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+            _conf->setError("%s: %s: fk: table not found: '%s'", tn, cn.c_str(),
+              table_name.c_str());
             return false;
           }
-          DATA::Column *c = t->findColumnByName(foreignkey_str);
-          if(c == 0)
+          DATA::Column *c = tx->findColumnByName(foreignkey_str);
+          if(!c)
           {
-            std::string columnName, tableName;
-            (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-            table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-            _conf->setError("%s: %s: column not found: '%s'", tableName.c_str(), columnName.c_str(), foreignkey_str.c_str());
+            std::string cn;
+            (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+            _conf->setError("%s: %s: fk: column not found: '%s'", tn, 
+              cn.c_str(), foreignkey_str.c_str());
             return false;
           }
           std::string key_group;
           if(c->getAttribute(DATA::Column::ATTR_KEY_GROUP, key_group))
           {
-            //-> foreign key group element found
-            
+            //-> foreign key group element found            
             int c_dex = c->getDex();
             
             if(c_dex && !(*i)->isIndependent())
             {
-              std::string columnName, tableName;
-              (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-              table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-              _conf->setError("%s: %s: calculated column not referencing primary key head column", tableName.c_str(), columnName.c_str());
+              std::string cn;
+              (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+              _conf->setError("%s: %s: unresolvable fk-fd dependencies", tn, 
+                cn.c_str());
               return false;
             }
-            // push foreign key group element into lookup vector
             
-            if(FKDepGraph.find(t) == FKDepGraph.end())
-              FKDepGraph[t] = std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > >();
-            if(FKDepGraph[t].find(key_group) == FKDepGraph[t].end())
-              FKDepGraph[t][key_group] = std::map<unsigned int, std::vector<DATA::Column*> >();
-            if(FKDepGraph[t][key_group].find(c_dex) == FKDepGraph[t][key_group].end())
-              FKDepGraph[t][key_group][c_dex] = std::vector<DATA::Column*>();
-            FKDepGraph[t][key_group][c_dex].push_back(*i);
+            // push foreign key group element into lookup vector
+            if(FKDepGraph.find(tx) == FKDepGraph.end())
+              FKDepGraph[tx] = std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > >();
+            if(FKDepGraph[tx].find(key_group) == FKDepGraph[tx].end())
+              FKDepGraph[tx][key_group] = std::map<unsigned int, std::vector<DATA::Column*> >();
+            if(FKDepGraph[tx][key_group].find(c_dex) == FKDepGraph[tx][key_group].end())
+              FKDepGraph[tx][key_group][c_dex] = std::vector<DATA::Column*>();
+            FKDepGraph[tx][key_group][c_dex].push_back(*i);
             
             std::string base;
             c->getBasevalue(base);
@@ -756,28 +545,24 @@ namespace CONF {
         }
         else
         {
-          std::string columnName, tableName;
-          (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: %s: invalid foreign key: '%s'", tableName.c_str(), columnName.c_str(), foreignkey_str.c_str());
+          std::string cn;
+          (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+          _conf->setError("%s: %s: invalid foreign key: '%s'", tn, cn.c_str(), 
+            foreignkey_str.c_str());
           return false;
         }
       }
-
-      i++;
     }
     
-    std::map<DATA::Table*, std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > > >::iterator t = FKDepGraph.begin();
-    for(; t != FKDepGraph.end(); t++)
+    std::map<DATA::Table*, std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > > >::iterator f = FKDepGraph.begin();
+    for(; f != FKDepGraph.end(); f++)
     {
-      std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > >::iterator g = (*t).second.begin();
-      for(; g != (*t).second.end(); g++)
+      std::map<std::string, std::map<unsigned int, std::vector<DATA::Column*> > >::iterator g = (*f).second.begin();
+      for(; g != (*f).second.end(); g++)
       {
         if((*g).second.find(0) == (*g).second.end())
         {
-          std::string tableName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: unreferenced primary key head column in foreign key", tableName.c_str());
+          _conf->setError("%s: fk: unreferenced primary key head column", tn);
           return false;
         }
         
@@ -800,13 +585,13 @@ namespace CONF {
           {      
             (*c)->getAttribute(DATA::Column::ATTR_NAME, rhs);
             rhs_pt = (*c);
-            table->newFuncdep(true, false);
-            table->setFuncdepRhs(rhs);
-            table->setFuncdepLhs(lhs);
-            table->addFuncdepRhsColumn(rhs_pt);
-            table->addFuncdepLhsColumn(lhs_base_pt);
-            if(lhs_add_pt != 0)
-              table->addFuncdepLhsColumn(lhs_add_pt);
+            t->newFuncdep(true, false);
+            t->setFuncdepRhs(rhs);
+            t->setFuncdepLhs(lhs);
+            t->addFuncdepRhsColumn(rhs_pt);
+            t->addFuncdepLhsColumn(lhs_base_pt);
+            if(lhs_add_pt)
+              t->addFuncdepLhsColumn(lhs_add_pt);
           }
           
           lhs_add = ",";
@@ -816,24 +601,41 @@ namespace CONF {
       }
     }
     return true;
-  }
+  }  
   
-  bool Validator::validateHardenedFds()
+  bool Validator::revalidateTableFuncdeps(DATA::Table *t, const char tn[])
   {
-    std::vector<DATA::Table*>::iterator i = _conf->begin();
-    while(i != _conf->end())
+    /** ensure unique rhs **/
+    std::map<DATA::Column*, bool> rhsvalues;
+    
+    std::vector<DATA::Funcdep*>::iterator i = t->funcdeps_begin();
+    for(; i != t->funcdeps_end(); i++)
     {
-      if(!validateHardenedFds(*i))
+      DATA::Column *rhs = *((*i)->rhs_begin());
+      if(rhsvalues.find(rhs) == rhsvalues.end())
+        rhsvalues[rhs] = true;  
+      else
+      {
+        std::string cn;
+        rhs->getAttribute(DATA::Column::ATTR_NAME, cn);
+        _conf->setError("%s: fd: rhs_column '%s' in of foreign key", tn, 
+          cn.c_str());
         return false;
-      i++;
+      }
     }    
+    
+    if(!t->resortColumns())
+    {
+      _conf->setError("%s: conflicting fk and fd", tn);
+      return false;
+    }
+    
+    return true;  
+  }  
   
-    return true;
-  }
-  
-  bool Validator::validateHardenedFds(DATA::Table *table)
+  bool Validator::validateTableHarden(DATA::Table *t, const char tn[])
   {
-    if(!table->funcdeps_size())
+    if(!t->funcdeps_size())
       return true;
       
     unsigned int rowsToHarden = 0;
@@ -841,8 +643,8 @@ namespace CONF {
     std::map<DATA::Column*, bool> usedCols = std::map<DATA::Column*, bool>();
   
     /** search for interferences **/
-    std::vector<DATA::Funcdep*>::iterator i = table->funcdeps_begin();
-    for(; i != table->funcdeps_end(); i++)
+    std::vector<DATA::Funcdep*>::iterator i = t->funcdeps_begin();
+    for(; i != t->funcdeps_end(); i++)
     {
       rowsToHarden += (*i)->lhs_size();
       std::vector<DATA::Column*>::iterator c = (*i)->lhs_begin();
@@ -850,33 +652,27 @@ namespace CONF {
       {
         if(usedCols.find(*c) != usedCols.end())
         {
-          std::string tableName;
-          table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-          _conf->setError("%s: hardened fds not available for interferencing functional dependencies", tableName.c_str());
+          _conf->setError("%s: can't harden interferencing fd's", tn);
           return false;
         }
         usedCols[*c] = true;
       }
       if(usedCols.find(*((*i)->rhs_begin())) != usedCols.end())
       {
-        std::string tableName;
-        table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-        _conf->setError("%s: hardened fds not available for interferencing functional dependencies", tableName.c_str());
+        _conf->setError("%s: can't harden interferencing fd's", tn);
         return false;
       }
       usedCols[*((*i)->rhs_begin())] = true;
     }
     
     /** check for sufficient table rows **/ 
-    if(table->getRowCount() <= rowsToHarden * 2)
+    if(t->getRowCount() <= rowsToHarden * 2)
     {
-      std::string tableName;
-      table->getAttribute(DATA::Table::ATTR_NAME, tableName);
-      _conf->setError("%s: insufficient row count for hardening functional dependencies", tableName.c_str());
+      _conf->setError("%s: insufficient row count for hardening", tn);
       return false;
     }
-    table->setRowCount(table->getRowCount() - rowsToHarden * 2);
-    table->setRowsToHarden(rowsToHarden);
+    t->setRowCount(t->getRowCount() - rowsToHarden * 2);
+    t->setRowsToHarden(rowsToHarden);
     
     return true;
   }

@@ -103,6 +103,7 @@ namespace DATA {
 	void Column::setDatatype(Column::DATATYPES type)
 	{
 		_datatype = type;
+		populateDatatypeWrapper();
 	}
 
 	Column::DATATYPES Column::getDatatype()
