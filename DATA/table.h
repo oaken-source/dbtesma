@@ -55,22 +55,16 @@ public:
     _cind(obj._cind), _columnPrimaryKeyGroups(obj._columnPrimaryKeyGroups), 
     _out(obj._out), _rows(obj._rows), _rowsToHarden(obj._rowsToHarden) {};
   Table& operator=(const Table&);
-  ~Table();
+  ~Table() {};
 
-  void setAttribute(e_Attributes type, std::string &in) 
-    { _attributes[type] = in; }
+  void setAttribute(e_Attributes t, std::string &in) { _attributes[t] = in; }
   bool getAttribute(e_Attributes, std::string&);
-  void setColumnAttribute(DATA::Column::ATTRIBUTES, std::string&);
-  void newColumn();
+  
+  void newColumn() { _columns.push_back(new DATA::Column); }
+  DATA::Column* passColumn() { return _columns.back(); }
   
   void newFuncdep(bool, bool);
-  void setFuncdepLhs(std::string);
-  void setFuncdepRhs(std::string);
-  
-  void addFuncdepLhsColumn(DATA::Column *c) 
-    { _funcdeps.back()->addLhsColumn(c); }
-  void addFuncdepRhsColumn(DATA::Column *c) 
-    { _funcdeps.back()->addRhsColumn(c); }
+  DATA::Funcdep* passFuncdep() { return _funcdeps.back(); }
   
   void setFuncdeps(std::vector<DATA::Funcdep*> vec) { _funcdeps.swap(vec); }
  
@@ -78,8 +72,8 @@ public:
 
   void addColumnToPrimaryKeyGroup(std::string&, DATA::Column*);
 
-  void setRowCount(unsigned long long);
-  unsigned long long getRowCount();
+  void setRowCount(unsigned long long rows) { _rows = rows; }
+  unsigned long long getRowCount() {return _rows; }
   
   void setRowsToHarden(unsigned int x) { _rowsToHarden = x; }
 

@@ -39,41 +39,18 @@ namespace DATA {
     return *this;
   }
 
-  Table::~Table() {}
-
   bool Table::getAttribute(Table::e_Attributes type, std::string &out)
   {
-    bool good = _attributes.find(type) != _attributes.end();
-    if(good)
-      out = _attributes[type];
-    return good;
+    if(_attributes.find(type) == _attributes.end())
+      return false;
+    out = _attributes[type];
+    return true;
   }  
-
-  void Table::setColumnAttribute(DATA::Column::ATTRIBUTES type, std::string &in)
-  {
-    _columns.back()->setAttribute(type, in);
-  }
-
-  void Table::newColumn()
-  {
-    DATA::Column *newColumn = new DATA::Column();
-    _columns.push_back(newColumn);
-  }
   
   void Table::newFuncdep(bool fkdepFlag, bool reverseFDFlag)
   {
     DATA::Funcdep *newFuncdep = new DATA::Funcdep(fkdepFlag, reverseFDFlag);
     _funcdeps.push_back(newFuncdep);
-  }
-  
-  void Table::setFuncdepLhs(std::string lhs)
-  {
-    _funcdeps.back()->setLhs(lhs);
-  }
-
-  void Table::setFuncdepRhs(std::string rhs)
-  {
-    _funcdeps.back()->setRhs(rhs);
   }
 
   bool Table::startCIND()
@@ -135,16 +112,6 @@ namespace DATA {
       harden();
     
     closeOutstream();
-  }
-
-  void Table::setRowCount(unsigned long long rows)
-  {
-    _rows = rows;
-  }
-
-  unsigned long long Table::getRowCount()
-  {
-    return _rows;
   }
 
   DATA::Column* Table::findColumnByName(std::string &in)

@@ -43,16 +43,7 @@ public:
   std::string getErrorString() { return _error; }
 
   void newTable() { _tables.push_back(new DATA::Table()); }
-  void setTableAttribute(DATA::Table::e_Attributes type, std::string &in) 
-    { _tables.back()->setAttribute(type, in); }
-  void newColumn() { _tables.back()->newColumn(); }
-  void setColumnAttribute(DATA::Column::ATTRIBUTES type, std::string &in) 
-    { _tables.back()->setColumnAttribute(type, in); }
-  void newFuncdep() { _tables.back()->newFuncdep(false, false); }
-  void setFuncdepLhs(std::string lhs) { _tables.back()->setFuncdepLhs(lhs); }
-  void setFuncdepRhs(std::string rhs) { _tables.back()->setFuncdepRhs(rhs); }
-
-  bool startCIND() { return _tables.back()->startCIND(); }
+  DATA::Table* passTable() { return _tables.back(); }
 
   /** process **/
   void processTables(bool);

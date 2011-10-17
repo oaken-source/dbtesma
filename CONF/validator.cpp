@@ -586,12 +586,12 @@ namespace CONF {
             (*c)->getAttribute(DATA::Column::ATTR_NAME, rhs);
             rhs_pt = (*c);
             t->newFuncdep(true, false);
-            t->setFuncdepRhs(rhs);
-            t->setFuncdepLhs(lhs);
-            t->addFuncdepRhsColumn(rhs_pt);
-            t->addFuncdepLhsColumn(lhs_base_pt);
+            t->passFuncdep()->setRhs(rhs);
+            t->passFuncdep()->setLhs(lhs);
+            t->passFuncdep()->addRhsColumn(rhs_pt);
+            t->passFuncdep()->addLhsColumn(lhs_base_pt);
             if(lhs_add_pt)
-              t->addFuncdepLhsColumn(lhs_add_pt);
+              t->passFuncdep()->addLhsColumn(lhs_add_pt);
           }
           
           lhs_add = ",";
