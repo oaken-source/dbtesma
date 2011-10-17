@@ -47,32 +47,32 @@ namespace DATA {
       for(k = (*i)->columns_begin(); k != (*i)->columns_end(); k++)
       {
         std::string columnName, columnGroup, basevalue;
-        (*k)->getAttribute(DATA::Column::ATTR_KEY_GROUP, columnGroup);
-        (*k)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+        (*k)->getAttribute(DATA::Column::A_KeyGroup, columnGroup);
+        (*k)->getAttribute(DATA::Column::A_Name, columnName);
         (*k)->getBasevalue(basevalue);
-        std::cout << "  column: " << columnName << " - " << (((*k)->getDatatype() == DATA::Column::INT)?"INT":"VARCHAR") << "(" << (*k)->getLength() << ") - [" << (*k)->getDex() << "][" << (*k)->getSiz() << "] - [" << (*k)->getUniqueValueCount() << "]  (" << basevalue << ")" << std::endl;
+        std::cout << "  column: " << columnName << " - " << (((*k)->getDatatype() == DATA::Column::D_Int)?"D_Int":"D_Varchar") << "(" << (*k)->getLength() << ") - [" << (*k)->getDex() << "][" << (*k)->getSiz() << "] - [" << (*k)->getUniqueValueCount() << "]  (" << basevalue << ")" << std::endl;
       }
       std::vector<DATA::Funcdep*>::iterator v;
       for(v = (*i)->funcdeps_begin(); v != (*i)->funcdeps_end(); v++)
       {
         std::vector<DATA::Column*>::iterator z = (*v)->lhs_begin();
         std::string columnName;
-        (*z)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+        (*z)->getAttribute(DATA::Column::A_Name, columnName);
         std::cout << "  fd: " << columnName;
         z++;
         for(; z != (*v)->lhs_end(); z++)
         {
-          (*z)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+          (*z)->getAttribute(DATA::Column::A_Name, columnName);
           std::cout << "," << columnName;
         }
         std::cout << " --> ";
         z = (*v)->rhs_begin();
-        (*z)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+        (*z)->getAttribute(DATA::Column::A_Name, columnName);
         std::cout << columnName;
         z++;
         for(; z != (*v)->rhs_end(); z++)
         {
-          (*z)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+          (*z)->getAttribute(DATA::Column::A_Name, columnName);
           std::cout << "," << columnName;
         }
         std::cout << (((*v)->isReverseFD())?" (reversed)":"");
@@ -95,22 +95,22 @@ namespace DATA {
       for(k = (*i)->columns_begin(), kLast = (*i)->columns_end(), kLast--; k != (*i)->columns_end(); k++)
       {
         std::string columnName;
-        (*k)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+        (*k)->getAttribute(DATA::Column::A_Name, columnName);
         
         std::cout << columnName << " ";
         
-        DATA::Column::DATATYPES type = (*k)->getDatatype();
+        DATA::Column::e_Datatypes type = (*k)->getDatatype();
         unsigned int length = (*k)->getLength();
 
         switch(type)
         {
-        case DATA::Column::INT:
+        case DATA::Column::D_Int:
           std::cout << ((length > 9)?"big":"") << "int(" << length << ")";
           break;
-        case DATA::Column::CHAR:
+        case DATA::Column::D_Char:
           std::cout << "char(" << length << ")";
           break;
-        case DATA::Column::VARCHAR:
+        case DATA::Column::D_Varchar:
           std::cout << "varchar(" << length << ")";
           break;
         }
@@ -143,7 +143,7 @@ namespace DATA {
       for(k = (*i)->columns_begin(), kLast = (*i)->columns_end(), kLast--; k != (*i)->columns_end(); k++)
       {
         std::string columnName;
-        (*k)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+        (*k)->getAttribute(DATA::Column::A_Name, columnName);
         
         std::cout << columnName << " " << "varchar(" << (((*k)->getLength() < 255)?255:(*k)->getLength()) << ")";
 
@@ -177,24 +177,24 @@ namespace DATA {
       for(k = (*i)->columns_begin(), kLast = (*i)->columns_end(), kLast--; k != (*i)->columns_end(); k++)
       {
         std::string columnName;
-        (*k)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+        (*k)->getAttribute(DATA::Column::A_Name, columnName);
         
         unsigned int length = (*k)->getLength();
         
         std::cout << "{\"name\":\"" << columnName << "\", \"distributionMode\":\"\", \"cellSize\":" << length << ", \"dataType\":\"";
         
-        DATA::Column::DATATYPES type = (*k)->getDatatype();
+        DATA::Column::e_Datatypes type = (*k)->getDatatype();
 
         switch(type)
         {
-        case DATA::Column::INT:
-          std::cout << ((length > 9)?"BIG":"") << "INT";
+        case DATA::Column::D_Int:
+          std::cout << ((length > 9)?"BIG":"") << "D_Int";
           break;
-        case DATA::Column::CHAR:
-          std::cout << "CHAR";
+        case DATA::Column::D_Char:
+          std::cout << "D_Char";
           break;
-        case DATA::Column::VARCHAR:
-          std::cout << "VARCHAR";
+        case DATA::Column::D_Varchar:
+          std::cout << "D_Varchar";
           break;
         }
         

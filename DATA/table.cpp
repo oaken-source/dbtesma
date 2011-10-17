@@ -120,7 +120,7 @@ namespace DATA {
     std::string columnName;
     for(i = _columns.begin(); i != _columns.end(); i++)
     {
-      (*i)->getAttribute(DATA::Column::ATTR_NAME, columnName);
+      (*i)->getAttribute(DATA::Column::A_Name, columnName);
       if(!columnName.compare(in))
         return (*i);
     }
@@ -148,12 +148,12 @@ namespace DATA {
   {
     std::vector<DATA::Column*>::iterator i = _columns.begin();
     std::string st;
-    (*i)->getAttribute(DATA::Column::ATTR_NAME, st);
+    (*i)->getAttribute(DATA::Column::A_Name, st);
     (*_out) << st;
     i++;
     for(;i != _columns.end(); i++)
     {
-      (*i)->getAttribute(DATA::Column::ATTR_NAME, st);      
+      (*i)->getAttribute(DATA::Column::A_Name, st);      
       (*_out) << "," << st;
     }
     (*_out) << std::endl;

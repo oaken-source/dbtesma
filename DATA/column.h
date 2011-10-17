@@ -32,142 +32,149 @@ namespace DATA {
 class Column
 {
 
-	/**
-	Column Data Class
-	tasks:
-		holds column information
-		contains column generation logic
-	**/
+  /** Column Data Class
+  tasks:
+    holds column information
+    contains column generation logic **/
 
 public:
 
-	enum GENERATION_TYPES
-	{
-		RANGED,
-		RANDOM,
-		STORED
-	} typedef GENERATION_TYPES;
+  enum e_GenTypes
+  {
+    GT_Ranged,
+    GT_Random,
+    GT_Stored
+  };
 
-	enum DATATYPES
-	{
-		INT,
-		VARCHAR,
-		CHAR
-	} typedef DATATYPES;
+  enum e_Datatypes
+  {
+    D_Int,
+    D_Varchar,
+    D_Char
+  };
 
-	enum KEYTYPES
-	{
-		KEY_NONE,
-		KEY_PRIMARY
-	} typedef KEYTYPES;
+  enum e_KeyTypes
+  {
+    KT_None,
+    KT_Primary
+  };
 
-	enum ATTRIBUTES
-	{
-		ATTR_NONE,
-		ATTR_NAME,
-		ATTR_DATATYPE,
-		ATTR_LENGTH,
-		ATTR_KEY,
-		ATTR_BASEVALUE,
-		ATTR_KEY_GROUP,
-		ATTR_UNIQUE,
-		ATTR_FOREIGNKEY
-	} typedef ATTRIBUTES;
+  enum e_Attributes
+  {
+    A_None,
+    A_Name,
+    A_Datatype,
+    A_Length,
+    A_Key,
+    A_Basevalue,
+    A_KeyGroup,
+    A_Unique,
+    A_ForeignKey
+  };
 
-	Column() : _generationMethod(&DATA::Column::generateDataRandom), _attributes(std::map<ATTRIBUTES, std::string>()), _wrapper(NULL), _datatype(DATATYPES::INT), _length(0), _key(KEYTYPES::KEY_NONE), _unique(0), _rows(0), _dex(0), _siz(0), _parentCount(0), _parentColumns(0), _siblingCount(0), _out(new std::ofstream()), _cached(0) {};
-	Column(const Column &obj) : _generationMethod(obj._generationMethod), _attributes(obj._attributes), _wrapper(obj._wrapper), _datatype(obj._datatype), _length(obj._length), _key(obj._key), _unique(obj._unique), _rows(obj._rows), _dex(obj._dex), _siz(obj._siz), _parentCount(obj._parentCount), _parentColumns(obj._parentColumns), _siblingCount(obj._siblingCount), _out(obj._out), _cached(obj._cached) {};
-	Column& operator=(const Column&);
-	~Column();
+  Column() : _generationMethod(&DATA::Column::generateDataRandom), 
+    _attributes(std::map<e_Attributes, std::string>()), _wrapper(NULL), 
+    _datatype(e_Datatypes::D_Int), _length(0), _key(e_KeyTypes::KT_None), 
+    _unique(0), _rows(0), _dex(0), _siz(0), _parentCount(0), _parentColumns(0), 
+    _siblingCount(0), _out(new std::ofstream()), _cached(0) {};
+  Column(const Column &obj) : _generationMethod(obj._generationMethod), 
+    _attributes(obj._attributes), _wrapper(obj._wrapper), 
+    _datatype(obj._datatype), _length(obj._length), _key(obj._key), 
+    _unique(obj._unique), _rows(obj._rows), _dex(obj._dex), _siz(obj._siz), 
+    _parentCount(obj._parentCount), _parentColumns(obj._parentColumns), 
+    _siblingCount(obj._siblingCount), _out(obj._out), _cached(obj._cached) {};
+  Column& operator=(const Column&);
+  ~Column() {};
 
-	/** raw attribute accessing **/
-	void setAttribute(ATTRIBUTES, std::string&);
-	bool getAttribute(ATTRIBUTES, std::string&);
-	
-	/** different top-level generation methods **/
-	void next();
-	void nextNoIncrement();
-	void nextHarden();
-	void incrementTemp();
-	void incrementTempSmall();
-	void resetTemp();
-	void print();
-	
-	/** getter / setter for actual attributes **/
-	void setDatatype(DATATYPES);
-	DATATYPES getDatatype();
-	void setLength(unsigned long long);
-	unsigned long long getLength();
-	void setKey(KEYTYPES);
-	KEYTYPES getKey();
-	void setUniqueValueCount(unsigned long long);
-	unsigned long long getUniqueValueCount();
-	
-	void setGenerationType(GENERATION_TYPES);
-	
-	void setupMulticolumKeyConstraints(int, int, unsigned long long);
-	
-	/** primary key related attributes **/
-	int getDex();
-	void setDex(int);
-	int getSiz();
-	void setSiz(int);
-	unsigned long long getRows();
+  /** raw attribute accessing **/
+  void setAttribute(e_Attributes t, std::string &in) { _attributes[t] = in; }
+  bool getAttribute(e_Attributes, std::string&);
+  
+  /** different top-level generation methods **/
+  void next() { (*this.*_generationMethod)(); }
+  void nextNoIncrement();
+  void nextHarden();
+  void incrementTemp();
+  void incrementTempSmall();
+  void resetTemp() { _wrapper->setValue(_cached); }
+  void print() { _wrapper->print(); }
+  
+  /** getter / setter for actual attributes **/
+  void setDatatype(e_Datatypes);
+  e_Datatypes getDatatype() { return _datatype; }
+  void setLength(unsigned long long l) { _length = l; }
+  unsigned long long getLength() { return _length; }
+  void setKey(e_KeyTypes t) { _key = t; }
+  e_KeyTypes getKey() { return _key; }
+  void setUniqueValueCount(unsigned long long);
+  unsigned long long getUniqueValueCount() { return _unique; }
+  
+  void setGenerationType(e_GenTypes);
+  
+  void setupMulticolumKeyConstraints(int, int, unsigned long long);
+  
+  /** primary key related attributes **/
+  int getDex() { return _dex; }
+  void setDex(int dex) { _dex = dex; } 
+  int getSiz() { return _siz; }
+  void setSiz(int siz) { _siz = siz; }
+  unsigned long long getRows() { return _rows; }
 
-	void getBasevalue(std::string&);
-	bool setBasevalue(std::string&);
-	void seedBasevalue();
-	
-	void populateDatatypeWrapper();
-	void populateOutstream(std::ofstream*);
+  void getBasevalue(std::string &in) { _wrapper->getBasevalue(in); }
+  bool setBasevalue(std::string &in) { return _wrapper->setBasevalue(in); }
+  void seedBasevalue() { _wrapper->seedBasevalue(); }
+  
+  void populateDatatypeWrapper();
+  void populateOutstream(std::ofstream*);
 
-	/** parent column registration for fds, reverse fds and fks **/
-	void registerReferences(std::vector<DATA::Column*>&);
-	void registerReverseReferences(std::vector<DATA::Column*>&);
-	void registerFKReferences(std::vector<DATA::Column*>&);
-	
-	bool isIndependent();
-	
-	void registerSiblingCount(unsigned int in) { _siblingCount = in; } 
-	
+  /** parent column registration for fds, reverse fds and fks **/
+  void registerReferences(std::vector<DATA::Column*>&);
+  void registerReverseReferences(std::vector<DATA::Column*>&);
+  void registerFKReferences(std::vector<DATA::Column*>&);
+  
+  bool isIndependent();
+  
+  void registerSiblingCount(unsigned int in) { _siblingCount = in; } 
+  
 private:
 
-	/** bottom-level generation methods **/
-	void generateDataRandomInRange();
-	void generateDataRandom();
-	void generateDataKeyPrimary();
+  /** bottom-level generation methods **/
+  void generateDataRandomInRange() { _wrapper->generateRandomInRange(); }
+  void generateDataRandom() { _wrapper->generateRandom(); }
+  void generateDataKeyPrimary();
 
-	void processFuncdep();
-	void processFuncdepInRange();
-	void processReverseFuncdep();
-	void processFKDepSingle();
-	void processFKDepDeep();
-	
-	void (DATA::Column::*_generationMethod)();
+  void processFuncdep();
+  void processFuncdepInRange();
+  void processReverseFuncdep();
+  void processFKDepSingle();
+  void processFKDepDeep();
+  
+  void (DATA::Column::*_generationMethod)();
 
-	std::map<ATTRIBUTES, std::string> _attributes;
+  std::map<e_Attributes, std::string> _attributes;
 
-	DATA::WRAPPER::DatatypeWrapper *_wrapper;
+  DATA::WRAPPER::DatatypeWrapper *_wrapper;
 
-	DATATYPES _datatype;	
-	unsigned long long _length;
-	KEYTYPES _key;
-	unsigned long long _unique;
+  e_Datatypes _datatype;  
+  unsigned long long _length;
+  e_KeyTypes _key;
+  unsigned long long _unique;
 
-	unsigned long long _rows;
-	int _dex;
-	int _siz;
+  unsigned long long _rows;
+  int _dex;
+  int _siz;
 
-	unsigned int _parentCount;
-	DATA::Column** _parentColumns;
-	
-	unsigned int _siblingCount;
-	
-	std::ofstream *_out;
-	
-	unsigned long long _cached;
-	
+  unsigned int _parentCount;
+  DATA::Column** _parentColumns;
+  
+  unsigned int _siblingCount;
+  
+  std::ofstream *_out;
+  
+  unsigned long long _cached;
+  
 };
 
 } // namespaces
 
-#endif // COLUMN_H
+#endif

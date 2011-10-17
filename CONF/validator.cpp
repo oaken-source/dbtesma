@@ -129,7 +129,7 @@ namespace CONF {
     for(; i != t->columns_end(); i++)
     {
       std::string name;
-      if(!(*i)->getAttribute(DATA::Column::ATTR_NAME, name))
+      if(!(*i)->getAttribute(DATA::Column::A_Name, name))
       {
         _conf->setError("%s: missing name definition in column", tn);
         return false;
@@ -156,7 +156,7 @@ namespace CONF {
     for(; i != t->columns_end(); i++)
     {
       std::string name;
-      (*i)->getAttribute(DATA::Column::ATTR_NAME, name);
+      (*i)->getAttribute(DATA::Column::A_Name, name);
       
       if(!validateColumnLength((*i), tn, name.c_str())
         || !validateColumnDatatype((*i), tn, name.c_str())
@@ -174,7 +174,7 @@ namespace CONF {
     const char cn[])
   {
     std::string length_str;
-    if(!c->getAttribute(DATA::Column::ATTR_LENGTH, length_str))
+    if(!c->getAttribute(DATA::Column::A_Length, length_str))
     {
       _conf->setError("%s: %s: missing required attribute 'length'", tn, cn);
       return false;
@@ -188,14 +188,14 @@ namespace CONF {
     const char cn[])
   {
     std::string datatype;
-    if(c->getAttribute(DATA::Column::ATTR_DATATYPE, datatype))
+    if(c->getAttribute(DATA::Column::A_Datatype, datatype))
     {
       if(datatype.compare("int") == 0)
-        c->setDatatype(DATA::Column::INT);
+        c->setDatatype(DATA::Column::D_Int);
       else if(datatype.compare("varchar") == 0)
-        c->setDatatype(DATA::Column::VARCHAR);
+        c->setDatatype(DATA::Column::D_Varchar);
       else if(datatype.compare("char") == 0)
-        c->setDatatype(DATA::Column::CHAR);
+        c->setDatatype(DATA::Column::D_Char);
       else
       {
         _conf->setError("%s: %s: invalid value for 'datatype': '%s'", tn, cn,
@@ -204,7 +204,7 @@ namespace CONF {
       }
     }
     else
-      c->setDatatype(DATA::Column::INT);
+      c->setDatatype(DATA::Column::D_Int);
     return true;
   }
 
@@ -212,14 +212,14 @@ namespace CONF {
     const char tn[], const char cn[])
   {
     std::string key;
-    if(c->getAttribute(DATA::Column::ATTR_KEY, key))
+    if(c->getAttribute(DATA::Column::A_Key, key))
     {
       if(!key.compare("primary"))
       {
-        c->setKey(DATA::Column::KEY_PRIMARY);
-        c->setGenerationType(DATA::Column::STORED);
+        c->setKey(DATA::Column::KT_Primary);
+        c->setGenerationType(DATA::Column::GT_Stored);
         std::string key_group;
-        if(c->getAttribute(DATA::Column::ATTR_KEY_GROUP, key_group))
+        if(c->getAttribute(DATA::Column::A_KeyGroup, key_group))
           t->addColumnToPrimaryKeyGroup(key_group, c);
       }
       else
@@ -230,7 +230,7 @@ namespace CONF {
       }
     }
     else
-      c->setKey(DATA::Column::KEY_NONE);
+      c->setKey(DATA::Column::KT_None);
     return true;
   }
   
@@ -238,7 +238,7 @@ namespace CONF {
     const char cn[])
   {
     std::string basevalue;
-    if(c->getAttribute(DATA::Column::ATTR_BASEVALUE, basevalue))
+    if(c->getAttribute(DATA::Column::A_Basevalue, basevalue))
     {
       if(!c->setBasevalue(basevalue))
       {
@@ -255,11 +255,11 @@ namespace CONF {
   void Validator::validateColumnUniqueCount(DATA::Column *c, DATA::Table *t)
   {
     std::string unique_str;
-    if(c->getAttribute(DATA::Column::ATTR_UNIQUE, unique_str))
+    if(c->getAttribute(DATA::Column::A_Unique, unique_str))
     {
       unsigned long long uniques = HELPER::Strings::ullval(unique_str);
       c->setUniqueValueCount(uniques);        
-      c->setGenerationType(DATA::Column::RANGED);
+      c->setGenerationType(DATA::Column::GT_Ranged);
     }
     else
       c->setUniqueValueCount(t->getRowCount());
@@ -365,7 +365,7 @@ namespace CONF {
         if((*i)->lhs_size() == 0)
         {
           std::string cn;
-          (rhs)->getAttribute(DATA::Column::ATTR_NAME, cn);
+          (rhs)->getAttribute(DATA::Column::A_Name, cn);
           _conf->setError("%s: fd: self reference on column '%s'", tn, 
             cn.c_str());
           return false;
@@ -427,7 +427,7 @@ namespace CONF {
             else
             {
               std::string cn;
-              rhs->getAttribute(DATA::Column::ATTR_NAME, cn);              
+              rhs->getAttribute(DATA::Column::A_Name, cn);              
               _conf->setError("%s: fd: unresolvable dependencies for '%s'", tn,
                 cn.c_str());
               return false;
@@ -474,7 +474,7 @@ namespace CONF {
     for(; i != t->columns_end(); i++)
     {
       std::string foreignkey_str;
-      if((*i)->getAttribute(DATA::Column::ATTR_FOREIGNKEY, foreignkey_str))
+      if((*i)->getAttribute(DATA::Column::A_ForeignKey, foreignkey_str))
       {
         std::string table_name;
         if(HELPER::Strings::popTableName(foreignkey_str, table_name))
@@ -483,7 +483,7 @@ namespace CONF {
           if(!tx)
           {
             std::string cn;
-            (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+            (*i)->getAttribute(DATA::Column::A_Name, cn);
             _conf->setError("%s: %s: fk: table not found: '%s'", tn, cn.c_str(),
               table_name.c_str());
             return false;
@@ -492,13 +492,13 @@ namespace CONF {
           if(!c)
           {
             std::string cn;
-            (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+            (*i)->getAttribute(DATA::Column::A_Name, cn);
             _conf->setError("%s: %s: fk: column not found: '%s'", tn, 
               cn.c_str(), foreignkey_str.c_str());
             return false;
           }
           std::string key_group;
-          if(c->getAttribute(DATA::Column::ATTR_KEY_GROUP, key_group))
+          if(c->getAttribute(DATA::Column::A_KeyGroup, key_group))
           {
             //-> foreign key group element found            
             int c_dex = c->getDex();
@@ -506,7 +506,7 @@ namespace CONF {
             if(c_dex && !(*i)->isIndependent())
             {
               std::string cn;
-              (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+              (*i)->getAttribute(DATA::Column::A_Name, cn);
               _conf->setError("%s: %s: unresolvable fk-fd dependencies", tn, 
                 cn.c_str());
               return false;
@@ -531,7 +531,7 @@ namespace CONF {
             (*i)->setDex(c_dex);
             
             if(!c_dex)
-              (*i)->setGenerationType(DATA::Column::RANGED);
+              (*i)->setGenerationType(DATA::Column::GT_Ranged);
           }
           else
           {
@@ -540,13 +540,13 @@ namespace CONF {
             unsigned long long uniques = c->getUniqueValueCount();
             (*i)->setBasevalue(base);
             (*i)->setUniqueValueCount(uniques);
-            (*i)->setGenerationType(DATA::Column::RANGED);
+            (*i)->setGenerationType(DATA::Column::GT_Ranged);
           }
         }
         else
         {
           std::string cn;
-          (*i)->getAttribute(DATA::Column::ATTR_NAME, cn);
+          (*i)->getAttribute(DATA::Column::A_Name, cn);
           _conf->setError("%s: %s: invalid foreign key: '%s'", tn, cn.c_str(), 
             foreignkey_str.c_str());
           return false;
@@ -569,7 +569,7 @@ namespace CONF {
         std::vector<DATA::Column*> lhs_head_cols = (*g).second[0];
         std::string lhs_base;
         DATA::Column *lhs_base_pt = lhs_head_cols[0];
-        lhs_base_pt->getAttribute(DATA::Column::ATTR_NAME, lhs_base);
+        lhs_base_pt->getAttribute(DATA::Column::A_Name, lhs_base);
         
         std::string lhs_add = "";
         DATA::Column *lhs_add_pt = 0;
@@ -583,7 +583,7 @@ namespace CONF {
           std::vector<DATA::Column*>::iterator c = (*d).second.begin();
           for(; c != (*d).second.end(); c++)
           {      
-            (*c)->getAttribute(DATA::Column::ATTR_NAME, rhs);
+            (*c)->getAttribute(DATA::Column::A_Name, rhs);
             rhs_pt = (*c);
             t->newFuncdep(true, false);
             t->passFuncdep()->setRhs(rhs);
@@ -617,7 +617,7 @@ namespace CONF {
       else
       {
         std::string cn;
-        rhs->getAttribute(DATA::Column::ATTR_NAME, cn);
+        rhs->getAttribute(DATA::Column::A_Name, cn);
         _conf->setError("%s: fd: rhs_column '%s' in of foreign key", tn, 
           cn.c_str());
         return false;

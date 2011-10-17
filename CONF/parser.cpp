@@ -172,27 +172,27 @@ namespace CONF {
   bool Parser::processLineContextColumn(std::string &in)
   {
     /** attribute expression **/
-    DATA::Column::ATTRIBUTES type = DATA::Column::ATTR_NONE;
+    DATA::Column::e_Attributes type = DATA::Column::A_None;
     if(HELPER::Strings::stripleft(in, "name"))
-      type = DATA::Column::ATTR_NAME;
+      type = DATA::Column::A_Name;
     else if(HELPER::Strings::stripleft(in, "datatype"))
-      type = DATA::Column::ATTR_DATATYPE;
+      type = DATA::Column::A_Datatype;
     else if(HELPER::Strings::stripleft(in, "length"))
-      type = DATA::Column::ATTR_LENGTH;
+      type = DATA::Column::A_Length;
     else if(HELPER::Strings::stripleft(in, "key_group"))
-      type = DATA::Column::ATTR_KEY_GROUP;
+      type = DATA::Column::A_KeyGroup;
     else if(HELPER::Strings::stripleft(in, "key"))
-      type = DATA::Column::ATTR_KEY;
+      type = DATA::Column::A_Key;
     else if(HELPER::Strings::stripleft(in, "basevalue"))
-      type = DATA::Column::ATTR_BASEVALUE;
+      type = DATA::Column::A_Basevalue;
     else if(HELPER::Strings::stripleft(in, "unique"))
-      type = DATA::Column::ATTR_UNIQUE;
+      type = DATA::Column::A_Unique;
     else if(HELPER::Strings::stripleft(in, "foreignkey"))
-      type = DATA::Column::ATTR_FOREIGNKEY;
+      type = DATA::Column::A_ForeignKey;
 
     std::string value;
 
-    if(type != DATA::Column::ATTR_NONE
+    if(type != DATA::Column::A_None
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
     {
