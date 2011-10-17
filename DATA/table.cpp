@@ -30,6 +30,7 @@ namespace DATA {
     _funcdeps = rhs._funcdeps;
     _funcdepGraph = rhs._funcdepGraph;
     _columnsSorted = rhs._columnsSorted;
+    _cind = rhs._cind;
     _columnPrimaryKeyGroups = rhs._columnPrimaryKeyGroups;
     _out = rhs._out;
     _rows = rhs._rows;
@@ -39,11 +40,6 @@ namespace DATA {
   }
 
   Table::~Table() {}
-
-  void Table::setAttribute(Table::e_Attributes type, std::string &in)
-  {
-    _attributes[type] = in;
-  }
 
   bool Table::getAttribute(Table::e_Attributes type, std::string &out)
   {
@@ -78,6 +74,14 @@ namespace DATA {
   void Table::setFuncdepRhs(std::string rhs)
   {
     _funcdeps.back()->setRhs(rhs);
+  }
+
+  bool Table::startCIND()
+  {
+    if(_cind)
+      return false;
+    _cind = new DATA::CondIncDep();
+    return true;
   }
 
   void Table::addColumnToPrimaryKeyGroup(std::string& group, DATA::Column *col)

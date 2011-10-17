@@ -38,7 +38,8 @@ class Parser
     C_None,
     C_Table,
     C_Column,
-    C_Funcdep
+    C_Funcdep,
+    C_CondIncDep
   };
 
   
@@ -52,6 +53,7 @@ public:
     _processContext[C_Table] = &Parser::processLineContextTable;
     _processContext[C_Column] = &Parser::processLineContextColumn;
     _processContext[C_Funcdep] = &Parser::processLineContextFuncDep; 
+    _processContext[C_CondIncDep] = &Parser::processLineContextCondIncDep;
   };
   Parser(const Parser &obj) : _conf(obj._conf), _filename(obj._filename), 
     _in(obj._in), _context(obj._context), 
@@ -75,6 +77,7 @@ private:
   bool processLineContextTable(std::string&);
   bool processLineContextColumn(std::string&);
   bool processLineContextFuncDep(std::string&);
+  bool processLineContextCondIncDep(std::string&);
 
 
   DATA::Schema *_conf;  

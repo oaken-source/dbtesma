@@ -51,7 +51,9 @@ public:
   void newFuncdep() { _tables.back()->newFuncdep(false, false); }
   void setFuncdepLhs(std::string lhs) { _tables.back()->setFuncdepLhs(lhs); }
   void setFuncdepRhs(std::string rhs) { _tables.back()->setFuncdepRhs(rhs); }
-  
+
+  bool startCIND() { return _tables.back()->startCIND(); }
+
   /** process **/
   void processTables(bool);
   void processTablesOffsetsOnly(bool);

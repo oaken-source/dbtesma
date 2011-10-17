@@ -143,6 +143,20 @@ namespace CONF {
         return true;
     }
 
+    /** new Conditional Inclusion Dependency expression **/
+    if(HELPER::Strings::stripleft(in, "cond_inc_dep")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::stripleft(in, "{"))
+    {
+      if(!_conf->startCIND())
+        return false;
+      _context = C_CondIncDep;
+      if(!HELPER::Strings::empty(in))
+        processLineContextCondIncDep(in);
+      else
+        return true;
+    }
+
     /** end Table expression **/
     if(HELPER::Strings::stripleft(in, "}"))
     {
@@ -241,6 +255,11 @@ namespace CONF {
     }
 
     return false;
+  }
+
+  bool Parser::processLineContextCondIncDep(std::string &in)
+  {
+    
   }
 
 } // namespaces

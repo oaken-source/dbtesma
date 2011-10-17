@@ -21,6 +21,7 @@
 #define TABLE_H
 
 #include "funcdepgraph.h"
+#include "condincdep.h"
 
 namespace DATA {
 
@@ -45,18 +46,19 @@ public:
     _columns(std::vector<DATA::Column*>()), 
     _funcdeps(std::vector<DATA::Funcdep*>()), 
     _funcdepGraph(new DATA::FuncdepGraph()), 
-    _columnsSorted(std::vector<DATA::Column*>()), 
+    _columnsSorted(std::vector<DATA::Column*>()), _cind(0),
     _columnPrimaryKeyGroups(std::map<std::string, std::vector<DATA::Column*> >()), 
     _out(new std::ofstream()), _rows(0), _rowsToHarden(0) {};
   Table(const Table &obj) : _attributes(obj._attributes), 
     _columns(obj._columns), _funcdeps(obj._funcdeps), 
     _funcdepGraph(obj._funcdepGraph), _columnsSorted(obj._columnsSorted), 
-    _columnPrimaryKeyGroups(obj._columnPrimaryKeyGroups), _out(obj._out), 
-    _rows(obj._rows), _rowsToHarden(obj._rowsToHarden) {};
+    _cind(obj._cind), _columnPrimaryKeyGroups(obj._columnPrimaryKeyGroups), 
+    _out(obj._out), _rows(obj._rows), _rowsToHarden(obj._rowsToHarden) {};
   Table& operator=(const Table&);
   ~Table();
 
-  void setAttribute(e_Attributes, std::string&);
+  void setAttribute(e_Attributes type, std::string &in) 
+    { _attributes[type] = in; }
   bool getAttribute(e_Attributes, std::string&);
   void setColumnAttribute(DATA::Column::ATTRIBUTES, std::string&);
   void newColumn();
@@ -71,7 +73,9 @@ public:
     { _funcdeps.back()->addRhsColumn(c); }
   
   void setFuncdeps(std::vector<DATA::Funcdep*> vec) { _funcdeps.swap(vec); }
-  
+ 
+  bool startCIND();
+
   void addColumnToPrimaryKeyGroup(std::string&, DATA::Column*);
 
   void setRowCount(unsigned long long);
@@ -130,8 +134,10 @@ private:
   std::vector<DATA::Column*> _columns;
   std::vector<DATA::Funcdep*> _funcdeps;
   
-  DATA::FuncdepGraph* _funcdepGraph;
+  DATA::FuncdepGraph *_funcdepGraph;
   std::vector<DATA::Column*> _columnsSorted;
+  
+  DATA::CondIncDep *_cind;
   
   std::map<std::string, std::vector<DATA::Column*> > _columnPrimaryKeyGroups;
 
