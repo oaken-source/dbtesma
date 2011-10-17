@@ -23,17 +23,23 @@ namespace DATA {
 
 /** public ******************************************************************************************************/
 
-	std::vector<DATA::Column*>::iterator Funcdep::lhs_find(DATA::Column *c)
-	{	
-		std::vector<DATA::Column*>::iterator i = _lhsColumns.begin();
-		for(; i != _lhsColumns.end(); i++)
-		{
-			if((*i) == c)
-				return i;
-		}
-		return _lhsColumns.end();
-		
-	}
+  void Funcdep::replaceRhs(DATA::Column *c)
+  {
+    _rhsColumns.clear(); 
+    _rhsColumns.push_back(c);  
+  }
+
+  std::vector<DATA::Column*>::iterator Funcdep::lhs_find(DATA::Column *c)
+  {  
+    std::vector<DATA::Column*>::iterator i = _lhsColumns.begin();
+    for(; i != _lhsColumns.end(); i++)
+    {
+      if((*i) == c)
+        return i;
+    }
+    return _lhsColumns.end();
+    
+  }
 
 /** private *****************************************************************************************************/
 

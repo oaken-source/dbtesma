@@ -23,7 +23,7 @@
 
 namespace DATA {
 
-/** public ******************************************************************************************************/
+/** public ********************************************************************/
 
   Column& Column::operator=(const Column &rhs)
   {
@@ -109,11 +109,11 @@ namespace DATA {
     }
   }
 
-  void Column::setupMulticolumKeyConstraints(int n, int m, unsigned long long rows)
+  void Column::setupMulticolumKeyConstraints(int n, int m, unsigned long long r)
   {
     _dex = n;
     _siz = m;
-    _rows = rows;
+    _rows = r;
   }
 
   void Column::populateDatatypeWrapper()
@@ -141,7 +141,7 @@ namespace DATA {
   void Column::registerReferences(std::vector<DATA::Column*> &in)
   {
     _parentCount = in.size();
-    _parentColumns = (DATA::Column**) malloc(sizeof(DATA::Column*) * _parentCount);
+    _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*)*_parentCount);
     unsigned int i;
     for(i = 0; i < in.size(); i++)
     {
@@ -158,7 +158,7 @@ namespace DATA {
   void Column::registerReverseReferences(std::vector<DATA::Column*> &in)
   {
     _parentCount = in.size();
-    _parentColumns = (DATA::Column**) malloc(sizeof(DATA::Column*) * _parentCount);
+    _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*)*_parentCount);
     unsigned int i;
     for(i = 0; i < in.size(); i++)
       _parentColumns[i] = in[i];
@@ -169,7 +169,7 @@ namespace DATA {
   void Column::registerFKReferences(std::vector<DATA::Column*> &in)
   {
     _parentCount = in.size();
-    _parentColumns = (DATA::Column**) malloc(sizeof(DATA::Column*) * _parentCount);
+    _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*)*_parentCount);
     unsigned int i;
     for(i = 0; i < in.size(); i++)
       _parentColumns[i] = in[i];
@@ -185,7 +185,7 @@ namespace DATA {
     return (_generationMethod == &DATA::Column::generateDataRandom);
   }
   
-/** private *****************************************************************************************************/
+/** private *******************************************************************/
 
   void Column::generateDataKeyPrimary()
   {
@@ -257,7 +257,8 @@ namespace DATA {
   {
     unsigned long long value = _parentColumns[0]->_wrapper->getValue();
 
-    if(_parentColumns[1]->_wrapper->getValue() != value || (value > 0 && rand() % _siz < _dex))
+    if(_parentColumns[1]->_wrapper->getValue() != value 
+      || (value > 0 && rand() % _siz < _dex))
       value--;
     
     _wrapper->setValue(value);  

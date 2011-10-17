@@ -27,44 +27,42 @@ namespace DATA {
 class FuncdepGraph
 {
 
-	/**
-	FuncdepGraph Data Class
-	tasks:
-		do topological sort! and do it good!
-	**/
-	
-	struct Node
-	{
-		DATA::Column* _column;
-		unsigned int _parents;
-		std::vector<DATA::Column*> _children;
-		bool _returned;
-	} typedef Node;
+  /** FuncdepGraph Data Class
+  tasks:
+    do topological sort! and do it well! **/
+  
+  struct Node
+  {
+    DATA::Column* _column;
+    unsigned int _parents;
+    std::vector<DATA::Column*> _children;
+    bool _returned;
+  };
 
 public:
 
-	FuncdepGraph() : _nodes(std::vector<Node>()) {};
-	~FuncdepGraph() {};
+  FuncdepGraph() : _nodes(std::vector<Node>()) {};
+  ~FuncdepGraph() {};
 
-	/** add node to graph **/
-	void push_back(DATA::Column*);
+  /** add node to graph **/
+  void push_back(DATA::Column*);
 
-	/** add edges to graph **/
-	void push_back(DATA::Funcdep*);
-	
-	/** return next element without parents **/
-	DATA::Column* pop_back();
-	
-	void clear();
-	
+  /** add edges to graph **/
+  void push_back(DATA::Funcdep*);
+  
+  /** return next element without parents **/
+  DATA::Column* pop_back();
+  
+  void clear();
+  
 private:
 
-	Node* findInNodes(DATA::Column*);
+  Node* findInNodes(DATA::Column*);
 
-	std::vector<Node> _nodes;
+  std::vector<Node> _nodes;
 
 };
 
 } // namespaces
 
-#endif // FUNCDEPGRAPH_H
+#endif
