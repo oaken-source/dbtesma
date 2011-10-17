@@ -20,14 +20,35 @@
 #ifndef CONDINCDEP_H
 #define CONDINCDEP_H
 
+#include <string>
+#include <vector>
+
 namespace DATA {
 
 class CondIncDep
 {
 
 public:
-  CondIncDep() { };   
-
+  CondIncDep() : _completenessString(""), _rowsString(""), _positivesString(""),
+    _conditionStrings(std::vector<std::string>()), _lhsString(""), 
+    _rhsString("") { };   
+  ~CondIncDep() { };
+  
+  void setCompleteness(std::string in) { _completenessString = in; }
+  void setRows(std::string in) { _rowsString = in; }
+  void setPositives(std::string in) { _positivesString = in; }
+  void pushConditions(std::string in) { _conditionStrings.push_back(in); }
+  void setLhs(std::string in) { _lhsString = in; }
+  void setRhs(std::string in) { _rhsString = in; }
+  
+private:
+  std::string _completenessString;
+  std::string _rowsString;
+  std::string _positivesString;
+  std::vector<std::string> _conditionStrings;
+  std::string _lhsString;
+  std::string _rhsString;
+  
 };
 
 } // namespaces

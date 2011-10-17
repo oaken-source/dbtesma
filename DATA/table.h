@@ -68,7 +68,8 @@ public:
   
   void setFuncdeps(std::vector<DATA::Funcdep*> vec) { _funcdeps.swap(vec); }
  
-  bool startCIND();
+  bool startCondIncDep();
+  DATA::CondIncDep* passCondIncDep() { return _cind; }
 
   void addColumnToPrimaryKeyGroup(std::string&, DATA::Column*);
 

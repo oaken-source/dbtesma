@@ -29,9 +29,7 @@ class Validator
 
   /** Config Validation Class
   tasks:
-    validates data in config
-  TODO:
-    this class is a monster! tame it! **/
+    validates data in config **/
 
 public:
   Validator(DATA::Schema *conf) : _conf(conf) {};

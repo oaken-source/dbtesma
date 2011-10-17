@@ -53,7 +53,7 @@ namespace DATA {
     _funcdeps.push_back(newFuncdep);
   }
 
-  bool Table::startCIND()
+  bool Table::startCondIncDep()
   {
     if(_cind)
       return false;
