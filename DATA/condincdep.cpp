@@ -23,8 +23,11 @@ namespace DATA {
 
   CondIncDep& CondIncDep::operator=(const CondIncDep &rhs)
   {
+    _rowsPerPacket = rhs._rowsPerPacket;
+  
     _completeness = rhs._completeness;
     _rows = rhs._rows;
+    _conditions = rhs._conditions;
     _lhs = rhs._lhs;
     _rhs = rhs._rhs;
     _completenessString = rhs._completenessString;
@@ -45,9 +48,22 @@ namespace DATA {
     return res;
   }
   
+  unsigned int CondIncDep::getMaxCondSize()
+  {
+    unsigned int res = 0;
+    std::vector<CondIncDep::Condition*>::iterator i = _conditions.begin();
+    for(; i != _conditions.end(); i++)
+      if((*i)->_size > res)
+        res = (*i)->_size;
+
+    return res;
+  }
+  
   void CondIncDep::pushConditions(unsigned int size, unsigned int count)
   {
-    
+    unsigned int i;
+    for(i = 0; i < count; i++)
+      _conditions.push_back(new Condition{size});
   }
   
 } // namespaces

@@ -794,6 +794,31 @@ namespace CONF {
   
   bool Validator::validateCondIncDepLogic(DATA::Table *t, const char tn[])
   {
+    // things to do:
+    //   build packets (requires rows per packet)
+    // things to check:
+    //   completeness <= max completeness  (requires no. of packets)
+    //   lhs & rhs columns valid
+
+    // check if max size <= no. of lhs columns
+    if(t->passCondIncDep()->lhsSize() < t->passCondIncDep()->getMaxCondSize())
+    {
+      _conf->setError("%s: cind: size of conditions exceeds number of columns", 
+        tn);
+      return false;
+    }
+    
+    // calculate rows per packet
+    t->passCondIncDep()->setRowsPerPacket(
+      t->passCondIncDep()->getCompleteness() * t->getRowCount() / 2);
+    
+    // check if lhs & rhs columns valid
+    std::vector<DATA::Column*>::iterator i = t->passCondIncDep()->lhsBegin();
+    for(; i != t->passCondIncDep()->lhsEnd(); i++)
+    {
+      
+    }
+ 
     return true;
   }
   

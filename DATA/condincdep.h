@@ -30,41 +30,60 @@ namespace DATA {
 class CondIncDep
 {
 
+  struct Condition
+  {
+    unsigned int _size;
+  };
+
 public:
-  CondIncDep() : _completeness(0.0), _rows(0), 
-    _lhs(std::vector<DATA::Column*>()), _rhs(NULL), _completenessString(""), 
-    _rowsString(""), _conditionStrings(std::vector<std::string>()), 
-    _lhsString(""), _rhsString("") { };
-  CondIncDep(const CondIncDep &obj) : _completeness(obj._completeness), 
-    _rows(obj._rows), _lhs(obj._lhs), _rhs(obj._rhs),
+  CondIncDep() : _rowsPerPacket(0), _completeness(0.0), _rows(0), 
+    _conditions(std::vector<Condition*>()), _lhs(std::vector<DATA::Column*>()), 
+    _rhs(NULL), _completenessString(""), _rowsString(""), 
+    _conditionStrings(std::vector<std::string>()), _lhsString(""), 
+    _rhsString("") { };
+  CondIncDep(const CondIncDep &obj) : _rowsPerPacket(obj._rowsPerPacket), 
+    _completeness(obj._completeness), _rows(obj._rows), 
+    _conditions(obj._conditions), _lhs(obj._lhs), _rhs(obj._rhs), 
     _completenessString(obj._completenessString), _rowsString(obj._rowsString),
-    _conditionStrings(obj._conditionStrings), _lhsString(obj._lhsString),
+    _conditionStrings(obj._conditionStrings), _lhsString(obj._lhsString), 
     _rhsString(obj._rhsString) { };
   CondIncDep& operator=(const CondIncDep&);
   ~CondIncDep() { };
   
-  
+  void setRowsPerPacket(unsigned int in) { _rowsPerPacket = in; }
   
   std::string getCompletenessString() { return _completenessString; }
+  double getCompleteness() {return _completeness; }
   void setCompleteness(std::string in) { _completenessString = in; }
   void setCompleteness(double in) { _completeness = in; }
+  
   std::string getRowsString() { return _rowsString; }
   void setRows(std::string in) { _rowsString = in; }
   void setRows(unsigned long long in) { _rows = in; }
+  
   std::string popConditionsString();
   void pushConditions(std::string in) { _conditionStrings.push_back(in); }
   void pushConditions(unsigned int, unsigned int);
+  unsigned int getMaxCondSize();
+  
   std::string getLhsString() { return _lhsString; }
   void setLhs(std::string in) { _lhsString = in; }
   void pushLhs(DATA::Column *in) { _lhs.push_back(in); }
+  unsigned int lhsSize() { return _lhs.size(); }
+  std::vector<DATA::Column*>::iterator lhsBegin() { return _lhs.begin(); }
+  std::vector<DATA::Column*>::iterator lhsEnd() { return _lhs.end(); }
+  
   std::string getRhsString() { return _rhsString; } 
   void setRhs(std::string in) { _rhsString = in; }
   void setRhs(DATA::Column *in) { _rhs = in; }
   
 private:
+  
+  unsigned int _rowsPerPacket;
+
   double _completeness;
   unsigned long long _rows;
-  
+  std::vector<Condition*> _conditions;
   std::vector<DATA::Column*> _lhs;
   DATA::Column* _rhs;
 
