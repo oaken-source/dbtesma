@@ -19,6 +19,9 @@
 
 #include "condincdep.h"
 
+#include <algorithm>
+#include <iostream>
+
 namespace DATA {
 
   CondIncDep& CondIncDep::operator=(const CondIncDep &rhs)
@@ -36,9 +39,48 @@ namespace DATA {
     _lhsString = rhs._lhsString;
     _rhsString = rhs._rhsString;
     
+    _unused = rhs._unused;
+    _usedonce = rhs._usedonce;
+    
     return *this;
   }
 
+  void CondIncDep::buildPackets()
+  {
+    std::vector<CondIncDep::Condition*> unused;
+    std::vector<CondIncDep::Condition*> usedonce;
+    
+    unused.swap(_conditions);
+    
+    unsigned int lhsSize = _lhs.size();
+    
+    while(!unused.empty() || !usedonce.empty())
+    {
+      Packet *p = new Packet();
+      
+      Condition *c;
+      if(!usedonce.empty())
+      {
+        std::vector<Condition*>::iterator i;
+        i = getGreatest(usedonce.begin(), usedonce.end());
+        c = (*i);
+        usedonce.erase(i);
+      }
+      else
+      {
+        std::vector<Condition*>::iterator i;      
+        i = getGreatest(unused.begin(), unused.end());
+        c = (*i);
+        usedonce.push_back(c);
+        unused.erase(i);
+      }
+      
+      
+
+        // build packet
+    }
+  }
+  
   std::string CondIncDep::popConditionsString()
   {
     if(!_conditionStrings.size())
@@ -63,7 +105,22 @@ namespace DATA {
   {
     unsigned int i;
     for(i = 0; i < count; i++)
-      _conditions.push_back(new Condition{size});
+    {
+      Condition *c = new Condition(size);
+      _conditions.push_back(c);
+    }
+  }
+  
+  std::vector<CondIncDep::Condition*>::iterator CondIncDep::getGreatest(
+    std::vector<CondIncDep::Condition*>::iterator begin,
+    std::vector<CondIncDep::Condition*>::iterator end)
+  {
+    std::vector<CondIncDep::Condition*>::iterator c = begin;
+    std::vector<CondIncDep::Condition*>::iterator i = begin;
+    for(; i != end; i++)
+      if((*i)->_size > (*c)->_size)
+        c = i;
+    return c;
   }
   
 } // namespaces

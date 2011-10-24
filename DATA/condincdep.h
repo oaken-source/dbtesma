@@ -30,9 +30,23 @@ namespace DATA {
 class CondIncDep
 {
 
+  struct Packet
+  {
+    Packet() : _values(std::vector<unsigned int>()), _rows(0) {};
+  
+    std::vector<unsigned int> _values;
+    unsigned int _rows;
+  };
+  
   struct Condition
   {
+    Condition(unsigned int size) : _size(size), 
+      _columns(std::vector<DATA::Column*>()), 
+      _fixtures(std::vector<Condition*>()) {};
+  
     unsigned int _size;
+    std::vector<DATA::Column*> _columns;
+    std::vector<Condition*> _fixtures;
   };
 
 public:
@@ -40,15 +54,20 @@ public:
     _conditions(std::vector<Condition*>()), _lhs(std::vector<DATA::Column*>()), 
     _rhs(NULL), _completenessString(""), _rowsString(""), 
     _conditionStrings(std::vector<std::string>()), _lhsString(""), 
-    _rhsString("") { };
+    _rhsString(""), _unused(std::vector<Condition*>()),
+    _usedonce(std::vector<Condition*>()) { };
   CondIncDep(const CondIncDep &obj) : _rowsPerPacket(obj._rowsPerPacket), 
     _completeness(obj._completeness), _rows(obj._rows), 
     _conditions(obj._conditions), _lhs(obj._lhs), _rhs(obj._rhs), 
     _completenessString(obj._completenessString), _rowsString(obj._rowsString),
     _conditionStrings(obj._conditionStrings), _lhsString(obj._lhsString), 
-    _rhsString(obj._rhsString) { };
+    _rhsString(obj._rhsString), _unused(obj._unused), _usedonce(obj._usedonce)
+    { };
   CondIncDep& operator=(const CondIncDep&);
   ~CondIncDep() { };
+  
+  //bool conditionSortPredicate(Condition*, Condition*);
+  void buildPackets();
   
   void setRowsPerPacket(unsigned int in) { _rowsPerPacket = in; }
   
@@ -74,10 +93,14 @@ public:
   std::vector<DATA::Column*>::iterator lhsEnd() { return _lhs.end(); }
   
   std::string getRhsString() { return _rhsString; } 
+  DATA::Column* getRhs() { return _rhs; }
   void setRhs(std::string in) { _rhsString = in; }
   void setRhs(DATA::Column *in) { _rhs = in; }
   
 private:
+  
+  std::vector<Condition*>::iterator getGreatest(
+    std::vector<Condition*>::iterator, std::vector<Condition*>::iterator);
   
   unsigned int _rowsPerPacket;
 
@@ -92,6 +115,9 @@ private:
   std::vector<std::string> _conditionStrings;
   std::string _lhsString;
   std::string _rhsString;
+  
+  std::vector<Condition*> _unused;
+  std::vector<Condition*> _usedonce;
   
 };
 

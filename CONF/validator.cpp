@@ -794,11 +794,8 @@ namespace CONF {
   
   bool Validator::validateCondIncDepLogic(DATA::Table *t, const char tn[])
   {
-    // things to do:
-    //   build packets (requires rows per packet)
     // things to check:
     //   completeness <= max completeness  (requires no. of packets)
-    //   lhs & rhs columns valid
 
     // check if max size <= no. of lhs columns
     if(t->passCondIncDep()->lhsSize() < t->passCondIncDep()->getMaxCondSize())
@@ -815,10 +812,27 @@ namespace CONF {
     // check if lhs & rhs columns valid
     std::vector<DATA::Column*>::iterator i = t->passCondIncDep()->lhsBegin();
     for(; i != t->passCondIncDep()->lhsEnd(); i++)
+      if(!(*i)->isIndependent())
+      {
+        std::string cn;
+        (*i)->getAttribute(DATA::Column::A_Name, cn);
+        _conf->setError("%s: cind: non-independent column in cind lhs: '%s'",
+          tn, cn.c_str());
+        return false;
+      }
+    if(!t->passCondIncDep()->getRhs()->isIndependent())
     {
-      
+      std::string cn;
+      t->passCondIncDep()->getRhs()->getAttribute(DATA::Column::A_Name, cn);
+      _conf->setError("%s: cind: non-independent column in cind rhs: '%s'",
+        tn, cn.c_str());
+      return false;
     }
- 
+      
+    // build packets  
+    t->passCondIncDep()->buildPackets();  
+      
+     
     return true;
   }
   
