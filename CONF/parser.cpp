@@ -215,8 +215,47 @@ namespace CONF {
 
     return false;
   }
-  
+
   bool Parser::processLineContextFuncDep(std::string &in)
+  {
+    std::string value;
+
+    if(HELPER::Strings::stripleft(in, "lhs")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::popQuotedValue(in, value))
+    {
+      _conf->passTable()->passFuncdep()->setLhs(value);
+      if(!HELPER::Strings::empty(in))
+        processLineContextFuncDep(in);
+      else
+        return true;
+    }
+    
+    if(HELPER::Strings::stripleft(in, "rhs")
+      && HELPER::Strings::stripleft(in, "=")
+      && HELPER::Strings::popQuotedValue(in, value))
+    {
+      _conf->passTable()->passFuncdep()->setRhs(value);
+      if(!HELPER::Strings::empty(in))
+        processLineContextFuncDep(in);
+      else
+        return true;
+    }
+
+    /** end Conditional Inclusion Dependency expression **/ 
+    if(HELPER::Strings::stripleft(in, "}"))
+    {
+      _context = C_Table;      
+      if(!HELPER::Strings::empty(in))
+        processLineContextTable(in);
+      else
+        return true;
+    }
+
+    return false;    
+  }
+
+  bool Parser::processLineContextCondIncDep(std::string &in)
   {
     std::string value;
   
@@ -241,23 +280,13 @@ namespace CONF {
       else
         return true;
     }
-
-    if(HELPER::Strings::stripleft(in, "positives")
-      && HELPER::Strings::stripleft(in, "=")
-      && HELPER::Strings::popQuotedValue(in, value))
-    {
-      _conf->passTable()->passCondIncDep()->setPositives(value);
-      if(!HELPER::Strings::empty(in))
-        processLineContextFuncDep(in);
-      else
-        return true;
-    }
     
     if(HELPER::Strings::stripleft(in, "conditions")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
     {
-      _conf->passTable()->passCondIncDep()->pushConditions(value);
+      if(!value.empty())
+        _conf->passTable()->passCondIncDep()->pushConditions(value);
       if(!HELPER::Strings::empty(in))
         processLineContextFuncDep(in);
       else
@@ -297,46 +326,6 @@ namespace CONF {
     }
 
     return false;
-  }
-
-  bool Parser::processLineContextCondIncDep(std::string &in)
-  {
-    
-  
-    std::string value;
-    if(HELPER::Strings::stripleft(in, "lhs")
-      && HELPER::Strings::stripleft(in, "=")
-      && HELPER::Strings::popQuotedValue(in, value))
-    {
-      _conf->passTable()->passCondIncDep()->setLhs(value);
-      if(!HELPER::Strings::empty(in))
-        processLineContextCondIncDep(in);
-      else
-        return true;
-    }
-    
-    if(HELPER::Strings::stripleft(in, "rhs")
-      && HELPER::Strings::stripleft(in, "=")
-      && HELPER::Strings::popQuotedValue(in, value))
-    {
-      _conf->passTable()->passCondIncDep()->setRhs(value);
-      if(!HELPER::Strings::empty(in))
-        processLineContextCondIncDep(in);
-      else
-        return true;
-    }
-
-    /** end Conditional Inclusion Dependency expression **/ 
-    if(HELPER::Strings::stripleft(in, "}"))
-    {
-      _context = C_Table;      
-      if(!HELPER::Strings::empty(in))
-        processLineContextTable(in);
-      else
-        return true;
-    }
-
-    return false;    
   }
 
 } // namespaces

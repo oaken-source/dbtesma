@@ -69,15 +69,17 @@ public:
     param1: string to be checked
     param2: string that gets the found value written to
     returns true, if a value has been written, false otherwise **/
-  static bool popTableName(std::string&, std::string&);
+  static bool popColonSeparatedValue(std::string&, std::string&);
   
   /** similar to popTableName, but uses ',' as a delimiter instead of ':' **/
   static bool popCSV(std::string&, std::string&);
 
   /** conversion methods **/
   static int intval(std::string&);
+  static int uintval(std::string&);
   static unsigned long long ullval(std::string&);
   static void strval(std::string&, unsigned long long);
+  static double doubval(std::string&);
 
   /** searches for param2 in param1 of max. length of param3 
     returns the index of the occurrence, if one was found, else -1 **/

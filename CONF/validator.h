@@ -56,6 +56,7 @@ private:
   bool validateTableForeignKeys(DATA::Table*, const char*);
   bool revalidateTableFuncdeps(DATA::Table*, const char*);
   bool validateTableHarden(DATA::Table*, const char*);
+  bool validateTableCondIncDep(DATA::Table*, const char*);
   
   void explodeFuncdeps(DATA::Table*);
   bool validateFuncdeps(DATA::Table*, const char*);
@@ -69,6 +70,13 @@ private:
   
   /** functional dependency level validation **/
   bool validateFuncdepColumns(DATA::Funcdep*, DATA::Table*, const char*);
+  
+  /** conditional inclusion dependency level validation **/
+  bool validateCondIncDepAttributes(DATA::Table*, const char*);
+  bool validateCondIncDepColumns(DATA::Table*, const char*);
+  bool validateCondIncDepConditions(DATA::Table*, const char*);
+  bool validateCondIncDepLogic(DATA::Table*, const char*);
+  
   
   DATA::Schema* _conf;
   

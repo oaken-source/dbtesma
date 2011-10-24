@@ -20,6 +20,8 @@
 #ifndef CONDINCDEP_H
 #define CONDINCDEP_H
 
+#include "column.h"
+
 #include <string>
 #include <vector>
 
@@ -29,22 +31,45 @@ class CondIncDep
 {
 
 public:
-  CondIncDep() : _completenessString(""), _rowsString(""), _positivesString(""),
-    _conditionStrings(std::vector<std::string>()), _lhsString(""), 
-    _rhsString("") { };   
+  CondIncDep() : _completeness(0.0), _rows(0), 
+    _lhs(std::vector<DATA::Column*>()), _rhs(NULL), _completenessString(""), 
+    _rowsString(""), _conditionStrings(std::vector<std::string>()), 
+    _lhsString(""), _rhsString("") { };
+  CondIncDep(const CondIncDep &obj) : _completeness(obj._completeness), 
+    _rows(obj._rows), _lhs(obj._lhs), _rhs(obj._rhs),
+    _completenessString(obj._completenessString), _rowsString(obj._rowsString),
+    _conditionStrings(obj._conditionStrings), _lhsString(obj._lhsString),
+    _rhsString(obj._rhsString) { };
+  CondIncDep& operator=(const CondIncDep&);
   ~CondIncDep() { };
   
+  
+  
+  std::string getCompletenessString() { return _completenessString; }
   void setCompleteness(std::string in) { _completenessString = in; }
+  void setCompleteness(double in) { _completeness = in; }
+  std::string getRowsString() { return _rowsString; }
   void setRows(std::string in) { _rowsString = in; }
-  void setPositives(std::string in) { _positivesString = in; }
+  void setRows(unsigned long long in) { _rows = in; }
+  std::string popConditionsString();
   void pushConditions(std::string in) { _conditionStrings.push_back(in); }
+  void pushConditions(unsigned int, unsigned int);
+  std::string getLhsString() { return _lhsString; }
   void setLhs(std::string in) { _lhsString = in; }
+  void pushLhs(DATA::Column *in) { _lhs.push_back(in); }
+  std::string getRhsString() { return _rhsString; } 
   void setRhs(std::string in) { _rhsString = in; }
+  void setRhs(DATA::Column *in) { _rhs = in; }
   
 private:
+  double _completeness;
+  unsigned long long _rows;
+  
+  std::vector<DATA::Column*> _lhs;
+  DATA::Column* _rhs;
+
   std::string _completenessString;
   std::string _rowsString;
-  std::string _positivesString;
   std::vector<std::string> _conditionStrings;
   std::string _lhsString;
   std::string _rhsString;

@@ -92,7 +92,8 @@ namespace CONF {
         || !validateTableForeignKeys((*i), name.c_str())
         || !revalidateTableFuncdeps((*i), name.c_str())
         || (_conf->hasHardenedFds() 
-          && !validateTableHarden((*i), name.c_str())))
+          && !validateTableHarden((*i), name.c_str()))
+        || !validateTableCondIncDep((*i), name.c_str()))
         return false;
     }
     return true;
@@ -477,7 +478,7 @@ namespace CONF {
       if((*i)->getAttribute(DATA::Column::A_ForeignKey, foreignkey_str))
       {
         std::string table_name;
-        if(HELPER::Strings::popTableName(foreignkey_str, table_name))
+        if(HELPER::Strings::popColonSeparatedValue(foreignkey_str, table_name))
         {
           DATA::Table *tx = _conf->findTableByName(table_name);
           if(!tx)
@@ -677,5 +678,124 @@ namespace CONF {
     return true;
   }
 
+  bool Validator::validateTableCondIncDep(DATA::Table *t, const char tn[])
+  {
+    if(!t->passCondIncDep())
+      return true;
+  
+    if(!validateCondIncDepAttributes(t, tn)
+      || !validateCondIncDepColumns(t, tn)
+      || !validateCondIncDepConditions(t, tn)
+      || !validateCondIncDepLogic(t, tn))
+      return false;
+      
+    return true;
+  }
+  
+  bool Validator::validateCondIncDepAttributes(DATA::Table *t, const char tn[])
+  {  
+    std::string attr;
+    
+    attr = t->passCondIncDep()->getCompletenessString();
+    double c = HELPER::Strings::doubval(attr);
+    if(c > 0 && c <= 1)
+      t->passCondIncDep()->setCompleteness(c);
+    else
+    {
+      _conf->setError("%s: cind: invalid value for 'completeness': '%s'", tn,
+        attr.c_str());
+      return false;
+    }
+    
+    attr = t->passCondIncDep()->getRowsString();
+    unsigned long long r = HELPER::Strings::ullval(attr);
+    if(r > 0 && r <= t->getRowCount())
+      t->passCondIncDep()->setRows(r);
+    else
+    {
+      _conf->setError("%s: cind: invalid value for 'rows': '%s'", tn, 
+        attr.c_str());
+      return false;
+    }
+
+    return true;
+  }
+
+  bool Validator::validateCondIncDepColumns(DATA::Table *t, const char tn[])
+  {
+    std::string attr;
+    attr = t->passCondIncDep()->getLhsString();
+    
+    while(!HELPER::Strings::empty(attr))
+    {
+      std::string col;
+      if(HELPER::Strings::popCSV(attr, col))
+      {
+        DATA::Column *c = t->findColumnByName(col);
+        if(!c)
+        {
+          _conf->setError("%s: cind: invalid column: '%s'", tn, col.c_str());
+          return false;
+        }
+        else
+          t->passCondIncDep()->pushLhs(c);
+      }
+      else
+      {
+        _conf->setError("%s: cind: invalid lhs column definition", tn);
+        return false;
+      }
+    }
+    
+    attr = t->passCondIncDep()->getRhsString();
+            
+    DATA::Column *c = t->findColumnByName(attr);
+    if(!c)
+    {
+      _conf->setError("%s: cind: invalid column: '%s'", tn, attr.c_str());
+      return false;
+    }
+    else
+      t->passCondIncDep()->setRhs(c);
+      
+
+    return true;
+  }  
+  
+  bool Validator::validateCondIncDepConditions(DATA::Table *t, const char tn[])
+  {
+    std::string attr = t->passCondIncDep()->popConditionsString();
+    while(!attr.empty())
+    {
+      std::string sizeString;
+      HELPER::Strings::popColonSeparatedValue(attr, sizeString);
+      
+      unsigned int size = HELPER::Strings::uintval(sizeString);
+      unsigned int count = HELPER::Strings::uintval(attr);
+      
+      if(size < 1)
+      {
+        _conf->setError("%s: cind: invalid size '%u' in condition", tn, size);
+        return false;
+      }
+      if(count < 1)
+      {
+        _conf->setError("%s: cind: invalid count '%u' in condition", tn, count);
+        return false;
+      }
+      
+      t->passCondIncDep()->pushConditions(size, count);
+      
+      attr = t->passCondIncDep()->popConditionsString();
+    }
+    
+    return true;
+  }
+  
+  bool Validator::validateCondIncDepLogic(DATA::Table *t, const char tn[])
+  {
+    return true;
+  }
+  
 } // namespaces
 

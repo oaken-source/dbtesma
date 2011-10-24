@@ -18,3 +18,36 @@
  ******************************************************************************/
 
 #include "condincdep.h"
+
+namespace DATA {
+
+  CondIncDep& CondIncDep::operator=(const CondIncDep &rhs)
+  {
+    _completeness = rhs._completeness;
+    _rows = rhs._rows;
+    _lhs = rhs._lhs;
+    _rhs = rhs._rhs;
+    _completenessString = rhs._completenessString;
+    _rowsString = rhs._rowsString;
+    _conditionStrings = rhs._conditionStrings;
+    _lhsString = rhs._lhsString;
+    _rhsString = rhs._rhsString;
+    
+    return *this;
+  }
+
+  std::string CondIncDep::popConditionsString()
+  {
+    if(!_conditionStrings.size())
+      return "";
+    std::string res = _conditionStrings.back();
+    _conditionStrings.pop_back();
+    return res;
+  }
+  
+  void CondIncDep::pushConditions(unsigned int size, unsigned int count)
+  {
+    
+  }
+  
+} // namespaces

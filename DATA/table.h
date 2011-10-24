@@ -74,7 +74,7 @@ public:
   void addColumnToPrimaryKeyGroup(std::string&, DATA::Column*);
 
   void setRowCount(unsigned long long rows) { _rows = rows; }
-  unsigned long long getRowCount() {return _rows; }
+  unsigned long long getRowCount() { return _rows; }
   
   void setRowsToHarden(unsigned int x) { _rowsToHarden = x; }
 

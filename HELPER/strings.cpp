@@ -103,7 +103,7 @@ namespace HELPER {
     return false;
   }
 
-  bool Strings::popTableName(std::string &in, std::string &value)
+  bool Strings::popColonSeparatedValue(std::string &in, std::string &value)
   {
     std::string key;
     key = ":";
@@ -144,6 +144,14 @@ namespace HELPER {
     return true;
   }
 
+  int Strings::uintval(std::string &in)
+  {
+    std::stringstream sst(in);
+    unsigned int x;
+    sst >> x;
+    return x;
+  }
+
   int Strings::intval(std::string &in)
   {
     std::stringstream sst(in);
@@ -165,6 +173,16 @@ namespace HELPER {
     std::stringstream sst;
     sst << value;
     in = sst.str();
+  }
+
+  double Strings::doubval(std::string &in)
+  {
+    if(in.empty())
+      return 0;
+    std::stringstream sst(in);
+    double x;
+    sst >> x;
+    return x;
   }
 
   int Strings::getIndexFromAlphabet(const char *a, char in, unsigned int length)
