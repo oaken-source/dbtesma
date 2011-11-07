@@ -42,6 +42,7 @@ namespace DATA {
     _siblingCount = rhs._siblingCount;
     _out = rhs._out;
     _cached = rhs._cached;
+    _cindValues = rhs._cindValues;
 
     return *this;
   }
@@ -182,12 +183,28 @@ namespace DATA {
   
   void Column::setHeadCondIncDep(std::vector<std::vector<unsigned int> > values)
   {
-  
+    _parentCount = 0;
+    _cindValues = values;
+    _generationMethod = &DATA::Column::processHeadCondIncDep;
+    _wrapper->zeroBasevalue();
   }
   
   void Column::setChildCondIncDep(DATA::Column *c)
   {
+    _parentCount = 1;
+    _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*));
+    _parentColumns[0] = c;
+    _generationMethod = &DATA::Column::processChildCondIncDep;
+    _wrapper->zeroBasevalue();
+  }
   
+  void Column::setRhsCondIncDep(DATA::Column *c)
+  {
+    _parentCount = 1;
+    _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*));
+    _parentColumns[0] = c;
+    _generationMethod = &DATA::Column::processRhsCondIncDep;
+    _wrapper->zeroBasevalue();
   }
   
   bool Column::isIndependent()
@@ -272,6 +289,57 @@ namespace DATA {
       value--;
     
     _wrapper->setValue(value);  
+  }
+
+  void Column::processHeadCondIncDep()
+  {
+    if(_cindValues.size() == 0)
+    {
+      _siz = 0;
+      _dex = -1;
+      _wrapper->setValue(rand() % 1000 + 1000);
+      generateDataKeyPrimary();
+      _generationMethod = &DATA::Column::generateDataKeyPrimary;
+      return;
+    }
+    _dex = rand() % _cindValues.size();
+    _siz = 2;
+
+    _cindValues[_dex][0]--;
+    if(!_cindValues[_dex][0])
+      _cindValues.erase(_cindValues.begin() + _dex);
+      
+    if(_cindValues[_dex][1])
+      _wrapper->setValue(_cindValues[_dex][1]);  
+    else
+      generateDataRandom();
+  }
+
+  void Column::processChildCondIncDep()
+  {
+    if(!_parentColumns[0]->_siz)
+    {
+      _dex = -1;
+      _wrapper->setValue(rand() % 1000 + 1000);
+      generateDataKeyPrimary();
+      _generationMethod = &DATA::Column::generateDataKeyPrimary;
+      return;
+    }
+   
+    if(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz])
+      _wrapper->setValue(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz]);  
+    else
+      generateDataRandom();
+
+    _parentColumns[0]->_siz++;
+  }
+
+  void Column::processRhsCondIncDep()
+  {   
+    if(!_parentColumns[0]->_siz)
+      _wrapper->setValue(0);
+    else
+      _wrapper->setValue(1);
   }
 
 } // namespaces

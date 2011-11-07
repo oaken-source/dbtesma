@@ -139,6 +139,16 @@ namespace DATA { namespace WRAPPER {
       return false;
   }
 
+  void CharWrapper::zeroBasevalue()
+  {  
+      _basevalue = (unsigned char*)malloc(sizeof(unsigned char) * (_width+1));
+      for(unsigned int i = 0; i < _width; i++)
+        _basevalue[i] = 0;
+        
+      _basevalue[_width] = -1;
+      resetToBasevalue();
+  }
+
   void CharWrapper::seedBasevalue()
   {
     _basevalue = (unsigned char*)malloc(sizeof(unsigned char) * (_width+1));

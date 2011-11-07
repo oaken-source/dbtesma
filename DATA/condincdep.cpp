@@ -176,18 +176,22 @@ namespace DATA {
     }
     // prepare generation
     
-    std::cout << "recieved value vector:" << std::endl;
-    for(unsigned int x = 0; x < values.size(); x++)
+    if(DEBUG)
     {
-      std::cout << " (" << values[x][0];
-      for(unsigned int y = 1y < values[x].size(); y++)
-        std::cout << ", " << values[x][y];
-      std::cout << ")" << std::endl;
+      std::cout << "recieved value vector:" << std::endl;
+      for(unsigned int x = 0; x < values.size(); x++)
+      {
+        std::cout << " (" << values[x][0];
+        for(unsigned int y = 1; y < values[x].size(); y++)
+          std::cout << ", " << values[x][y];
+        std::cout << ")" << std::endl;
+      }
     }
     
     _lhs[0]->setHeadCondIncDep(values);
     for(unsigned int x = 1; x < _lhs.size(); x++)
       _lhs[x]->setChildCondIncDep(_lhs[0]);
+    _rhs->setRhsCondIncDep(_lhs[0]);
   }
   
   std::string CondIncDep::popConditionsString()

@@ -21,6 +21,7 @@
 #define CONDINCDEP_H
 
 #include "column.h"
+#include "../macros.h"
 
 #include <string>
 #include <vector>

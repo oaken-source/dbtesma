@@ -54,6 +54,7 @@ public:
   
   virtual void getBasevalue(std::string&) = 0;
   virtual bool setBasevalue(std::string&) = 0;
+  virtual void zeroBasevalue() = 0;
   virtual void seedBasevalue() = 0;
   
   virtual void setValue(unsigned long long) = 0;

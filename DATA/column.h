@@ -76,13 +76,15 @@ public:
     _attributes(std::map<e_Attributes, std::string>()), _wrapper(NULL), 
     _datatype(e_Datatypes::D_Int), _length(0), _key(e_KeyTypes::KT_None), 
     _unique(0), _rows(0), _dex(0), _siz(0), _parentCount(0), _parentColumns(0), 
-    _siblingCount(0), _out(new std::ofstream()), _cached(0) {};
+    _siblingCount(0), _out(new std::ofstream()), _cached(0), 
+    _cindValues(std::vector<std::vector<unsigned int> >()) {};
   Column(const Column &obj) : _generationMethod(obj._generationMethod), 
     _attributes(obj._attributes), _wrapper(obj._wrapper), 
     _datatype(obj._datatype), _length(obj._length), _key(obj._key), 
     _unique(obj._unique), _rows(obj._rows), _dex(obj._dex), _siz(obj._siz), 
     _parentCount(obj._parentCount), _parentColumns(obj._parentColumns), 
-    _siblingCount(obj._siblingCount), _out(obj._out), _cached(obj._cached) {};
+    _siblingCount(obj._siblingCount), _out(obj._out), _cached(obj._cached), 
+    _cindValues(obj._cindValues) {};
   Column& operator=(const Column&);
   ~Column() {};
 
@@ -134,6 +136,7 @@ public:
   
   void setHeadCondIncDep(std::vector<std::vector<unsigned int> >);
   void setChildCondIncDep(DATA::Column*);
+  void setRhsCondIncDep(DATA::Column*);
   
   bool isIndependent();
   
@@ -151,6 +154,9 @@ private:
   void processReverseFuncdep();
   void processFKDepSingle();
   void processFKDepDeep();
+  void processHeadCondIncDep();
+  void processChildCondIncDep();
+  void processRhsCondIncDep();
   
   void (DATA::Column::*_generationMethod)();
 
@@ -175,6 +181,8 @@ private:
   std::ofstream *_out;
   
   unsigned long long _cached;
+  
+  std::vector<std::vector<unsigned int> > _cindValues;
   
 };
 

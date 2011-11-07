@@ -48,6 +48,7 @@ public:
   
   void getBasevalue(std::string&);
   bool setBasevalue(std::string&);
+  void zeroBasevalue();
   void seedBasevalue();
 
   void setValue(unsigned long long);

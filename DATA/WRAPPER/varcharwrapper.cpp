@@ -143,6 +143,14 @@ namespace DATA { namespace WRAPPER {
       return false;
   }
 
+  void VarcharWrapper::zeroBasevalue()
+  {  
+      _basevalue = (unsigned char*)malloc(sizeof(unsigned char) * 2);
+      _basevalue[0] = 0;
+      _basevalue[1] = -1;
+      resetToBasevalue();
+  }
+
   void VarcharWrapper::seedBasevalue()
   {
     _basevalue = (unsigned char*)malloc(sizeof(unsigned char) * (_width+1));
