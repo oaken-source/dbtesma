@@ -132,6 +132,9 @@ public:
   void registerReverseReferences(std::vector<DATA::Column*>&);
   void registerFKReferences(std::vector<DATA::Column*>&);
   
+  void setHeadCondIncDep(std::vector<std::vector<unsigned int> >);
+  void setChildCondIncDep(DATA::Column*);
+  
   bool isIndependent();
   
   void registerSiblingCount(unsigned int in) { _siblingCount = in; } 

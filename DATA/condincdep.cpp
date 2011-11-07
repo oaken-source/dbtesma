@@ -19,7 +19,8 @@
 
 #include "condincdep.h"
 
-#include <algorithm>
+#include <cmath>
+
 #include <iostream>
 
 namespace DATA {
@@ -27,6 +28,7 @@ namespace DATA {
   CondIncDep& CondIncDep::operator=(const CondIncDep &rhs)
   {
     _rowsPerPacket = rhs._rowsPerPacket;
+    _packets = rhs._packets;
   
     _completeness = rhs._completeness;
     _rows = rhs._rows;
@@ -46,17 +48,20 @@ namespace DATA {
   }
 
   void CondIncDep::buildPackets()
-  {
-    std::vector<CondIncDep::Condition*> unused;
-    std::vector<CondIncDep::Condition*> usedonce;
-    
-    unused.swap(_conditions);
-    
-    unsigned int lhsSize = _lhs.size();
-    
+  {  
+    std::vector<Condition*> unused = _conditions;
+    std::vector<Condition*> usedonce;
+        
     while(!unused.empty() || !usedonce.empty())
     {
       Packet *p = new Packet();
+      for(unsigned int i = 0; i < _lhs.size(); i++)
+        p->_values.push_back(0); // fill packet with wildcards
+      
+      p->_rows = floor(_completeness * _rows / 2);
+      
+      std::vector<DATA::Column*> freeLhs = _lhs;
+      std::vector<Condition*> included;
       
       Condition *c;
       if(!usedonce.empty())
@@ -75,10 +80,114 @@ namespace DATA {
         unused.erase(i);
       }
       
-      
+      while(c)
+      {
+        if(!c->_columns.size()) // picked condition is not registered to columns yet
+        {
+          for(unsigned int x = 0; x < c->_size; x++) // note: we assured that x->_size <= freeLhs.size()
+          {
+            int random = rand() % freeLhs.size();
+            c->_columns.push_back(freeLhs[random]); // register column
+            
+            for(unsigned int y = 0; y < _lhs.size(); y++) // register column index
+              if(_lhs[y] == freeLhs[random])
+              {
+                c->_columnIndices.push_back(y);
+                break;
+              }
 
-        // build packet
+            freeLhs.erase(freeLhs.begin() + random); // remove column from freeLhs
+          }
+        }
+        else // remove columns from freeLhs anyway
+        {
+          for(unsigned int x = 0; x < c->_size; x++) // note: we assured that all columns of c are in freeLhs
+            for(unsigned int y = 0; y < freeLhs.size(); y++)
+              if(freeLhs[y] == c->_columns[x])
+              {
+                freeLhs.erase(freeLhs.begin() + y);
+                break;
+              }
+        }
+        
+        for(unsigned int x = 0; x < included.size(); x++) // register fixtures
+        {
+          c->_fixtures.push_back(included[x]);
+          included[x]->_fixtures.push_back(c);
+        }
+        
+        included.push_back(c); // store away
+        p->_conditions.push_back(c);
+        
+        c = getNext(freeLhs, included, &usedonce, &unused);  // get next Cond. 
+      }
+      _packets.push_back(p);
     }
+  }
+  
+  void CondIncDep::finalizePackets()
+  {
+    // assign values to conditions
+    std::map<unsigned int, std::vector<unsigned int> > av;
+    std::vector<Condition*>::iterator i = _conditions.begin();
+    for(; i != _conditions.end(); i++)
+    {
+      for(unsigned int x = 0; x < (*i)->_columnIndices.size(); x++)
+      {
+        unsigned int v = rand() % 1000;
+        if(av.find((*i)->_columnIndices[x]) == av.end())
+        {
+          av[(*i)->_columnIndices[x]] = std::vector<unsigned int>();
+          av[(*i)->_columnIndices[x]].push_back(v);
+          (*i)->_columnValues.push_back(v);
+          continue;
+        }
+        while(1)
+        {
+          for(unsigned int y = 0; y < av[(*i)->_columnIndices[x]].size(); y++)
+            if(av[(*i)->_columnIndices[x]][y] == v)
+            {
+              v++;
+              continue;
+            }
+          av[(*i)->_columnIndices[x]].push_back(v);
+          (*i)->_columnValues.push_back(v);
+          break;
+        }
+      }
+    }
+    // assign values to packets
+    std::vector<Packet*>::iterator p = _packets.begin();
+    std::vector<std::vector<unsigned int> > values;
+    for(; p != _packets.end(); p++)
+    {
+      values.push_back(std::vector<unsigned int>());
+      values.back().push_back((*p)->_rows);
+      for(unsigned int x = 0; x < _lhs.size(); x++)
+        values.back().push_back(0); // fill packet with wildcards
+        
+      i = (*p)->_conditions.begin();
+      for(; i != (*p)->_conditions.end(); i++)
+        for(unsigned int x = 0; x < (*i)->_size; x++)
+        {
+          values.back()[(*i)->_columnIndices[x]+1] = (*i)->_columnValues[x];
+          (*p)->_values[(*i)->_columnIndices[x]] = (*i)->_columnValues[x];
+        }
+    }
+    // prepare generation
+    
+    std::cout << "recieved value vector:" << std::endl;
+    for(unsigned int x = 0; x < values.size(); x++)
+    {
+      std::cout << " (" << values[x][0];
+      for(unsigned int y = 1y < values[x].size(); y++)
+        std::cout << ", " << values[x][y];
+      std::cout << ")" << std::endl;
+    }
+    
+    _lhs[0]->setHeadCondIncDep(values);
+    for(unsigned int x = 1; x < _lhs.size(); x++)
+      _lhs[x]->setChildCondIncDep(_lhs[0]);
   }
   
   std::string CondIncDep::popConditionsString()
@@ -121,6 +230,80 @@ namespace DATA {
       if((*i)->_size > (*c)->_size)
         c = i;
     return c;
+  }
+  
+  CondIncDep::Condition* CondIncDep::getNext(std::vector<DATA::Column*> freeLhs,
+    std::vector<CondIncDep::Condition*> included,
+    std::vector<CondIncDep::Condition*> *usedonce,
+    std::vector<CondIncDep::Condition*> *unused)
+  {
+    Condition *c = 0;
+    unsigned int maxSize = 0;
+    std::vector<Condition*>::iterator i;
+    for(i = usedonce->begin(); i != usedonce->end(); i++)
+      if((*i)->_size > maxSize && isValidInContext(freeLhs, included, (*i))) 
+      {
+        maxSize = (*i)->_size;
+        c = (*i);
+      }
+    
+    if(c) // priorize usedonce
+    {
+      for(i = usedonce->begin(); i != usedonce->end(); i++)
+        if((*i) == c)
+        {
+          usedonce->erase(i);
+          break;
+        }
+      return c;
+    }
+    
+    for(i = unused->begin(); i != unused->end(); i++)
+      if((*i)->_size > maxSize && isValidInContext(freeLhs, included, (*i))) 
+      {
+        maxSize = (*i)->_size;
+        c = (*i);
+      }
+    
+    if(c)
+    {
+      for(i = unused->begin(); i != unused->end(); i++)
+        if((*i) == c)
+        {
+          unused->erase(i);
+          break;
+        }
+      usedonce->push_back(c);
+    }
+    return c; // return anyway
+  }
+  
+  bool CondIncDep::isValidInContext(std::vector<DATA::Column*> freeLhs,
+    std::vector<CondIncDep::Condition*> included, CondIncDep::Condition *c)
+  {
+    if(freeLhs.size() < c->_size)
+      return false;
+    
+    for(unsigned int i = 0; i < c->_columns.size(); i++) // check for non-free
+    {
+      bool found = false;
+      for(unsigned int j = 0; j < freeLhs.size(); j++)
+        if(freeLhs[j] == c->_columns[i])
+        {
+          found = true;
+          break;
+        }
+        
+      if(!found)
+        return false;
+    }
+    
+    for(unsigned int i = 0; i < c->_fixtures.size(); i++) // check for fixture
+      for(unsigned int j = 0; j < included.size(); j++)
+        if(c->_fixtures[i] == included[j])
+          return false;
+    
+    return true;
   }
   
 } // namespaces

@@ -180,6 +180,16 @@ namespace DATA {
       _generationMethod = &DATA::Column::processFKDepDeep;
   }
   
+  void Column::setHeadCondIncDep(std::vector<std::vector<unsigned int> > values)
+  {
+  
+  }
+  
+  void Column::setChildCondIncDep(DATA::Column *c)
+  {
+  
+  }
+  
   bool Column::isIndependent()
   {
     return (_generationMethod == &DATA::Column::generateDataRandom);

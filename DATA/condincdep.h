@@ -30,34 +30,40 @@ namespace DATA {
 class CondIncDep
 {
 
-  struct Packet
-  {
-    Packet() : _values(std::vector<unsigned int>()), _rows(0) {};
-  
-    std::vector<unsigned int> _values;
-    unsigned int _rows;
-  };
-  
   struct Condition
   {
     Condition(unsigned int size) : _size(size), 
-      _columns(std::vector<DATA::Column*>()), 
+      _columns(std::vector<DATA::Column*>()),
+      _columnIndices(std::vector<unsigned int>()),
+      _columnValues(std::vector<unsigned int>()),
       _fixtures(std::vector<Condition*>()) {};
   
     unsigned int _size;
     std::vector<DATA::Column*> _columns;
+    std::vector<unsigned int> _columnIndices;
+    std::vector<unsigned int> _columnValues;
     std::vector<Condition*> _fixtures;
   };
 
+  struct Packet
+  {
+    Packet() : _values(std::vector<unsigned int>()), 
+      _conditions(std::vector<Condition*>()), _rows(0) {};
+  
+    std::vector<unsigned int> _values;
+    std::vector<Condition*> _conditions;
+    unsigned int _rows;
+  };
+  
 public:
-  CondIncDep() : _rowsPerPacket(0), _completeness(0.0), _rows(0), 
-    _conditions(std::vector<Condition*>()), _lhs(std::vector<DATA::Column*>()), 
-    _rhs(NULL), _completenessString(""), _rowsString(""), 
-    _conditionStrings(std::vector<std::string>()), _lhsString(""), 
-    _rhsString(""), _unused(std::vector<Condition*>()),
+  CondIncDep() : _rowsPerPacket(0), _packets(std::vector<Packet*>()),
+    _completeness(0.0), _rows(0), _conditions(std::vector<Condition*>()), 
+    _lhs(std::vector<DATA::Column*>()), _rhs(NULL), _completenessString(""), 
+    _rowsString(""), _conditionStrings(std::vector<std::string>()), 
+    _lhsString(""), _rhsString(""), _unused(std::vector<Condition*>()),
     _usedonce(std::vector<Condition*>()) { };
   CondIncDep(const CondIncDep &obj) : _rowsPerPacket(obj._rowsPerPacket), 
-    _completeness(obj._completeness), _rows(obj._rows), 
+    _packets(obj._packets), _completeness(obj._completeness), _rows(obj._rows), 
     _conditions(obj._conditions), _lhs(obj._lhs), _rhs(obj._rhs), 
     _completenessString(obj._completenessString), _rowsString(obj._rowsString),
     _conditionStrings(obj._conditionStrings), _lhsString(obj._lhsString), 
@@ -66,10 +72,11 @@ public:
   CondIncDep& operator=(const CondIncDep&);
   ~CondIncDep() { };
   
-  //bool conditionSortPredicate(Condition*, Condition*);
   void buildPackets();
+  void finalizePackets();
   
   void setRowsPerPacket(unsigned int in) { _rowsPerPacket = in; }
+  unsigned int packetsSize() { return _packets.size(); }
   
   std::string getCompletenessString() { return _completenessString; }
   double getCompleteness() {return _completeness; }
@@ -101,9 +108,15 @@ private:
   
   std::vector<Condition*>::iterator getGreatest(
     std::vector<Condition*>::iterator, std::vector<Condition*>::iterator);
+  Condition* getNext(std::vector<DATA::Column*>, std::vector<Condition*>,
+    std::vector<Condition*>*, std::vector<Condition*>*);
+  bool isValidInContext(std::vector<DATA::Column*>, std::vector<Condition*>,
+    Condition*);
   
   unsigned int _rowsPerPacket;
-
+  std::vector<Packet*> _packets;
+  
+  
   double _completeness;
   unsigned long long _rows;
   std::vector<Condition*> _conditions;

@@ -794,9 +794,6 @@ namespace CONF {
   
   bool Validator::validateCondIncDepLogic(DATA::Table *t, const char tn[])
   {
-    // things to check:
-    //   completeness <= max completeness  (requires no. of packets)
-
     // check if max size <= no. of lhs columns
     if(t->passCondIncDep()->lhsSize() < t->passCondIncDep()->getMaxCondSize())
     {
@@ -831,8 +828,22 @@ namespace CONF {
       
     // build packets  
     t->passCondIncDep()->buildPackets();  
-      
-     
+    
+    // check if completeness <= max completeness  (requires no. of packets)
+    double maxCompleteness = 2.0/(t->passCondIncDep()->packetsSize());
+    if(t->passCondIncDep()->getCompleteness() > maxCompleteness)
+    {
+      std::string cn;
+      t->passCondIncDep()->getRhs()->getAttribute(DATA::Column::A_Name, cn);
+      _conf->setError("%s: cind: completeness %s exceeds maximum of 2/%i (%f)", 
+        tn, t->passCondIncDep()->getCompletenessString().c_str(), 
+        t->passCondIncDep()->packetsSize(), maxCompleteness);
+      return false;
+    }
+    
+    // assign values
+    t->passCondIncDep()->finalizePackets();
+    
     return true;
   }
   
