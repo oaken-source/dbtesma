@@ -148,6 +148,7 @@ private:
   void generateDataRandomInRange() { _wrapper->generateRandomInRange(); }
   void generateDataRandom() { _wrapper->generateRandom(); }
   void generateDataKeyPrimary();
+  void generateDataNext();
 
   void processFuncdep();
   void processFuncdepInRange();

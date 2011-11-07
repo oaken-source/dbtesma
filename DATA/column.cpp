@@ -187,6 +187,7 @@ namespace DATA {
     _cindValues = values;
     _generationMethod = &DATA::Column::processHeadCondIncDep;
     _wrapper->zeroBasevalue();
+    _cached = rand() % 1000 + 1000;
   }
   
   void Column::setChildCondIncDep(DATA::Column *c)
@@ -196,6 +197,7 @@ namespace DATA {
     _parentColumns[0] = c;
     _generationMethod = &DATA::Column::processChildCondIncDep;
     _wrapper->zeroBasevalue();
+    _cached = rand() % 1000 + 1000;
   }
   
   void Column::setRhsCondIncDep(DATA::Column *c)
@@ -231,6 +233,12 @@ namespace DATA {
     }
   }
   
+  void Column::generateDataNext()
+  {
+    _cached++;
+    _wrapper->setValue(_cached);
+  }
+
   void Column::processFuncdep()
   {
     unsigned int i;
@@ -297,7 +305,7 @@ namespace DATA {
     {
       _siz = 0;
       _dex = -1;
-      _wrapper->setValue(rand() % 1000 + 1000);
+      _wrapper->setValue(_cached);
       generateDataKeyPrimary();
       _generationMethod = &DATA::Column::generateDataKeyPrimary;
       return;
@@ -312,7 +320,7 @@ namespace DATA {
     if(_cindValues[_dex][1])
       _wrapper->setValue(_cindValues[_dex][1]);  
     else
-      generateDataRandom();
+      generateDataNext();
   }
 
   void Column::processChildCondIncDep()
@@ -320,7 +328,7 @@ namespace DATA {
     if(!_parentColumns[0]->_siz)
     {
       _dex = -1;
-      _wrapper->setValue(rand() % 1000 + 1000);
+      _wrapper->setValue(_cached);
       generateDataKeyPrimary();
       _generationMethod = &DATA::Column::generateDataKeyPrimary;
       return;
@@ -329,7 +337,7 @@ namespace DATA {
     if(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz])
       _wrapper->setValue(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz]);  
     else
-      generateDataRandom();
+      generateDataNext();
 
     _parentColumns[0]->_siz++;
   }

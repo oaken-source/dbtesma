@@ -159,10 +159,12 @@ namespace DATA {
     // assign values to packets
     std::vector<Packet*>::iterator p = _packets.begin();
     std::vector<std::vector<unsigned int> > values;
+    unsigned int rowcount = 0;
     for(; p != _packets.end(); p++)
     {
       values.push_back(std::vector<unsigned int>());
       values.back().push_back((*p)->_rows);
+      rowcount += (*p)->_rows;
       for(unsigned int x = 0; x < _lhs.size(); x++)
         values.back().push_back(0); // fill packet with wildcards
         
@@ -174,6 +176,15 @@ namespace DATA {
           (*p)->_values[(*i)->_columnIndices[x]] = (*i)->_columnValues[x];
         }
     }
+    // add wildcard packet to fill row count
+    if(_rows - rowcount > 0)
+    {
+      values.push_back(std::vector<unsigned int>());
+      values.back().push_back(_rows - rowcount);
+      for(unsigned int x = 0; x < _lhs.size(); x++)
+        values.back().push_back(0); // fill packet with wildcards
+    }
+    
     // prepare generation
     
     if(DEBUG)
