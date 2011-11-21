@@ -176,6 +176,35 @@ namespace DATA {
           (*p)->_values[(*i)->_columnIndices[x]] = (*i)->_columnValues[x];
         }
     }
+    
+    if(DEBUG)
+    {
+      std::cout << "packet pairings:" << std::endl;
+      p = _packets.begin();
+      for(; p != _packets.end(); p++)
+      {
+        std::cout << " (";
+        if((*p)->_conditions.size())
+        {
+          i = (*p)->_conditions.begin();
+          unsigned int k;
+          for(k = 0; k != _conditions.size(); k++)
+            if((*p)->_conditions[0] == _conditions[k])
+              break;
+          std::cout << k;
+          i++;
+          for(; i != (*p)->_conditions.end(); i++)
+          {
+            for(k = 0; k != _conditions.size(); k++)
+              if((*i) == _conditions[k])
+                break;
+            std::cout << ", " << k;
+          }
+          std::cout << ")" << std::endl;
+        }
+      }
+    }
+    
     // add wildcard packet to fill row count
     if(_rows - rowcount > 0)
     {
@@ -189,12 +218,12 @@ namespace DATA {
     
     if(DEBUG)
     {
-      std::cout << "recieved value vector:" << std::endl;
+      std::cout << "value vector:" << std::endl;
       for(unsigned int x = 0; x < values.size(); x++)
       {
         std::cout << " (" << values[x][0];
         for(unsigned int y = 1; y < values[x].size(); y++)
-          std::cout << ", " << values[x][y];
+          std::cout << "," << values[x][y];
         std::cout << ")" << std::endl;
       }
     }

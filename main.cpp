@@ -135,15 +135,15 @@ int main(int argc, char *argv[])
         HELPER::Ui::printok();
         HELPER::Ui::println(" - generating tables...");  
         
-		    std::vector<DATA::Table*>::iterator i;
-		    for(i = config->begin(); i != config->end(); i++)
-		    {
-			    std::string name;
-			    (*i)->getAttribute(DATA::Table::A_Name, name);
-			    HELPER::Ui::startProgress(name.c_str());
-			    (*i)->print(cah->flag(CP_NoHeader), config->hasHardenedFds());
-			    HELPER::Ui::overrok();			
-		    }
+        std::vector<DATA::Table*>::iterator i;
+        for(i = config->begin(); i != config->end(); i++)
+        {
+          std::string name;
+          (*i)->getAttribute(DATA::Table::A_Name, name);
+          HELPER::Ui::startProgress(name.c_str());
+          (*i)->print(cah->flag(CP_NoHeader), config->hasHardenedFds());
+          HELPER::Ui::overrok();
+        }
       }
       else
       {

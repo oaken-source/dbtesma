@@ -37,12 +37,13 @@ namespace DATA {
 
   void Schema::dumpToStdout()
   {
+    std::cout << "schema dump:" << std::endl;
     std::vector<DATA::Table*>::iterator i;
     for(i = _tables.begin(); i != _tables.end(); i++)
     {
       std::string tableName;
       (*i)->getAttribute(DATA::Table::A_Name, tableName);
-      std::cout << "table: " << tableName << " - " << (*i)->getRowCount() << " rows" << std::endl;
+      std::cout << " table: " << tableName << " - " << (*i)->getRowCount() << " rows" << std::endl;
       std::vector<DATA::Column*>::iterator k;
       for(k = (*i)->columns_begin(); k != (*i)->columns_end(); k++)
       {

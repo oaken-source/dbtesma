@@ -67,7 +67,7 @@ namespace HELPER {
       }
       else if(p != _pair.end()) // pair
       {
-        if(_pairs.find((*p).second) != _pairs.end())
+        if(_pairs.find((*p).second) != _pairs.end() && _pairDef.find((*p).second) != _pairDef.end() && _pairs[(*p).second] != _pairDef[(*p).second])
           setWarning("%s specified more than once", argv[i]);
         if(i < argc - 1)
         {
