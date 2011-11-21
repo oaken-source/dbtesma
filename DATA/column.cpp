@@ -186,7 +186,8 @@ namespace DATA {
     _parentCount = 0;
     _cindValues = values;
     _generationMethod = &DATA::Column::processHeadCondIncDep;
-    _wrapper->zeroBasevalue();
+    if(_datatype == D_Int)
+      _wrapper->zeroBasevalue();
     _cached = rand() % 1000 + 1000;
   }
   
@@ -196,7 +197,8 @@ namespace DATA {
     _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*));
     _parentColumns[0] = c;
     _generationMethod = &DATA::Column::processChildCondIncDep;
-    _wrapper->zeroBasevalue();
+    if(_datatype == D_Int)
+      _wrapper->zeroBasevalue();
     _cached = rand() % 1000 + 1000;
   }
   
@@ -206,7 +208,8 @@ namespace DATA {
     _parentColumns = (DATA::Column**)malloc(sizeof(DATA::Column*));
     _parentColumns[0] = c;
     _generationMethod = &DATA::Column::processRhsCondIncDep;
-    _wrapper->zeroBasevalue();
+    if(_datatype == D_Int)
+      _wrapper->zeroBasevalue();
   }
   
   bool Column::isIndependent()
