@@ -158,7 +158,18 @@ namespace DATA {
     }
     if(DEBUG)
     {
-      std::cout << "condition values:" << std::cout;
+      std::cout << "condition values:" << std::endl;
+      i = _conditions.begin();
+      unsigned int count = 0;
+      for(; i != _conditions.end(); i++)
+      {
+        unsigned int g;
+        std::cout << " " << count << " (" << (*i)->_columnIndices[0] << ":" << (*i)->_columnValues[0];
+        for(g = 1; g < (*i)->_columnIndices.size(); g++)
+          std::cout << ", " << (*i)->_columnIndices[g] << ":" << (*i)->_columnValues[g];
+        std::cout << ")" << std::endl;
+        count++;
+      }
     }
     // assign values to packets
     std::vector<Packet*>::iterator p = _packets.begin();

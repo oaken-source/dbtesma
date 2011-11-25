@@ -41,8 +41,8 @@ namespace DATA { namespace WRAPPER {
   { 
     if(_width < 9)
     {
-      int max;
-      int c;
+      unsigned int max;
+      unsigned int c;
       for(max = 1, c = 0; c < _width; c++, max *= 10);
       (*_out) << _value % max; 
     }
