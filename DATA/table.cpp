@@ -19,6 +19,8 @@
  
 #include "table.h"
 
+#include <iostream>
+
 namespace DATA {
 
 /** public ********************************************************************/
@@ -98,16 +100,20 @@ namespace DATA {
     for(; (*i) != c && i != _columnsSorted.end(); i++);
     if(i != _columnsSorted.end())
     {
+      std::cout << "found!" << std::endl;
       std::vector<DATA::Column*>::iterator j = i;
       while(j != _columnsSorted.begin())
       {
         j--;
+        std::cout << "before: " << (j - _columnsSorted.begin()) << ": " << (*j) << ", " << ((j + 1) - _columnsSorted.begin()) << ": " << (*(j+1)) << std::endl;
         DATA::Column *tmp;
         tmp = (*(j+1));
         (*(j+1)) = (*j);
         (*j) = tmp;
       }
     }
+    else
+      std::cout << "not found!!" << std::endl;
   }
 
   void Table::print(bool noHeader, bool hardenFds)  

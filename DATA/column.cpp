@@ -188,7 +188,7 @@ namespace DATA {
     _generationMethod = &DATA::Column::processHeadCondIncDep;
     if(_datatype == D_Int)
       _wrapper->zeroBasevalue();
-    _cached = rand() % 1000 + 1000;
+    _cached = (rand() % 1000) + 1000;
   }
   
   void Column::setChildCondIncDep(DATA::Column *c)
@@ -199,7 +199,7 @@ namespace DATA {
     _generationMethod = &DATA::Column::processChildCondIncDep;
     if(_datatype == D_Int)
       _wrapper->zeroBasevalue();
-    _cached = rand() % 1000 + 1000;
+    _cached = (rand() % 1000) + 1000;
   }
   
   void Column::setRhsCondIncDep(DATA::Column *c)
