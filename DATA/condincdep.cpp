@@ -125,7 +125,7 @@ namespace DATA {
     }
   }
   
-  void CondIncDep::finalizePackets()
+  DATA::Column* CondIncDep::finalizePackets()
   {
     // assign values to conditions
     std::map<unsigned int, std::vector<unsigned int> > av;
@@ -247,6 +247,8 @@ namespace DATA {
     for(unsigned int x = 1; x < _lhs.size(); x++)
       _lhs[x]->setChildCondIncDep(_lhs[0]);
     _rhs->setRhsCondIncDep(_lhs[0]);
+    
+    return _lhs[0];
   }
   
   std::string CondIncDep::popConditionsString()

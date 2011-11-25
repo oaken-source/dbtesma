@@ -74,7 +74,7 @@ public:
   ~CondIncDep() { };
   
   void buildPackets();
-  void finalizePackets();
+  DATA::Column* finalizePackets();
   
   void setRowsPerPacket(unsigned int in) { _rowsPerPacket = in; }
   unsigned int packetsSize() { return _packets.size(); }

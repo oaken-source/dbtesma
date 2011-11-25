@@ -844,7 +844,9 @@ namespace CONF {
     }
     
     // assign values
-    t->passCondIncDep()->finalizePackets();
+    DATA::Column *c = t->passCondIncDep()->finalizePackets();
+    
+    t->priorizeColumn(c);
     
     return true;
   }

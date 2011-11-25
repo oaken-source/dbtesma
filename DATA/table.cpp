@@ -91,6 +91,24 @@ namespace DATA {
     refillColumnsGraph();
     return rebuildColumnsSequence();
   }
+  
+  void Table::priorizeColumn(DATA::Column *c)
+  {
+    std::vector<DATA::Column*>::iterator i = _columnsSorted.begin();
+    for(; (*i) != c && i != _columnsSorted.end(); i++);
+    if(i != _columnsSorted.end())
+    {
+      std::vector<DATA::Column*>::iterator j = i;
+      while(j != _columnsSorted.begin())
+      {
+        j--;
+        DATA::Column *tmp;
+        tmp = (*(j+1));
+        (*(j+1)) = (*j);
+        (*j) = tmp;
+      }
+    }
+  }
 
   void Table::print(bool noHeader, bool hardenFds)  
   {

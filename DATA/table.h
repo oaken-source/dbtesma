@@ -82,6 +82,7 @@ public:
   
   bool sortColumns();
   bool resortColumns();
+  void priorizeColumn(DATA::Column*);
 
   void print(bool, bool);
 
