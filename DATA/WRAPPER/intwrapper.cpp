@@ -39,18 +39,7 @@ namespace DATA { namespace WRAPPER {
   
   void IntWrapper::print()
   { 
-    if(_width < 8)
-    {
-      unsigned int max;
-      unsigned int c;
-      for(max = 1, c = 0; c < _width; c++, max *= 10);
-      _value %= max;
-      if(_value < 1000)
-        _value += 1000;
-      (*_out) << _value; 
-    }
-    else
-      (*_out) << _value;
+    (*_out) << _value;
   }
 
   void IntWrapper::resetToBasevalue()
@@ -91,6 +80,15 @@ namespace DATA { namespace WRAPPER {
   void IntWrapper::setValue(unsigned long long in)
   {
     _value = _basevalue + in;
+    if(_width < 8)
+    {
+      unsigned int max;
+      unsigned int c;
+      for(max = 1, c = 0; c < _width; c++, max *= 10);
+      _value %= max;
+      if(_value < 1000)
+        _value += 1000;
+    }
   }
   
   void IntWrapper::setValueInRange(unsigned long long in)
@@ -106,6 +104,15 @@ namespace DATA { namespace WRAPPER {
   IntWrapper& IntWrapper::operator++()
   {
     _value++;
+    if(_width < 8)
+    {
+      unsigned int max;
+      unsigned int c;
+      for(max = 1, c = 0; c < _width; c++, max *= 10);
+      _value %= max;
+      if(_value < 1000)
+        _value += 1000;
+    }
     return *this;
   }
 
