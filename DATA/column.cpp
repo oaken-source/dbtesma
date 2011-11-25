@@ -184,7 +184,7 @@ namespace DATA {
   void Column::setHeadCondIncDep(std::vector<std::vector<unsigned int> > values)
   {
     _parentCount = 0;
-    _cindValues = values;
+    _cindValues = std::vector<std::vector<unsigned int> >(values);
     _generationMethod = &DATA::Column::processHeadCondIncDep;
     if(_datatype == D_Int)
       _wrapper->zeroBasevalue();
