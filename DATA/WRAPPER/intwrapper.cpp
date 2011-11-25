@@ -39,12 +39,15 @@ namespace DATA { namespace WRAPPER {
   
   void IntWrapper::print()
   { 
-    if(_width < 9)
+    if(_width < 8)
     {
       unsigned int max;
       unsigned int c;
       for(max = 1, c = 0; c < _width; c++, max *= 10);
-      (*_out) << _value % max; 
+      _value %= max;
+      if(_value < 1000)
+        _value += 1000;
+      (*_out) << _value; 
     }
     else
       (*_out) << _value;
