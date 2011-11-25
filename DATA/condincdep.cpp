@@ -156,6 +156,10 @@ namespace DATA {
         }
       }
     }
+    if(DEBUG)
+    {
+      std::cout << "condition values:" << std::cout;
+    }
     // assign values to packets
     std::vector<Packet*>::iterator p = _packets.begin();
     std::vector<std::vector<unsigned int> > values;

@@ -25,7 +25,8 @@ namespace DATA {
 
   void FuncdepGraph::push_back(DATA::Column *c)
   {
-    _nodes.push_back( Node { c, 0, std::vector<DATA::Column*>(), false } );
+    Node n = { c, 0, std::vector<DATA::Column*>(), false};
+    _nodes.push_back( n );
   }
   
   void FuncdepGraph::push_back(DATA::Funcdep *fd)

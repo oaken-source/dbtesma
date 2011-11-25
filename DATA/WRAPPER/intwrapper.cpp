@@ -38,8 +38,16 @@ namespace DATA { namespace WRAPPER {
   }
   
   void IntWrapper::print()
-  {  
-    (*_out) << _value;
+  { 
+    if(_width < 9)
+    {
+      int max;
+      int c;
+      for(max = 1, c = 0; c < _width; c++, max *= 10);
+      (*_out) << _value % max; 
+    }
+    else
+      (*_out) << _value;
   }
 
   void IntWrapper::resetToBasevalue()

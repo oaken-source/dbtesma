@@ -19,6 +19,8 @@
  
 #include "validator.h"
 
+#include <cmath>
+
 namespace CONF {
 
 /** public ********************************************************************/
@@ -804,7 +806,7 @@ namespace CONF {
     
     // calculate rows per packet
     t->passCondIncDep()->setRowsPerPacket(
-      t->passCondIncDep()->getCompleteness() * t->getRowCount() / 2);
+      ceil(t->passCondIncDep()->getCompleteness() * t->getRowCount() / 2));
     
     // check if lhs & rhs columns valid
     std::vector<DATA::Column*>::iterator i = t->passCondIncDep()->lhsBegin();

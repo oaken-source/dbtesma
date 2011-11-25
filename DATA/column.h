@@ -74,7 +74,7 @@ public:
 
   Column() : _generationMethod(&DATA::Column::generateDataRandom), 
     _attributes(std::map<e_Attributes, std::string>()), _wrapper(NULL), 
-    _datatype(e_Datatypes::D_Int), _length(0), _key(e_KeyTypes::KT_None), 
+    _datatype(D_Int), _length(0), _key(KT_None), 
     _unique(0), _rows(0), _dex(0), _siz(0), _parentCount(0), _parentColumns(0), 
     _siblingCount(0), _out(new std::ofstream()), _cached(0), 
     _cindValues(std::vector<std::vector<unsigned int> >()) {};

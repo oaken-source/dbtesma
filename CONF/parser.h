@@ -21,7 +21,6 @@
 #define PARSER_H
 
 #include "validator.h"
-#include <initializer_list>
 
 namespace CONF {
 

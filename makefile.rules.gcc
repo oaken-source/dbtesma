@@ -1,5 +1,5 @@
 GCC				= g++
-CFLAGS		= -Wall -Wextra -pedantic -std=c++0x -Weffc++ -O3 -march=native -pipe
+CFLAGS		= -Wall -Wextra -Weffc++ -O3 -pipe
 
 ifdef TESTS
 	CFLAGS += -DMAKE_TESTS
