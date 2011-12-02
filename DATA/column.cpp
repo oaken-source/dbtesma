@@ -314,11 +314,26 @@ namespace DATA {
       return;
     }
     _dex = rand() % _cindValues.size();
+    //_dex = 0;
+    while(!_cindValues[_dex][0] && _cindValues.size() > 0)
+    {
+      _cindValues.erase(_cindValues.begin() + _dex);
+      _dex = rand() % _cindValues.size();
+      //_dex = 0;
+    }
+    if(_cindValues.size() == 0)
+    {
+      _siz = 0;
+      _dex = -1;
+      _wrapper->setValue(_cached);
+      generateDataKeyPrimary();
+      _generationMethod = &DATA::Column::generateDataKeyPrimary;
+      return;
+    }
+    //std::cerr << _cindValues[_dex][0] << std::endl;
+    _cindValues[_dex][0]--;
     _siz = 2;
 
-    _cindValues[_dex][0]--;
-    if(!_cindValues[_dex][0])
-      _cindValues.erase(_cindValues.begin() + _dex);
       
     if(_cindValues[_dex][1])
       _wrapper->setValue(_cindValues[_dex][1]);  
