@@ -239,7 +239,7 @@ namespace DATA {
   void Column::generateDataNext()
   {
     _wrapper->setValue(_cached);
-    _wrapper++;
+    (*_wrapper)++;
     _cached++;
   }
 
