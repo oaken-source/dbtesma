@@ -318,7 +318,8 @@ namespace DATA {
     while(!_cindValues[_dex][0] && _cindValues.size() > 0)
     {
       _cindValues.erase(_cindValues.begin() + _dex);
-      _dex = rand() % _cindValues.size();
+      if(_cindValues.size() > 0)
+        _dex = rand() % _cindValues.size();
       //_dex = 0;
     }
     if(_cindValues.size() == 0)

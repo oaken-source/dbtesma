@@ -100,7 +100,6 @@ namespace DATA {
     for(; (*i) != c && i != _columnsSorted.end(); i++);
     if(i != _columnsSorted.end())
     {
-      std::cout << "found!" << std::endl;
       std::vector<DATA::Column*>::iterator j = i;
       while(j != _columnsSorted.begin())
       {
@@ -112,8 +111,6 @@ namespace DATA {
         (*j) = tmp;
       }
     }
-    else
-      std::cout << "not found!!" << std::endl;
   }
 
   void Table::print(bool noHeader, bool hardenFds)  
