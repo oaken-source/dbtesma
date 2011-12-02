@@ -80,15 +80,6 @@ namespace DATA { namespace WRAPPER {
   void IntWrapper::setValue(unsigned long long in)
   {
     _value = _basevalue + in;
-    if(_width < 8)
-    {
-      unsigned int max;
-      unsigned int c;
-      for(max = 1, c = 0; c < _width; c++, max *= 10);
-      _value %= max;
-      if(_value < 1000)
-        _value += 1000;
-    }
   }
   
   void IntWrapper::setValueInRange(unsigned long long in)

@@ -238,8 +238,9 @@ namespace DATA {
   
   void Column::generateDataNext()
   {
-    _cached++;
     _wrapper->setValue(_cached);
+    _wrapper++;
+    _cached++;
   }
 
   void Column::processFuncdep()
