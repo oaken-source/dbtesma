@@ -238,5 +238,18 @@ namespace DATA { namespace WRAPPER {
     }
     return *this;
   }
+  
+  std::string VarcharWrapper::translate(unsigned int in)
+  {
+    setValue(in);
+    std::stringstream x;
+    unsigned int i;
+    for(i = 0; i < _width; i++)
+    {
+      if(_value[i] == 255) break;
+      x << _alphabet[_value[i]];
+    }
+    return x.str();
+  }
 
 }} // namespaces

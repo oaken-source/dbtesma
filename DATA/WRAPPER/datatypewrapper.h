@@ -63,6 +63,8 @@ public:
 
   virtual DatatypeWrapper& operator++() = 0;
   
+  virtual std::string translate(unsigned int) = 0;
+  
 protected:
   
   unsigned long long _range;

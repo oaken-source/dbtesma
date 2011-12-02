@@ -57,6 +57,8 @@ public:
   
   CharWrapper& operator++();
 
+  std::string translate(unsigned int);
+
 private:
 
   unsigned char *_basevalue;

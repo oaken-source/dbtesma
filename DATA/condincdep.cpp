@@ -164,9 +164,15 @@ namespace DATA {
       for(; i != _conditions.end(); i++)
       {
         unsigned int g;
-        std::cout << " " << count << " (" << (*i)->_columnIndices[0] << ":" << (*i)->_columnValues[0];
+        std::string column = "";
+        _lhs[(*i)->_columnIndices[0]]->getAttribute(DATA::Column::A_Name, column);
+        std::cout << " " << count << " (" << column << ":" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]);
         for(g = 1; g < (*i)->_columnIndices.size(); g++)
-          std::cout << ", " << (*i)->_columnIndices[g] << ":" << (*i)->_columnValues[g];
+        {
+          column = "";
+          _lhs[(*i)->_columnIndices[g]]->getAttribute(DATA::Column::A_Name, column);
+          std::cout << ", " << column << ":" << (*i)->_columnValues[g];
+        }
         std::cout << ")" << std::endl;
         count++;
       }

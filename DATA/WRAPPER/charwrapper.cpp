@@ -229,5 +229,17 @@ namespace DATA { namespace WRAPPER {
     }
     return *this;
   }
+  
+  std::string CharWrapper::translate(unsigned int in)
+  {
+    setValue(in);
+    std::stringstream x;
+    unsigned int i;
+    for(i = 0; i < _width; i++)
+    {
+      x << _alphabet[_value[i]];
+    }
+    return x.str();
+  }
 
 }} // namespaces

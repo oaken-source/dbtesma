@@ -48,6 +48,8 @@ public:
   unsigned long long getValue();
 
   IntWrapper& operator++();
+  
+  std::string translate(unsigned int);
 
 private:
 

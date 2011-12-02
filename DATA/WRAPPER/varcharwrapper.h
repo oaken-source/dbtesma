@@ -58,6 +58,8 @@ public:
   
   VarcharWrapper& operator++();
 
+  std::string translate(unsigned int);
+
 private:
 
   unsigned char *_basevalue;

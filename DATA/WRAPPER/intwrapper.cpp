@@ -107,6 +107,13 @@ namespace DATA { namespace WRAPPER {
     return *this;
   }
 
+  std::string IntWrapper::translate(unsigned int in)
+  {
+    std::stringstream x;
+    x << in;
+    return x.str();
+  }
+  
 /** private *******************************************************************/
 
 }} // namespaces

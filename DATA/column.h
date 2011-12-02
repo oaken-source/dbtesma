@@ -142,6 +142,8 @@ public:
   
   void registerSiblingCount(unsigned int in) { _siblingCount = in; } 
   
+  std::string translate(unsigned int in) { return _wrapper->translate(in); } 
+  
 private:
 
   /** bottom-level generation methods **/
