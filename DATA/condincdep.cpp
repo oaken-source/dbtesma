@@ -167,13 +167,16 @@ namespace DATA {
         std::string column = "";
         _lhs[(*i)->_columnIndices[0]]->getAttribute(DATA::Column::A_Name, column);
         std::cout << " " << count << " (" << column << ":" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]);
+        std::cerr << "db2 \"select count(*) from dbpedia02 where " << column << "='" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]) << "'";
         for(g = 1; g < (*i)->_columnIndices.size(); g++)
         {
           column = "";
           _lhs[(*i)->_columnIndices[g]]->getAttribute(DATA::Column::A_Name, column);
-          std::cout << ", " << column << ":" << (*i)->_columnValues[g];
+          std::cout << ", " << column << ":" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]);
+          std::cerr << " and " << column << "='" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]) << "'";
         }
         std::cout << ")" << std::endl;
+        std::cerr << "\"" << std::endl;
         count++;
       }
     }
