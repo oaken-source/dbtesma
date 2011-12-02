@@ -172,8 +172,8 @@ namespace DATA {
         {
           column = "";
           _lhs[(*i)->_columnIndices[g]]->getAttribute(DATA::Column::A_Name, column);
-          std::cout << ", " << column << ":" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]);
-          std::cerr << " and " << column << "='" << _lhs[(*i)->_columnIndices[0]]->translate((*i)->_columnValues[0]) << "'";
+          std::cout << ", " << column << ":" << _lhs[(*i)->_columnIndices[g]]->translate((*i)->_columnValues[g]);
+          std::cerr << " and " << column << "='" << _lhs[(*i)->_columnIndices[g]]->translate((*i)->_columnValues[g]) << "'";
         }
         std::cout << ")" << std::endl;
         std::cerr << "\"" << std::endl;
