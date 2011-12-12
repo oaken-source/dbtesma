@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "schema.h"
 
 #include <cstdarg>
@@ -78,7 +78,7 @@ namespace DATA {
         }
         std::cout << (((*v)->isReverseFD())?" (reversed)":"");
         std::cout << std::endl;
-      }      
+      }
     }
   }
 
@@ -89,7 +89,7 @@ namespace DATA {
     {
       std::string tableName;
       (*i)->getAttribute(DATA::Table::A_Name, tableName);
-      
+
       std::cout << "drop table if exists " << tableName << ";\ncreate table " << tableName << " (";
 
       std::vector<DATA::Column*>::iterator k, kLast;
@@ -97,9 +97,9 @@ namespace DATA {
       {
         std::string columnName;
         (*k)->getAttribute(DATA::Column::A_Name, columnName);
-        
+
         std::cout << columnName << " ";
-        
+
         DATA::Column::e_Datatypes type = (*k)->getDatatype();
         unsigned int length = (*k)->getLength();
 
@@ -115,13 +115,13 @@ namespace DATA {
           std::cout << "varchar(" << length << ")";
           break;
         }
-        
+
         if(k != kLast)
           std::cout << ", ";
       }
 
       std::cout << ");" << std::endl;
-      
+
       std::string pathName = tableName;
       pathName += ".csv";
       HELPER::File::makeAbsolute(pathName);
@@ -129,7 +129,7 @@ namespace DATA {
       std::cout << "load data infile \"" << pathName << "\" into table " << tableName << " fields terminated by ',';" << std::endl;
     }
   }
-  
+
   void Schema::buildSchemaWithoutDatatypes()
   {
     std::vector<DATA::Table*>::iterator i;
@@ -137,7 +137,7 @@ namespace DATA {
     {
       std::string tableName;
       (*i)->getAttribute(DATA::Table::A_Name, tableName);
-      
+
       std::cout << "drop table if exists " << tableName << ";\ncreate table " << tableName << " (";
 
       std::vector<DATA::Column*>::iterator k, kLast;
@@ -145,7 +145,7 @@ namespace DATA {
       {
         std::string columnName;
         (*k)->getAttribute(DATA::Column::A_Name, columnName);
-        
+
         std::cout << columnName << " " << "varchar(" << (((*k)->getLength() < 255)?255:(*k)->getLength()) << ")";
 
         if(k != kLast)
@@ -153,25 +153,25 @@ namespace DATA {
       }
 
       std::cout << ");" << std::endl;
-      
+
       std::string pathName = tableName;
       pathName += ".csv";
       HELPER::File::makeAbsolute(pathName);
 
       std::cout << "load data infile \"" << pathName << "\" into table " << tableName << " fields terminated by ',';" << std::endl;
-    }    
+    }
   }
-  
+
   void Schema::buildSchemaAsJSON()
   {
     std::cout << "{\"tables\":[";
-  
+
     std::vector<DATA::Table*>::iterator i, iLast;
     for(i = _tables.begin(), iLast = _tables.end(), iLast--; i != _tables.end(); i++)
     {
       std::string tableName;
       (*i)->getAttribute(DATA::Table::A_Name, tableName);
-      
+
       std::cout << "{\"name\":\"" << tableName << "\", \"rowNumbers\":" << (*i)->getRowCount() << ", \"columnModels\":[";
 
       std::vector<DATA::Column*>::iterator k, kLast;
@@ -179,11 +179,11 @@ namespace DATA {
       {
         std::string columnName;
         (*k)->getAttribute(DATA::Column::A_Name, columnName);
-        
+
         unsigned int length = (*k)->getLength();
-        
+
         std::cout << "{\"name\":\"" << columnName << "\", \"distributionMode\":\"\", \"cellSize\":" << length << ", \"dataType\":\"";
-        
+
         DATA::Column::e_Datatypes type = (*k)->getDatatype();
 
         switch(type)
@@ -198,7 +198,7 @@ namespace DATA {
           std::cout << "D_Varchar";
           break;
         }
-        
+
         std::cout << "\"}";
 
         if(k != kLast)
@@ -211,7 +211,7 @@ namespace DATA {
     }
     std::cout << "], \"InclusionDependencies\":[]}" << std::endl;
   }
-  
+
   DATA::Table* Schema::findTableByName(std::string &in)
   {
     std::vector<DATA::Table*>::iterator i;
@@ -222,7 +222,7 @@ namespace DATA {
       if(!tableName.compare(in))
         return (*i);
     }
-    
+
     return NULL;
   }
 

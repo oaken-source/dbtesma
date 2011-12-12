@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef FONTCOLOR_H
 #define FONTCOLOR_H
 
@@ -47,7 +47,7 @@ public:
   static void reset();
 
 private:
-  
+
 };
 
 } // namespaces

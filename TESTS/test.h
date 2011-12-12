@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef TEST_H
 #define TEST_H
 
@@ -40,15 +40,15 @@ class Test
 public:
 	Test() : _className(std::string()), _testCases(std::vector<std::pair<bool(Test::*)(), std::string> >()) {};
 	virtual ~Test() {};
-	
+
 	void run();
-	
+
 protected:
 	virtual void registerTests() = 0;
-	
+
 	std::string _className;
 	std::vector<std::pair<bool(Test::*)(), std::string> > _testCases;
-	
+
 };
 
 } // namespaces

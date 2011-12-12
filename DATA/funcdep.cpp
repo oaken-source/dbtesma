@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "funcdep.h"
 
 namespace DATA {
@@ -25,12 +25,12 @@ namespace DATA {
 
   void Funcdep::replaceRhs(DATA::Column *c)
   {
-    _rhsColumns.clear(); 
-    _rhsColumns.push_back(c);  
+    _rhsColumns.clear();
+    _rhsColumns.push_back(c);
   }
 
   std::vector<DATA::Column*>::iterator Funcdep::lhs_find(DATA::Column *c)
-  {  
+  {
     std::vector<DATA::Column*>::iterator i = _lhsColumns.begin();
     for(; i != _lhsColumns.end(); i++)
     {
@@ -38,7 +38,7 @@ namespace DATA {
         return i;
     }
     return _lhsColumns.end();
-    
+
   }
 
 } // namespaces

@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "strings.h"
 
 namespace HELPER {
@@ -25,7 +25,7 @@ namespace HELPER {
 
   const char *Strings::_whitespace = " \t\r\n";
   const char *Strings::_commentDelimiter = "#";
-  
+
 
   void Strings::stripComments(std::string &in)
   {
@@ -35,13 +35,13 @@ namespace HELPER {
     if(pos != in.npos)
       in.erase(pos);
   }
-  
+
   void Strings::trim(std::string &in)
   {
     trimleft(in);
     trimright(in);
   }
-  
+
   void Strings::trimleft(std::string &in)
   {
     std::string::size_type pos;
@@ -52,7 +52,7 @@ namespace HELPER {
     else
       in.erase(0);
   }
-  
+
   void Strings::trimright(std::string &in)
   {
     std::string::size_type pos;
@@ -63,7 +63,7 @@ namespace HELPER {
     else
       in.erase(0);
   }
-  
+
   bool Strings::empty(std::string &in)
   {
     return in.length() == 0;
@@ -90,7 +90,7 @@ namespace HELPER {
     {
       std::string::size_type pos;
       pos = in.find("\"");
-      
+
       if(pos != in.npos)
       {
         value = in.substr(0, pos);
@@ -99,7 +99,7 @@ namespace HELPER {
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -110,7 +110,7 @@ namespace HELPER {
 
     std::string::size_type pos;
     pos = in.find(key);
-      
+
     if(pos != in.npos && pos > 0)
     {
       value = in.substr(0, pos);
@@ -121,20 +121,20 @@ namespace HELPER {
     else
       return false;
   }
-  
+
   bool Strings::popCSV(std::string &in, std::string &value)
   {
     if(empty(in))
       return false;
-      
+
     std::string key;
     key = ",";
 
     std::string::size_type pos;
     pos = in.find(key);
-      
+
     value = in.substr(0, pos);
-    
+
     if(pos == in.npos)
       in.clear();
     else

@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "test.h"
 
 namespace TESTS {
@@ -26,7 +26,7 @@ namespace TESTS {
 	void Test::run()
 	{
 		registerTests();
-		
+
 		HELPER::UiHelper::printlnspaced(_className.c_str(), 5);
 		std::vector<std::pair<bool (Test::*)(), std::string> >::iterator i = _testCases.begin();
 		for(;i != _testCases.end(); i++)

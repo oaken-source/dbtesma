@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "ui.h"
 
 #include <cstdarg>
@@ -38,7 +38,7 @@ namespace HELPER {
       std::cout << " ";
     std::cout << in << std::endl;
   }
-  
+
   void Ui::overrln(const char in[])
   {
     std::cout << "\r" << in << std::endl;
@@ -48,7 +48,7 @@ namespace HELPER {
   {
     std::cout << std::endl;
   }
-  
+
   void Ui::printraw(const char in[])
   {
     std::cout << in << std::flush;
@@ -110,17 +110,17 @@ namespace HELPER {
     HELPER::FontColor::reset();
     std::cout << "]" << std::endl;
   }
-  
+
   void Ui::printTime()
   {
     struct tm *current;
     time_t now;
-  
+
     time(&now);
     current = localtime(&now);
 
-    std::cout << "  [" << std::setfill('0') << std::setw(2) << current->tm_hour 
-      << ":" << std::setw(2) << current->tm_min << ":" << std::setw(2) 
+    std::cout << "  [" << std::setfill('0') << std::setw(2) << current->tm_hour
+      << ":" << std::setw(2) << current->tm_min << ":" << std::setw(2)
       << current->tm_sec << "]" << std::endl;
   }
 

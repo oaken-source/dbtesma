@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef STRINGS_H
 #define STRINGS_H
 
@@ -36,24 +36,24 @@ class Strings
   /** Strings helper class
   tasks:
     provides string functionality used mainly for schema parsing **/
-  
+
   #ifdef MAKE_TESTS
     friend class StringsTest;
   #endif
-  
+
 public:
   /** remove a comment from a string - use _commentDelimiter as delimiter **/
   static void stripComments(std::string&);
-  
+
   /** trim methods **/
   static void trim(std::string&);
   static void trimleft(std::string&);
   static void trimright(std::string&);
-  
+
   /** check if a string is empty (has length of 0) **/
   static bool empty(std::string&);
-  
-  /** check if a string starts with a given value, and remove the occurrence 
+
+  /** check if a string starts with a given value, and remove the occurrence
     param1:  string to be checked
     param2:  substring to be searched
     returns  true, if substring has been found and erased, false otherwise **/
@@ -64,13 +64,13 @@ public:
     param2: string that gets the enquoted value written to
     returns true, if a value has been written, false otherwise **/
   static bool popQuotedValue(std::string&, std::string&);
-  
+
   /** check if param1 starts with a value preceding ':', pop the value to param2
     param1: string to be checked
     param2: string that gets the found value written to
     returns true, if a value has been written, false otherwise **/
   static bool popColonSeparatedValue(std::string&, std::string&);
-  
+
   /** similar to popTableName, but uses ',' as a delimiter instead of ':' **/
   static bool popCSV(std::string&, std::string&);
 
@@ -81,10 +81,10 @@ public:
   static void strval(std::string&, unsigned long long);
   static double doubval(std::string&);
 
-  /** searches for param2 in param1 of max. length of param3 
+  /** searches for param2 in param1 of max. length of param3
     returns the index of the occurrence, if one was found, else -1 **/
   static int getIndexFromAlphabet(const char*, char, unsigned int);
-  
+
 private:
 
   /** array containing whitespace characters **/

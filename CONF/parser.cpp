@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "parser.h"
 
 namespace CONF {
@@ -29,11 +29,11 @@ namespace CONF {
     _filename = rhs._filename;
     _in = rhs._in;
     _context = rhs._context;
-  
+
     return *this;
   }
 
-  Parser::~Parser() 
+  Parser::~Parser()
   {
     _in->close();
   }
@@ -43,14 +43,14 @@ namespace CONF {
     CONF::Validator *cv = new CONF::Validator(_conf);
     return (parse() && cv->validate());
   }
-  
+
 /** private *******************************************************************/
 
   bool Parser::parse()
   {
     _context = C_None;
     std::string line;
-    unsigned int lineNo = 0;    
+    unsigned int lineNo = 0;
 
     while (_in->good())
     {
@@ -62,7 +62,7 @@ namespace CONF {
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -78,7 +78,7 @@ namespace CONF {
   }
 
   bool Parser::processLineContextNone(std::string &in)
-  {    
+  {
     /** new Table expression **/
     if(HELPER::Strings::stripleft(in, "table")
       && HELPER::Strings::stripleft(in, "=")
@@ -102,9 +102,9 @@ namespace CONF {
       type = DATA::Table::A_Name;
     else if(HELPER::Strings::stripleft(in, "rows"))
       type = DATA::Table::A_Rows;
-  
+
     std::string value;
-  
+
     if(type != DATA::Table::A_None
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -124,11 +124,11 @@ namespace CONF {
       _conf->passTable()->newColumn();
       _context = C_Column;
       if(!HELPER::Strings::empty(in))
-        processLineContextColumn(in);      
+        processLineContextColumn(in);
       else
         return true;
     }
-    
+
     /** new Functional Dependency expression **/
     if(HELPER::Strings::stripleft(in, "functional_dep")
       && HELPER::Strings::stripleft(in, "=")
@@ -159,7 +159,7 @@ namespace CONF {
     /** end Table expression **/
     if(HELPER::Strings::stripleft(in, "}"))
     {
-      _context = C_None;    
+      _context = C_None;
       if(!HELPER::Strings::empty(in))
         processLineContextNone(in);
       else
@@ -230,7 +230,7 @@ namespace CONF {
       else
         return true;
     }
-    
+
     if(HELPER::Strings::stripleft(in, "rhs")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -242,23 +242,23 @@ namespace CONF {
         return true;
     }
 
-    /** end Conditional Inclusion Dependency expression **/ 
+    /** end Conditional Inclusion Dependency expression **/
     if(HELPER::Strings::stripleft(in, "}"))
     {
-      _context = C_Table;      
+      _context = C_Table;
       if(!HELPER::Strings::empty(in))
         processLineContextTable(in);
       else
         return true;
     }
 
-    return false;    
+    return false;
   }
 
   bool Parser::processLineContextCondIncDep(std::string &in)
   {
     std::string value;
-  
+
     if(HELPER::Strings::stripleft(in, "completeness")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -269,7 +269,7 @@ namespace CONF {
       else
         return true;
     }
-    
+
     if(HELPER::Strings::stripleft(in, "rows")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -280,7 +280,7 @@ namespace CONF {
       else
         return true;
     }
-    
+
     if(HELPER::Strings::stripleft(in, "conditions")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -292,7 +292,7 @@ namespace CONF {
       else
         return true;
     }
-    
+
     if(HELPER::Strings::stripleft(in, "lhs")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -303,7 +303,7 @@ namespace CONF {
       else
         return true;
     }
-    
+
     if(HELPER::Strings::stripleft(in, "rhs")
       && HELPER::Strings::stripleft(in, "=")
       && HELPER::Strings::popQuotedValue(in, value))
@@ -315,10 +315,10 @@ namespace CONF {
         return true;
     }
 
-    /** end Functioal Dependency expression **/ 
+    /** end Functioal Dependency expression **/
     if(HELPER::Strings::stripleft(in, "}"))
     {
-      _context = C_Table;      
+      _context = C_Table;
       if(!HELPER::Strings::empty(in))
         processLineContextTable(in);
       else

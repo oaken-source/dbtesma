@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef SCHEMA_H
 #define SCHEMA_H
 
@@ -35,7 +35,7 @@ class Schema
     contains the top-level schema information **/
 
 public:
-  Schema() : _error(""), _tables(std::vector<DATA::Table*>()), 
+  Schema() : _error(""), _tables(std::vector<DATA::Table*>()),
     _hardened_fds(false) {};
   ~Schema() { };
 
@@ -51,27 +51,27 @@ public:
 
   /** debug **/
   void dumpToStdout();
-  
+
   /** schema scans **/
   void buildSchema();
   void buildSchemaWithoutDatatypes();
   void buildSchemaAsJSON();
 
-  /** access **/ 
+  /** access **/
   std::vector<DATA::Table*>::size_type size() { return _tables.size(); }
   std::vector<DATA::Table*>::iterator begin() { return _tables.begin(); }
   std::vector<DATA::Table*>::iterator end() { return _tables.end(); }
 
   void setHardenFdFlag(bool flag) { _hardened_fds = flag; }
   bool hasHardenedFds() { return _hardened_fds; }
-  
+
   DATA::Table* findTableByName(std::string&);
 
 private:
 
   std::string _error;
   std::vector<DATA::Table*> _tables;
-  
+
   bool _hardened_fds;
 
 };

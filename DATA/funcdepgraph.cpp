@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "funcdepgraph.h"
 
 namespace DATA {
@@ -28,12 +28,12 @@ namespace DATA {
     Node n = { c, 0, std::vector<DATA::Column*>(), false};
     _nodes.push_back( n );
   }
-  
+
   void FuncdepGraph::push_back(DATA::Funcdep *fd)
   {
     DATA::Column *rhs = *(fd->rhs_begin());
     findInNodes(rhs)->_parents += fd->lhs_size();
-  
+
     std::vector<DATA::Column*>::iterator i = fd->lhs_begin();
     for(; i != fd->lhs_end(); i++)
     {
@@ -63,7 +63,7 @@ namespace DATA {
   {
     _nodes.clear();
   }
-  
+
 /** private *******************************************************************/
 
   DATA::FuncdepGraph::Node* FuncdepGraph::findInNodes(DATA::Column *c)
@@ -75,6 +75,6 @@ namespace DATA {
         return &(*i);
     }
     return 0;
-  }  
+  }
 
 } // namespaces

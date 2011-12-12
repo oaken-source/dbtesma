@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "table.h"
 
 #include <iostream>
@@ -47,8 +47,8 @@ namespace DATA {
       return false;
     out = _attributes[type];
     return true;
-  }  
-  
+  }
+
   void Table::newFuncdep(bool fkdepFlag, bool reverseFDFlag)
   {
     DATA::Funcdep *newFuncdep = new DATA::Funcdep(fkdepFlag, reverseFDFlag);
@@ -81,19 +81,19 @@ namespace DATA {
       (*i)->setupMulticolumKeyConstraints(n, m, _rows);
     }
   }
-  
+
   bool Table::sortColumns()
   {
     fillColumnsGraph();
     return buildColumnsSequence();
   }
-  
+
   bool Table::resortColumns()
   {
     refillColumnsGraph();
     return rebuildColumnsSequence();
   }
-  
+
   void Table::priorizeColumn(DATA::Column *c)
   {
     std::vector<DATA::Column*>::iterator i = _columnsSorted.begin();
@@ -113,7 +113,7 @@ namespace DATA {
     }
   }
 
-  void Table::print(bool noHeader, bool hardenFds)  
+  void Table::print(bool noHeader, bool hardenFds)
   {
     openOutstream();
 
@@ -128,10 +128,10 @@ namespace DATA {
       next();
       printRow();
     }
-    
+
     if(hardenFds)
       harden();
-    
+
     closeOutstream();
   }
 
@@ -145,7 +145,7 @@ namespace DATA {
       if(!columnName.compare(in))
         return (*i);
     }
-    
+
     return NULL;
   }
 
@@ -157,13 +157,13 @@ namespace DATA {
     _out->open(name.c_str());
     std::vector<DATA::Column*>::iterator i = _columns.begin();
     for(;i != _columns.end(); i++)
-      (*i)->populateOutstream(_out);      
+      (*i)->populateOutstream(_out);
   }
 
   void Table::closeOutstream()
   {
     _out->close();
-  }  
+  }
 
   void Table::printHeader()
   {
@@ -174,26 +174,26 @@ namespace DATA {
     i++;
     for(;i != _columns.end(); i++)
     {
-      (*i)->getAttribute(DATA::Column::A_Name, st);      
+      (*i)->getAttribute(DATA::Column::A_Name, st);
       (*_out) << "," << st;
     }
     (*_out) << std::endl;
   }
-  
+
   void Table::next()
   {
     std::vector<DATA::Column*>::iterator i = _columnsSorted.begin();
     for(; i != _columnsSorted.end(); i++)
       (*i)->next();
   }
-  
+
   void Table::nextNoIncrement()
   {
     std::vector<DATA::Column*>::iterator i = _columnsSorted.begin();
     for(; i != _columnsSorted.end(); i++)
       (*i)->nextNoIncrement();
   }
-  
+
   void Table::printRow()
   {
     std::vector<DATA::Column*>::iterator i = _columns.begin();
@@ -213,7 +213,7 @@ namespace DATA {
     /** build lookup index **/
     std::map<DATA::Column*, unsigned int> indexByColumn = std::map<DATA::Column*, unsigned int>();
     std::vector<DATA::Column*> rhsCols = std::vector<DATA::Column*>();
-    
+
     std::vector<DATA::Funcdep*>::iterator fd = _funcdeps.begin();
     int lhs_index = 1;
     for(; fd != _funcdeps.end(); fd++)
@@ -227,7 +227,7 @@ namespace DATA {
         lhs_index++;
       }
     }
-    
+
     unsigned int index;
     std::vector<DATA::Column*>::iterator c;
     /** first pass **/
@@ -244,7 +244,7 @@ namespace DATA {
         (*c)->next();
 
       c = _columns.begin();
-      
+
       (*c)->print();
       if(indexByColumn[*c] == index)
         (*c)->resetTemp();
@@ -272,7 +272,7 @@ namespace DATA {
         (*c)->next();
 
       c = _columns.begin();
-      
+
       (*c)->print();
       c++;
       for(; c != _columns.end(); c++)
@@ -285,7 +285,7 @@ namespace DATA {
       (*_out) << std::endl;
     }
   }
-  
+
   int Table::getKeyGroupPos(DATA::Column *col)
   {
     std::map<std::string, std::vector<DATA::Column*> >::iterator i;
@@ -319,28 +319,28 @@ namespace DATA {
     }
     return -1;
   }
-  
+
   void Table::fillColumnsGraph()
   {
     std::vector<DATA::Column*>::iterator i = _columns.begin();
     for(; i != _columns.end(); i++)
       _funcdepGraph->push_back(*i);
-      
+
     std::vector<DATA::Funcdep*>::iterator j = _funcdeps.begin();
     for(; j != _funcdeps.end(); j++)
       _funcdepGraph->push_back(*j);
   }
-  
+
   bool Table::buildColumnsSequence()
   {
     DATA::Column *c = _funcdepGraph->pop_back();
     while(c)
-    {  
+    {
       _columnsSorted.push_back(c);
       registerColumnReferences(c);
       c = _funcdepGraph->pop_back();
     }
-    
+
     return _columns.size() == _columnsSorted.size();
   }
 
@@ -349,19 +349,19 @@ namespace DATA {
     _funcdepGraph->clear();
     fillColumnsGraph();
   }
-  
+
   bool Table::rebuildColumnsSequence()
   {
     _columnsSorted.clear();
-  
+
     DATA::Column *c = _funcdepGraph->pop_back();
     while(c)
-    {  
+    {
       _columnsSorted.push_back(c);
       registerFKColumnReferences(c);
       c = _funcdepGraph->pop_back();
     }
-    
+
     return _columns.size() == _columnsSorted.size();
   }
 
@@ -389,7 +389,7 @@ namespace DATA {
         c->registerFKReferences((*i)->lhs());
     }
   }
-  
+
 } // namespaces
 
 

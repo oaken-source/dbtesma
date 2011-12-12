@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "column.h"
 
 #include <iostream>
@@ -54,25 +54,25 @@ namespace DATA {
       out = _attributes[type];
     return good;
   }
-  
+
   void Column::nextNoIncrement()
   {
     if(_generationMethod != &DATA::Column::generateDataKeyPrimary)
       (*this.*_generationMethod)();
   }
-  
+
   void Column::nextHarden()
   {
     if(_generationMethod == &DATA::Column::generateDataKeyPrimary)
       (*this.*_generationMethod)();
   }
-  
+
   void Column::incrementTemp()
   {
     _cached = _wrapper->getValue();
     _wrapper ->setValue(_cached + _siblingCount + 1);
   }
-  
+
   void Column::incrementTempSmall()
   {
     _cached = _wrapper->getValue();
@@ -84,7 +84,7 @@ namespace DATA {
     _datatype = type;
     populateDatatypeWrapper();
   }
-  
+
   void Column::setUniqueValueCount(unsigned long long in)
   {
     if(_unique == 0 || _unique > in)
@@ -93,7 +93,7 @@ namespace DATA {
       _wrapper->setRange(in);
     }
   }
-  
+
   void Column::setGenerationType(Column::e_GenTypes type)
   {
     switch(type)
@@ -138,7 +138,7 @@ namespace DATA {
     _out = out;
     _wrapper->populateOutstream(out);
   }
-  
+
   void Column::registerReferences(std::vector<DATA::Column*> &in)
   {
     _parentCount = in.size();
@@ -149,13 +149,13 @@ namespace DATA {
       in[i]->registerSiblingCount(_parentCount);
       _parentColumns[i] = in[i];
     }
-    
+
     if(_generationMethod == &DATA::Column::generateDataRandomInRange)
       _generationMethod = &DATA::Column::processFuncdepInRange;
     else
-      _generationMethod = &DATA::Column::processFuncdep;    
+      _generationMethod = &DATA::Column::processFuncdep;
   }
-  
+
   void Column::registerReverseReferences(std::vector<DATA::Column*> &in)
   {
     _parentCount = in.size();
@@ -163,10 +163,10 @@ namespace DATA {
     unsigned int i;
     for(i = 0; i < in.size(); i++)
       _parentColumns[i] = in[i];
-    
-    _generationMethod = &DATA::Column::processReverseFuncdep;    
+
+    _generationMethod = &DATA::Column::processReverseFuncdep;
   }
-  
+
   void Column::registerFKReferences(std::vector<DATA::Column*> &in)
   {
     _parentCount = in.size();
@@ -180,7 +180,7 @@ namespace DATA {
     else
       _generationMethod = &DATA::Column::processFKDepDeep;
   }
-  
+
   void Column::setHeadCondIncDep(std::vector<std::vector<unsigned int> > values)
   {
     _parentCount = 0;
@@ -190,7 +190,7 @@ namespace DATA {
       _wrapper->zeroBasevalue();
     _cached = (rand() % 1000) + 1000;
   }
-  
+
   void Column::setChildCondIncDep(DATA::Column *c)
   {
     _parentCount = 1;
@@ -201,7 +201,7 @@ namespace DATA {
       _wrapper->zeroBasevalue();
     _cached = (rand() % 1000) + 1000;
   }
-  
+
   void Column::setRhsCondIncDep(DATA::Column *c)
   {
     _parentCount = 1;
@@ -211,12 +211,12 @@ namespace DATA {
     if(_datatype == D_Int)
       _wrapper->zeroBasevalue();
   }
-  
+
   bool Column::isIndependent()
   {
     return (_generationMethod == &DATA::Column::generateDataRandom);
   }
-  
+
 /** private *******************************************************************/
 
   void Column::generateDataKeyPrimary()
@@ -235,7 +235,7 @@ namespace DATA {
         break;
     }
   }
-  
+
   void Column::generateDataNext()
   {
     _wrapper->setValue(_cached);
@@ -249,24 +249,24 @@ namespace DATA {
     unsigned long long value = 0;
     for(i = 0; i < _parentCount; i++)
       value += _parentColumns[i]->_wrapper->getValue();
-    
+
     value /= (_parentCount + 1);
-    
-    _wrapper->setValue(value);  
+
+    _wrapper->setValue(value);
   }
-  
+
   void Column::processFuncdepInRange()
   {
     unsigned int i;
     unsigned long long value = 0;
     for(i = 0; i < _parentCount; i++)
       value += _parentColumns[i]->_wrapper->getValue();
-    
+
     value /= (_parentCount + 1);
 
-    _wrapper->setValueInRange(value);  
+    _wrapper->setValueInRange(value);
   }
-  
+
   void Column::processReverseFuncdep()
   {
     unsigned int i;
@@ -275,32 +275,32 @@ namespace DATA {
       value += _parentColumns[i]->_wrapper->getValue();
 
     value *= _parentCount + 1;
-      
+
     if(rand() % 2)
       value++;
-    
-    _wrapper->setValue(value);  
+
+    _wrapper->setValue(value);
   }
-  
+
   void Column::processFKDepSingle()
   {
     unsigned long long value = _parentColumns[0]->_wrapper->getValue();
-    
+
     if(value > 0 && rand() % _siz < _dex)
       value--;
-    
-    _wrapper->setValue(value);  
+
+    _wrapper->setValue(value);
   }
-  
+
   void Column::processFKDepDeep()
   {
     unsigned long long value = _parentColumns[0]->_wrapper->getValue();
 
-    if(_parentColumns[1]->_wrapper->getValue() != value 
+    if(_parentColumns[1]->_wrapper->getValue() != value
       || (value > 0 && rand() % _siz < _dex))
       value--;
-    
-    _wrapper->setValue(value);  
+
+    _wrapper->setValue(value);
   }
 
   void Column::processHeadCondIncDep()
@@ -336,9 +336,9 @@ namespace DATA {
     _cindValues[_dex][0]--;
     _siz = 2;
 
-      
+
     if(_cindValues[_dex][1])
-      _wrapper->setValue(_cindValues[_dex][1]);  
+      _wrapper->setValue(_cindValues[_dex][1]);
     else
       generateDataNext();
   }
@@ -353,9 +353,9 @@ namespace DATA {
       _generationMethod = &DATA::Column::generateDataKeyPrimary;
       return;
     }
-   
+
     if(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz])
-      _wrapper->setValue(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz]);  
+      _wrapper->setValue(_parentColumns[0]->_cindValues[_parentColumns[0]->_dex][_parentColumns[0]->_siz]);
     else
       generateDataNext();
 
@@ -363,7 +363,7 @@ namespace DATA {
   }
 
   void Column::processRhsCondIncDep()
-  {   
+  {
     if(!_parentColumns[0]->_siz)
       _wrapper->setValue(0);
     else

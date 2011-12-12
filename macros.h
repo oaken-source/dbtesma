@@ -30,7 +30,7 @@
 #else
   #define DEBUG 0
 #endif
-  
+
 /** set some string constants **/
 #define VERSION_STR     "  dbtesma version 1.0.4"
 #define ABOUT_STR       "  written by Andreas Henning - a.henning.dev@gmail.com"

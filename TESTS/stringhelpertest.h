@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef STRINGHELPERTEST_H
 #define STRINGHELPERTEST_H
 
@@ -36,12 +36,12 @@ class StringHelperTest : public Test
 public:
 	StringHelperTest() { _className = "HELPER::StringHelper"; };
 	~StringHelperTest() {};
-	
+
 private:
 	void registerTests();
-	
+
 	bool test_trim();
-	
+
 };
 
 } // namespaces

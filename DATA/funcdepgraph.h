@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef FUNCDEPGRAPH_H
 #define FUNCDEPGRAPH_H
 
@@ -30,7 +30,7 @@ class FuncdepGraph
   /** FuncdepGraph Data Class
   tasks:
     do topological sort! and do it well! **/
-  
+
   struct Node
   {
     DATA::Column* _column;
@@ -49,12 +49,12 @@ public:
 
   /** add edges to graph **/
   void push_back(DATA::Funcdep*);
-  
+
   /** return next element without parents **/
   DATA::Column* pop_back();
-  
+
   void clear();
-  
+
 private:
 
   Node* findInNodes(DATA::Column*);

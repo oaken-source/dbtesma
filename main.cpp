@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   else if(cah->flag(CP_About)) // print 'about' stuff
     HELPER::Ui::println(ABOUT_STR);
   else if(cah->flag(CP_Schema)) // print schema information to stdout
-  {    
+  {
     if(!exists)
       HELPER::Ui::printerr("'%s' not found", file.c_str());
     if(cah->hasError() || !exists) // quit on error
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
           HELPER::Ui::printerr(msg.first.c_str());
         else
           HELPER::Ui::printwrn(msg.first.c_str());
-        
+
         msg = cah->popMsg();
       }
       return 1;
@@ -58,10 +58,10 @@ int main(int argc, char *argv[])
 
     DATA::Schema* config = new DATA::Schema();
     CONF::Parser* cp = new CONF::Parser(file, config);
-    
+
     srand(time(NULL));
-    
-    /** procss schema config **/ 
+
+    /** procss schema config **/
     if(cp->parseAndValidate())
     {
       /** valid schema - print schema information to stdout **/
@@ -78,10 +78,10 @@ int main(int argc, char *argv[])
   else // real data generation
   {
     HELPER::Ui::printTime();
-    
+
     HELPER::Ui::println(" DBTesMa data generator");
     HELPER::Ui::println(" - starting up...");
-    
+
     if(cah->hasMsg()) // errors/warnings during parsing?
     {
       std::pair<std::string, bool> msg = cah->popMsg();
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
           HELPER::Ui::printerr(msg.first.c_str());
         else
           HELPER::Ui::printwrn(msg.first.c_str());
-        
+
         msg = cah->popMsg();
       }
     }
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
       HELPER::Ui::printraw(USAGE_STR);
       return 1;
     }
-        
+
     if(!exists && !cah->flag(CP_Generate)) // file not found warning
       HELPER::Ui::printwrn("'%s' not found", file.c_str());
     else
@@ -120,11 +120,11 @@ int main(int argc, char *argv[])
 
       DATA::Schema* config = new DATA::Schema();
       CONF::Parser* cp = new CONF::Parser(file, config);
-      
+
       srand(time(NULL));
 
       config->setHardenFdFlag(cah->flag(CP_HardenFds));
-      
+
       /** process schema config **/
       if(cp->parseAndValidate())
       {
@@ -133,8 +133,8 @@ int main(int argc, char *argv[])
           config->dumpToStdout();
 
         HELPER::Ui::printok();
-        HELPER::Ui::println(" - generating tables...");  
-        
+        HELPER::Ui::println(" - generating tables...");
+
         std::vector<DATA::Table*>::iterator i;
         for(i = config->begin(); i != config->end(); i++)
         {
@@ -166,17 +166,17 @@ int main(int argc, char *argv[])
 
 void setupCliArgs(HELPER::CliArgs* cah)
 {
-  cah->addFlag("--verbose", CP_Verbose); 
+  cah->addFlag("--verbose", CP_Verbose);
   cah->addFlag("--generate", CP_Generate);
   cah->addFlag("--schema", CP_Schema);
   cah->addFlag("--hidden", CP_Hidden);
   cah->addFlag("--asJSON", CP_AsJson);
   cah->addFlag("--noheader", CP_NoHeader);
   cah->addFlag("--hardenFDs", CP_HardenFds);
-  cah->addFlag("--help", CP_Help);  
-  cah->addFlag("--version", CP_Version);  
-  cah->addFlag("--about", CP_About);  
-  
+  cah->addFlag("--help", CP_Help);
+  cah->addFlag("--version", CP_Version);
+  cah->addFlag("--about", CP_About);
+
   cah->addPair("-f", CP_F, "tesmafile");
 }
 

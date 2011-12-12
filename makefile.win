@@ -4,7 +4,7 @@ include makefile.rules.gcc
 ifdef DEBUG
  MFLAGS = DEBUG=1
 else
- MFLAGS = 
+ MFLAGS =
 endif
 
 BIN = dbtesma
@@ -29,7 +29,7 @@ all: $(OBJ_TEST)
 	@make $(MFLAGS) TESTS=1 -C HELPER
 	@make $(MFLAGS) TESTS=1 -C TESTS
 	$(GCC) $(CFLAGS) -o $(BIN_TEST) $(OBJ_TEST) $(OBJ_ALL)
-	
+
 else
 all: $(OBJ)
 	@make $(MFLAGS) -C CONF
@@ -37,13 +37,13 @@ all: $(OBJ)
 	@make $(MFLAGS) -C DATA/WRAPPER
 	@make $(MFLAGS) -C HELPER
 	$(GCC) $(CFLAGS) -o $(BIN) $(OBJ) $(OBJ_ALL)
-	
+
 endif
-	
-clean: 
+
+clean:
 	@del /S *.exe > NUL 2> NUL
 	@del /S *.o	> NUL 2> NUL
-	
+
 rebuild: clean all
 
 tests: clean

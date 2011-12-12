@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "stringhelpertest.h"
 
 namespace TESTS {
@@ -29,10 +29,10 @@ namespace TESTS {
 	{
 		REGISTER_TESTCASE(&TESTS::StringHelperTest::test_trim, "testing trim() functions");
 	}
-	
+
 	bool StringHelperTest::test_trim()
 	{
 		return true;
 	}
-		
+
 } // namespaces

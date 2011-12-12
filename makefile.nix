@@ -4,7 +4,7 @@ include makefile.rules.gcc
 ifdef DEBUG
  MFLAGS = DEBUG=1
 else
- MFLAGS = 
+ MFLAGS =
 endif
 
 BIN = dbtesma
@@ -25,12 +25,12 @@ ifdef TESTS
 all: $(OBJ_TEST)
 	@for i in $(DIRS) $(DIRS_TEST); do make $(MFLAGS) TESTS=1 -C $$i; done
 	$(GCC) $(CFLAGS) -o $(BIN_TEST) $(OBJ_TEST) $(OBJ_ALL)
-	
+
 else
 all: $(OBJ)
 	@for i in $(DIRS); do make $(MFLAGS) -C $$i; done
 	$(GCC) $(CFLAGS) -o $(BIN) $(OBJ) $(OBJ_ALL)
-	
+
 endif
 
 clean:

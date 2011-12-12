@@ -29,7 +29,7 @@ namespace DATA {
   {
     _rowsPerPacket = rhs._rowsPerPacket;
     _packets = rhs._packets;
-  
+
     _completeness = rhs._completeness;
     _rows = rhs._rows;
     _conditions = rhs._conditions;
@@ -40,29 +40,29 @@ namespace DATA {
     _conditionStrings = rhs._conditionStrings;
     _lhsString = rhs._lhsString;
     _rhsString = rhs._rhsString;
-    
+
     _unused = rhs._unused;
     _usedonce = rhs._usedonce;
-    
+
     return *this;
   }
 
   void CondIncDep::buildPackets()
-  {  
+  {
     std::vector<Condition*> unused = _conditions;
     std::vector<Condition*> usedonce;
-        
+
     while(!unused.empty() || !usedonce.empty())
     {
       Packet *p = new Packet();
       for(unsigned int i = 0; i < _lhs.size(); i++)
         p->_values.push_back(0); // fill packet with wildcards
-      
+
       p->_rows = floor(_completeness * _rows / 2);
-      
+
       std::vector<DATA::Column*> freeLhs = _lhs;
       std::vector<Condition*> included;
-      
+
       Condition *c;
       if(!usedonce.empty())
       {
@@ -73,13 +73,13 @@ namespace DATA {
       }
       else
       {
-        std::vector<Condition*>::iterator i;      
+        std::vector<Condition*>::iterator i;
         i = getGreatest(unused.begin(), unused.end());
         c = (*i);
         usedonce.push_back(c);
         unused.erase(i);
       }
-      
+
       while(c)
       {
         if(!c->_columns.size()) // picked condition is not registered to columns yet
@@ -88,7 +88,7 @@ namespace DATA {
           {
             int random = rand() % freeLhs.size();
             c->_columns.push_back(freeLhs[random]); // register column
-            
+
             for(unsigned int y = 0; y < _lhs.size(); y++) // register column index
               if(_lhs[y] == freeLhs[random])
               {
@@ -109,22 +109,22 @@ namespace DATA {
                 break;
               }
         }
-        
+
         for(unsigned int x = 0; x < included.size(); x++) // register fixtures
         {
           c->_fixtures.push_back(included[x]);
           included[x]->_fixtures.push_back(c);
         }
-        
+
         included.push_back(c); // store away
         p->_conditions.push_back(c);
-        
-        c = getNext(freeLhs, included, &usedonce, &unused);  // get next Cond. 
+
+        c = getNext(freeLhs, included, &usedonce, &unused);  // get next Cond.
       }
       _packets.push_back(p);
     }
   }
-  
+
   DATA::Column* CondIncDep::finalizePackets()
   {
     // assign values to conditions
@@ -191,7 +191,7 @@ namespace DATA {
       rowcount += (*p)->_rows;
       for(unsigned int x = 0; x < _lhs.size(); x++)
         values.back().push_back(0); // fill packet with wildcards
-        
+
       i = (*p)->_conditions.begin();
       for(; i != (*p)->_conditions.end(); i++)
         for(unsigned int x = 0; x < (*i)->_size; x++)
@@ -200,7 +200,7 @@ namespace DATA {
           (*p)->_values[(*i)->_columnIndices[x]] = (*i)->_columnValues[x];
         }
     }
-    
+
     if(DEBUG)
     {
       std::cout << "packet pairings:" << std::endl;
@@ -228,7 +228,7 @@ namespace DATA {
         }
       }
     }
-    
+
     // add wildcard packet to fill row count
     if(_rows - rowcount > 0)
     {
@@ -237,9 +237,9 @@ namespace DATA {
       for(unsigned int x = 0; x < _lhs.size(); x++)
         values.back().push_back(0); // fill packet with wildcards
     }
-    
+
     // prepare generation
-    
+
     if(DEBUG)
     {
       std::cout << "value vector:" << std::endl;
@@ -251,15 +251,15 @@ namespace DATA {
         std::cout << ")" << std::endl;
       }
     }
-    
+
     _lhs[0]->setHeadCondIncDep(values);
     for(unsigned int x = 1; x < _lhs.size(); x++)
       _lhs[x]->setChildCondIncDep(_lhs[0]);
     _rhs->setRhsCondIncDep(_lhs[0]);
-    
+
     return _lhs[0];
   }
-  
+
   std::string CondIncDep::popConditionsString()
   {
     if(!_conditionStrings.size())
@@ -268,7 +268,7 @@ namespace DATA {
     _conditionStrings.pop_back();
     return res;
   }
-  
+
   unsigned int CondIncDep::getMaxCondSize()
   {
     unsigned int res = 0;
@@ -279,7 +279,7 @@ namespace DATA {
 
     return res;
   }
-  
+
   void CondIncDep::pushConditions(unsigned int size, unsigned int count)
   {
     unsigned int i;
@@ -289,7 +289,7 @@ namespace DATA {
       _conditions.push_back(c);
     }
   }
-  
+
   std::vector<CondIncDep::Condition*>::iterator CondIncDep::getGreatest(
     std::vector<CondIncDep::Condition*>::iterator begin,
     std::vector<CondIncDep::Condition*>::iterator end)
@@ -301,7 +301,7 @@ namespace DATA {
         c = i;
     return c;
   }
-  
+
   CondIncDep::Condition* CondIncDep::getNext(std::vector<DATA::Column*> freeLhs,
     std::vector<CondIncDep::Condition*> included,
     std::vector<CondIncDep::Condition*> *usedonce,
@@ -311,12 +311,12 @@ namespace DATA {
     unsigned int maxSize = 0;
     std::vector<Condition*>::iterator i;
     for(i = usedonce->begin(); i != usedonce->end(); i++)
-      if((*i)->_size > maxSize && isValidInContext(freeLhs, included, (*i))) 
+      if((*i)->_size > maxSize && isValidInContext(freeLhs, included, (*i)))
       {
         maxSize = (*i)->_size;
         c = (*i);
       }
-    
+
     if(c) // priorize usedonce
     {
       for(i = usedonce->begin(); i != usedonce->end(); i++)
@@ -327,14 +327,14 @@ namespace DATA {
         }
       return c;
     }
-    
+
     for(i = unused->begin(); i != unused->end(); i++)
-      if((*i)->_size > maxSize && isValidInContext(freeLhs, included, (*i))) 
+      if((*i)->_size > maxSize && isValidInContext(freeLhs, included, (*i)))
       {
         maxSize = (*i)->_size;
         c = (*i);
       }
-    
+
     if(c)
     {
       for(i = unused->begin(); i != unused->end(); i++)
@@ -347,13 +347,13 @@ namespace DATA {
     }
     return c; // return anyway
   }
-  
+
   bool CondIncDep::isValidInContext(std::vector<DATA::Column*> freeLhs,
     std::vector<CondIncDep::Condition*> included, CondIncDep::Condition *c)
   {
     if(freeLhs.size() < c->_size)
       return false;
-    
+
     for(unsigned int i = 0; i < c->_columns.size(); i++) // check for non-free
     {
       bool found = false;
@@ -363,17 +363,17 @@ namespace DATA {
           found = true;
           break;
         }
-        
+
       if(!found)
         return false;
     }
-    
+
     for(unsigned int i = 0; i < c->_fixtures.size(); i++) // check for fixture
       for(unsigned int j = 0; j < included.size(); j++)
         if(c->_fixtures[i] == included[j])
           return false;
-    
+
     return true;
   }
-  
+
 } // namespaces

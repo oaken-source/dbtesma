@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "stringhelpertest.h"
 
 int main()
@@ -29,27 +29,27 @@ int main()
 
 	/** prepare test vector **/
 	std::vector<TESTS::Test*> tests = std::vector<TESTS::Test*>();
-		
+
 	/** register testclasses **/
 	tests.push_back(new TESTS::StringHelperTest());
-	
+
 	HELPER::UiHelper::printok();
 
-	HELPER::UiHelper::println(" - running tests...");	
-	
+	HELPER::UiHelper::println(" - running tests...");
+
 	/** run tests **/
 	std::vector<TESTS::Test*>::iterator i = tests.begin();
-	for(;i != tests.end(); ++i) 
-		(*i)->run();	
-		
-	/** shut down **/	
+	for(;i != tests.end(); ++i)
+		(*i)->run();
+
+	/** shut down **/
 	HELPER::UiHelper::println(" - shutting down...");
 	HELPER::UiHelper::printok();
 	HELPER::UiHelper::println(" DBTesMa tests finished");
 
 	/** finished **/
 	HELPER::UiHelper::printTime();
-	
+
 	return 0;
 }
 

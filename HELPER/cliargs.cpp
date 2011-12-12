@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "cliargs.h"
 
 #include <cstdarg>
@@ -34,7 +34,7 @@ namespace HELPER {
     addFlagParam(name, id);
     return true;
   }
-  
+
   bool CliArgs::addPair(std::string name, int id, std::string def)
   {
     if(_flag.find(name) != _flag.end() || _pair.find(name) != _pair.end())
@@ -43,7 +43,7 @@ namespace HELPER {
     addPairParam(name, id);
     if(def.length() > 0)
       _pairDef[id] = def;
-    return true;  
+    return true;
   }
 
   void CliArgs::parse(int argc, char *argv[])
@@ -105,7 +105,7 @@ namespace HELPER {
     else
       return std::string("");
   }
-  
+
   std::string CliArgs::popValue()
   {
     if(_values.size() > 0)
@@ -138,14 +138,14 @@ namespace HELPER {
     _pairs.clear();
     _values.clear();
     _msg.clear();
-    
-    _error = false; 
-    
+
+    _error = false;
+
     std::map<int, std::string>::iterator i = _pairDef.begin();
     for(; i != _pairDef.end(); i++)
       _pairs[(*i).first] = (*i).second;
   }
-  
+
   void CliArgs::setError(const char str[], ...)
   {
     va_list vl;
@@ -166,6 +166,6 @@ namespace HELPER {
     _msg.push_back(std::pair<std::string, bool>(std::string(buf), false));
     va_end(vl);
   }
-  
+
 } // namespaces
 

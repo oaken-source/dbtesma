@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef COLUMN_H
 #define COLUMN_H
 
@@ -72,18 +72,18 @@ public:
     A_ForeignKey
   };
 
-  Column() : _generationMethod(&DATA::Column::generateDataRandom), 
-    _attributes(std::map<e_Attributes, std::string>()), _wrapper(NULL), 
-    _datatype(D_Int), _length(0), _key(KT_None), 
-    _unique(0), _rows(0), _dex(0), _siz(0), _parentCount(0), _parentColumns(0), 
-    _siblingCount(0), _out(new std::ofstream()), _cached(0), 
+  Column() : _generationMethod(&DATA::Column::generateDataRandom),
+    _attributes(std::map<e_Attributes, std::string>()), _wrapper(NULL),
+    _datatype(D_Int), _length(0), _key(KT_None),
+    _unique(0), _rows(0), _dex(0), _siz(0), _parentCount(0), _parentColumns(0),
+    _siblingCount(0), _out(new std::ofstream()), _cached(0),
     _cindValues(std::vector<std::vector<unsigned int> >()) {};
-  Column(const Column &obj) : _generationMethod(obj._generationMethod), 
-    _attributes(obj._attributes), _wrapper(obj._wrapper), 
-    _datatype(obj._datatype), _length(obj._length), _key(obj._key), 
-    _unique(obj._unique), _rows(obj._rows), _dex(obj._dex), _siz(obj._siz), 
-    _parentCount(obj._parentCount), _parentColumns(obj._parentColumns), 
-    _siblingCount(obj._siblingCount), _out(obj._out), _cached(obj._cached), 
+  Column(const Column &obj) : _generationMethod(obj._generationMethod),
+    _attributes(obj._attributes), _wrapper(obj._wrapper),
+    _datatype(obj._datatype), _length(obj._length), _key(obj._key),
+    _unique(obj._unique), _rows(obj._rows), _dex(obj._dex), _siz(obj._siz),
+    _parentCount(obj._parentCount), _parentColumns(obj._parentColumns),
+    _siblingCount(obj._siblingCount), _out(obj._out), _cached(obj._cached),
     _cindValues(obj._cindValues) {};
   Column& operator=(const Column&);
   ~Column() {};
@@ -91,7 +91,7 @@ public:
   /** raw attribute accessing **/
   void setAttribute(e_Attributes t, std::string &in) { _attributes[t] = in; }
   bool getAttribute(e_Attributes, std::string&);
-  
+
   /** different top-level generation methods **/
   void next() { (*this.*_generationMethod)(); }
   void nextNoIncrement();
@@ -100,7 +100,7 @@ public:
   void incrementTempSmall();
   void resetTemp() { _wrapper->setValue(_cached); }
   void print() { _wrapper->print(); }
-  
+
   /** getter / setter for actual attributes **/
   void setDatatype(e_Datatypes);
   e_Datatypes getDatatype() { return _datatype; }
@@ -110,14 +110,14 @@ public:
   e_KeyTypes getKey() { return _key; }
   void setUniqueValueCount(unsigned long long);
   unsigned long long getUniqueValueCount() { return _unique; }
-  
+
   void setGenerationType(e_GenTypes);
-  
+
   void setupMulticolumKeyConstraints(int, int, unsigned long long);
-  
+
   /** primary key related attributes **/
   int getDex() { return _dex; }
-  void setDex(int dex) { _dex = dex; } 
+  void setDex(int dex) { _dex = dex; }
   int getSiz() { return _siz; }
   void setSiz(int siz) { _siz = siz; }
   unsigned long long getRows() { return _rows; }
@@ -125,7 +125,7 @@ public:
   void getBasevalue(std::string &in) { _wrapper->getBasevalue(in); }
   bool setBasevalue(std::string &in) { return _wrapper->setBasevalue(in); }
   void seedBasevalue() { _wrapper->seedBasevalue(); }
-  
+
   void populateDatatypeWrapper();
   void populateOutstream(std::ofstream*);
 
@@ -133,17 +133,17 @@ public:
   void registerReferences(std::vector<DATA::Column*>&);
   void registerReverseReferences(std::vector<DATA::Column*>&);
   void registerFKReferences(std::vector<DATA::Column*>&);
-  
+
   void setHeadCondIncDep(std::vector<std::vector<unsigned int> >);
   void setChildCondIncDep(DATA::Column*);
   void setRhsCondIncDep(DATA::Column*);
-  
+
   bool isIndependent();
-  
-  void registerSiblingCount(unsigned int in) { _siblingCount = in; } 
-  
-  std::string translate(unsigned int in) { return _wrapper->translate(in); } 
-  
+
+  void registerSiblingCount(unsigned int in) { _siblingCount = in; }
+
+  std::string translate(unsigned int in) { return _wrapper->translate(in); }
+
 private:
 
   /** bottom-level generation methods **/
@@ -160,14 +160,14 @@ private:
   void processHeadCondIncDep();
   void processChildCondIncDep();
   void processRhsCondIncDep();
-  
+
   void (DATA::Column::*_generationMethod)();
 
   std::map<e_Attributes, std::string> _attributes;
 
   DATA::WRAPPER::DatatypeWrapper *_wrapper;
 
-  e_Datatypes _datatype;  
+  e_Datatypes _datatype;
   unsigned long long _length;
   e_KeyTypes _key;
   unsigned long long _unique;
@@ -178,15 +178,15 @@ private:
 
   unsigned int _parentCount;
   DATA::Column** _parentColumns;
-  
+
   unsigned int _siblingCount;
-  
+
   std::ofstream *_out;
-  
+
   unsigned long long _cached;
-  
+
   std::vector<std::vector<unsigned int> > _cindValues;
-  
+
 };
 
 } // namespaces
