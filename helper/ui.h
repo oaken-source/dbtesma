@@ -17,27 +17,49 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "conf/parser.h"
-#include "data/schema.h"
-#include "helper/ui.h"
-#include "helper/cliargs.h"
-#include "helper/file.h"
+#ifndef UI_H
+#define UI_H
 
-  /** enumeration of cli parameters **/
-  enum e_CliParams
-  {
-    CP_F,
-    CP_Verbose,
-    CP_Generate,
-    CP_Schema,
-    CP_Hidden,
-    CP_AsJson,
-    CP_NoHeader,
-    CP_HardenFds,
-    CP_Help,
-    CP_Version,
-    CP_About
-  };
+#include "../macros.h"
+#include "fontcolor.h"
 
-  void setupCliArgs(helper::CliArgs*);
+#include <iostream>
+#include <iomanip>
+#include <time.h>
+
+namespace helper {
+
+class Ui
+{
+
+  /** User Interaction class
+  tasks:
+    handles command line output for convenience and continuity **/
+
+public:
+
+  static void println(const char[]);
+  static void printlnspaced(const char[], unsigned int);
+  static void overrln(const char[]);
+  static void emptyln();
+  static void printraw(const char[]);
+
+  static void printerr(const char[], ...);
+  static void printwrn(const char[], ...);
+  static void printok();
+
+  static void overrok();
+  static void overrfail();
+
+  static void printTime();
+
+  static void startProgress(const char[]);
+
+private:
+
+};
+
+} // namespaces
+
+#endif
 

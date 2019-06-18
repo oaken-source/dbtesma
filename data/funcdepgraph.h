@@ -17,27 +17,52 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "conf/parser.h"
-#include "data/schema.h"
-#include "helper/ui.h"
-#include "helper/cliargs.h"
-#include "helper/file.h"
+#ifndef FUNCDEPGRAPH_H
+#define FUNCDEPGRAPH_H
 
-  /** enumeration of cli parameters **/
-  enum e_CliParams
+#include "funcdep.h"
+
+namespace data {
+
+class FuncdepGraph
+{
+
+  /** FuncdepGraph Data Class
+  tasks:
+    do topological sort! and do it well! **/
+
+  struct Node
   {
-    CP_F,
-    CP_Verbose,
-    CP_Generate,
-    CP_Schema,
-    CP_Hidden,
-    CP_AsJson,
-    CP_NoHeader,
-    CP_HardenFds,
-    CP_Help,
-    CP_Version,
-    CP_About
+    data::Column* _column;
+    unsigned int _parents;
+    std::vector<data::Column*> _children;
+    bool _returned;
   };
 
-  void setupCliArgs(helper::CliArgs*);
+public:
 
+  FuncdepGraph() : _nodes(std::vector<Node>()) {};
+  ~FuncdepGraph() {};
+
+  /** add node to graph **/
+  void push_back(data::Column*);
+
+  /** add edges to graph **/
+  void push_back(data::Funcdep*);
+
+  /** return next element without parents **/
+  data::Column* pop_back();
+
+  void clear();
+
+private:
+
+  Node* findInNodes(data::Column*);
+
+  std::vector<Node> _nodes;
+
+};
+
+} // namespaces
+
+#endif

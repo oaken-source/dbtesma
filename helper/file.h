@@ -17,27 +17,35 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "conf/parser.h"
-#include "data/schema.h"
-#include "helper/ui.h"
-#include "helper/cliargs.h"
-#include "helper/file.h"
+#ifndef FILE_H
+#define FILE_H
 
-  /** enumeration of cli parameters **/
-  enum e_CliParams
-  {
-    CP_F,
-    CP_Verbose,
-    CP_Generate,
-    CP_Schema,
-    CP_Hidden,
-    CP_AsJson,
-    CP_NoHeader,
-    CP_HardenFds,
-    CP_Help,
-    CP_Version,
-    CP_About
-  };
+#include <string>
+#include <fstream>
 
-  void setupCliArgs(helper::CliArgs*);
+namespace helper {
+
+class File
+{
+
+  /** Files helper class
+  tasks:
+    helper class for file management methods **/
+
+public:
+
+  static bool exists(std::string);
+  static bool writeRaw(std::string, const char[]);
+
+  static void makeAbsolute(std::string&);
+
+private:
+
+  static std::string getCwd();
+
+};
+
+} // namespaces
+
+#endif
 

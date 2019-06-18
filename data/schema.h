@@ -17,27 +17,65 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "conf/parser.h"
-#include "data/schema.h"
-#include "helper/ui.h"
-#include "helper/cliargs.h"
-#include "helper/file.h"
+#ifndef SCHEMA_H
+#define SCHEMA_H
 
-  /** enumeration of cli parameters **/
-  enum e_CliParams
-  {
-    CP_F,
-    CP_Verbose,
-    CP_Generate,
-    CP_Schema,
-    CP_Hidden,
-    CP_AsJson,
-    CP_NoHeader,
-    CP_HardenFds,
-    CP_Help,
-    CP_Version,
-    CP_About
-  };
+#include "table.h"
 
-  void setupCliArgs(helper::CliArgs*);
+#include <iostream>
+#include "../helper/file.h"
 
+namespace data {
+
+class Schema
+{
+
+  /** Schema Data Class
+  tasks:
+    contains the top-level schema information **/
+
+public:
+  Schema() : _error(""), _tables(std::vector<data::Table*>()),
+    _hardened_fds(false) {};
+  ~Schema() { };
+
+  void setError(const char[], ...);
+  std::string getErrorString() { return _error; }
+
+  void newTable() { _tables.push_back(new data::Table()); }
+  data::Table* passTable() { return _tables.back(); }
+
+  /** process **/
+  void processTables(bool);
+  void processTablesOffsetsOnly(bool);
+
+  /** debug **/
+  void dumpToStdout();
+
+  /** schema scans **/
+  void buildSchema();
+  void buildSchemaWithoutDatatypes();
+  void buildSchemaAsJSON();
+
+  /** access **/
+  std::vector<data::Table*>::size_type size() { return _tables.size(); }
+  std::vector<data::Table*>::iterator begin() { return _tables.begin(); }
+  std::vector<data::Table*>::iterator end() { return _tables.end(); }
+
+  void setHardenFdFlag(bool flag) { _hardened_fds = flag; }
+  bool hasHardenedFds() { return _hardened_fds; }
+
+  data::Table* findTableByName(std::string&);
+
+private:
+
+  std::string _error;
+  std::vector<data::Table*> _tables;
+
+  bool _hardened_fds;
+
+};
+
+} // namespaces
+
+#endif

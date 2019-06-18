@@ -10,16 +10,16 @@ endif
 BIN = dbtesma
 BIN_TEST = dbtesma_test
 
-DIRS = CONF DATA DATA/WRAPPER HELPER
-DIRS_TEST = TESTS
+DIRS = conf data data/wrapper helper
+DIRS_TEST = tests
 
 OBJ = main.o
-OBJ_TEST = TESTS/test_main.o TESTS/test.o TESTS/stringhelpertest.o
+OBJ_TEST = tests/test_main.o tests/test.o tests/stringhelpertest.o
 
-OBJ_ALL = CONF/parser.o CONF/validator.o \
-	DATA/column.o DATA/funcdep.o DATA/funcdepgraph.o DATA/table.o DATA/schema.o DATA/condincdep.o \
-	DATA/WRAPPER/charwrapper.o DATA/WRAPPER/datatypewrapper.o DATA/WRAPPER/intwrapper.o DATA/WRAPPER/varcharwrapper.o \
-	HELPER/cliargs.o HELPER/file.o HELPER/fontcolor.o HELPER/strings.o HELPER/ui.o
+OBJ_ALL = conf/parser.o conf/validator.o \
+	data/column.o data/funcdep.o data/funcdepgraph.o data/table.o data/schema.o data/condincdep.o \
+	data/wrapper/charwrapper.o data/wrapper/datatypewrapper.o data/wrapper/intwrapper.o data/wrapper/varcharwrapper.o \
+	helper/cliargs.o helper/file.o helper/fontcolor.o helper/strings.o helper/ui.o
 
 ifdef TESTS
 all: $(OBJ_TEST)

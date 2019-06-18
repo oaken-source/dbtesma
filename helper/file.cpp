@@ -17,27 +17,85 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "conf/parser.h"
-#include "data/schema.h"
-#include "helper/ui.h"
-#include "helper/cliargs.h"
-#include "helper/file.h"
+#include "file.h"
 
-  /** enumeration of cli parameters **/
-  enum e_CliParams
+#include <unistd.h>
+
+#ifdef _WIN32
+  #include <windows.h>
+#endif
+
+namespace helper {
+
+/** public ********************************************************************/
+
+  bool File::exists(std::string filename)
   {
-    CP_F,
-    CP_Verbose,
-    CP_Generate,
-    CP_Schema,
-    CP_Hidden,
-    CP_AsJson,
-    CP_NoHeader,
-    CP_HardenFds,
-    CP_Help,
-    CP_Version,
-    CP_About
-  };
+    std::ifstream file(filename.c_str());
+    return(file.is_open());
+  }
 
-  void setupCliArgs(helper::CliArgs*);
+  bool File::writeRaw(std::string filename, const char str[])
+  {
+    std::ofstream of;
+    of.open(filename.c_str());
+    if(!of.good())
+      return false;
+    of << str;
+    of.close();
+    return true;
+  }
+
+#ifdef _WIN32
+
+  void File::makeAbsolute(std::string &in)
+  {
+    std::string path = getCwd();
+    path += "\\";
+    path += in;
+
+    std::string::size_type position = path.find("\\");
+    while (position != path.npos)
+    {
+      path.replace(position, 1, "\\\\");
+      position = path.find("\\", position + 2);
+    }
+
+    in = path;
+  }
+
+#else
+
+  void File::makeAbsolute(std::string &in)
+  {
+    std::string path = getCwd();
+    path += "/";
+    path += in;
+    in = path;
+  }
+
+#endif
+
+/** private *******************************************************************/
+
+#ifdef _WIN32
+
+  std::string File::getCwd()
+  {
+    char buffer[1024];
+    GetCurrentDirectory(1024, buffer);
+    return std::string(buffer);
+  }
+
+#else
+
+  std::string File::getCwd()
+  {
+    char buffer[1024];
+    return std::string(getcwd(buffer, 1024));
+  }
+
+#endif
+
+} // namespaces
 

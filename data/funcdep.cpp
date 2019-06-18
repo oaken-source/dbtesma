@@ -17,27 +17,28 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#include "conf/parser.h"
-#include "data/schema.h"
-#include "helper/ui.h"
-#include "helper/cliargs.h"
-#include "helper/file.h"
+#include "funcdep.h"
 
-  /** enumeration of cli parameters **/
-  enum e_CliParams
+namespace data {
+
+/** public ********************************************************************/
+
+  void Funcdep::replaceRhs(data::Column *c)
   {
-    CP_F,
-    CP_Verbose,
-    CP_Generate,
-    CP_Schema,
-    CP_Hidden,
-    CP_AsJson,
-    CP_NoHeader,
-    CP_HardenFds,
-    CP_Help,
-    CP_Version,
-    CP_About
-  };
+    _rhsColumns.clear();
+    _rhsColumns.push_back(c);
+  }
 
-  void setupCliArgs(helper::CliArgs*);
+  std::vector<data::Column*>::iterator Funcdep::lhs_find(data::Column *c)
+  {
+    std::vector<data::Column*>::iterator i = _lhsColumns.begin();
+    for(; i != _lhsColumns.end(); i++)
+    {
+      if((*i) == c)
+        return i;
+    }
+    return _lhsColumns.end();
 
+  }
+
+} // namespaces
