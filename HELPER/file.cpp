@@ -19,6 +19,8 @@
 
 #include "file.h"
 
+#include <unistd.h>
+
 #ifdef _WIN32
   #include <windows.h>
 #endif
@@ -30,7 +32,7 @@ namespace HELPER {
   bool File::exists(std::string filename)
   {
     std::ifstream file(filename.c_str());
-    return(file);
+    return(file.is_open());
   }
 
   bool File::writeRaw(std::string filename, const char str[])

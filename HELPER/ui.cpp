@@ -61,7 +61,7 @@ namespace HELPER {
     std::cout << " !! ";
     HELPER::FontColor::reset();
     std::cout << "]  ";
-    va_list(vl);
+    va_list vl;
     va_start(vl, in);
     char buf[512];
     vsnprintf(buf, 512, in, vl);
@@ -76,7 +76,7 @@ namespace HELPER {
     std::cout << " -- ";
     HELPER::FontColor::reset();
     std::cout << "]  ";
-    va_list(vl);
+    va_list vl;
     va_start(vl, in);
     char buf[512];
     vsnprintf(buf, 512, in, vl);
