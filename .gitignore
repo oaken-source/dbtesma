@@ -2,3 +2,7 @@
 # object files
 *.o
 dbtesma
+
+# generated test files
+tesmafile
+*.csv

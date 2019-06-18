@@ -32,7 +32,7 @@
 #endif
 
 /** set some string constants **/
-#define VERSION_STR     "  dbtesma version 1.0.4"
+#define VERSION_STR     "  dbtesma version 1.0.5"
 #define ABOUT_STR       "  written by Andreas Henning - a.henning.dev@gmail.com"
 
 #define USAGE_STR "\n\
