@@ -22,7 +22,7 @@
 
 /** include testing functionality, if building the test suite **/
 #ifdef MAKE_TESTS
-  #include "../tests/stringstest.h"
+  #include "../tests/stringhelpertest.h"
 #endif
 
 #include <string>

@@ -27,15 +27,15 @@ namespace tests {
 	{
 		registerTests();
 
-		helper::UiHelper::printlnspaced(_className.c_str(), 5);
+		helper::Ui::printlnspaced(_className.c_str(), 5);
 		std::vector<std::pair<bool (Test::*)(), std::string> >::iterator i = _testCases.begin();
 		for(;i != _testCases.end(); i++)
 		{
-			helper::UiHelper::startProgress((*i).second.c_str());
+			helper::Ui::startProgress((*i).second.c_str());
 			if((*this.*(*i).first)())
-				helper::UiHelper::overrok();
+				helper::Ui::overrok();
 			else
-				helper::UiHelper::overrfail();
+				helper::Ui::overrfail();
 		}
 	}
 

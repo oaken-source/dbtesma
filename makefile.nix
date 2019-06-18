@@ -2,9 +2,7 @@
 include makefile.rules.gcc
 
 ifdef DEBUG
- MFLAGS = DEBUG=1
-else
- MFLAGS =
+ MAKEFLAGS += DEBUG=1
 endif
 
 BIN = dbtesma
@@ -21,22 +19,24 @@ OBJ_ALL = conf/parser.o conf/validator.o \
 	data/wrapper/charwrapper.o data/wrapper/datatypewrapper.o data/wrapper/intwrapper.o data/wrapper/varcharwrapper.o \
 	helper/cliargs.o helper/file.o helper/fontcolor.o helper/strings.o helper/ui.o
 
+.PHONY: all clean rebuild check
+
 ifdef TESTS
 all: $(OBJ_TEST)
-	@for i in $(DIRS) $(DIRS_TEST); do make $(MFLAGS) TESTS=1 -C $$i; done
+	for i in $(DIRS) $(DIRS_TEST); do $(MAKE) TESTS=1 -C $$i; done
 	$(GCC) $(CFLAGS) -o $(BIN_TEST) $(OBJ_TEST) $(OBJ_ALL)
 
 else
 all: $(OBJ)
-	@for i in $(DIRS); do make $(MFLAGS) -C $$i; done
+	for i in $(DIRS); do $(MAKE) -C $$i; done
 	$(GCC) $(CFLAGS) -o $(BIN) $(OBJ) $(OBJ_ALL)
 
 endif
 
 clean:
-	@rm -rf $(BIN) $(BIN_TEST) $(OBJ) $(OBJ_TEST) $(OBJ_ALL)
+	$(RM) -r $(BIN) $(BIN_TEST) $(OBJ) $(OBJ_TEST) $(OBJ_ALL)
 
 rebuild: clean all
 
-tests: clean
-	@make $(MFLAGS) TESTS=1
+check: clean
+	$(MAKE) TESTS=1

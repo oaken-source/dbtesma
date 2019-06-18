@@ -22,10 +22,10 @@
 int main()
 {
 	/** entry point **/
-	helper::UiHelper::printTime();
+	helper::Ui::printTime();
 
-	helper::UiHelper::println(" DBTesMa data generator testing suite");
-	helper::UiHelper::println(" - starting up...");
+	helper::Ui::println(" DBTesMa data generator testing suite");
+	helper::Ui::println(" - starting up...");
 
 	/** prepare test vector **/
 	std::vector<tests::Test*> tests = std::vector<tests::Test*>();
@@ -33,9 +33,9 @@ int main()
 	/** register testclasses **/
 	tests.push_back(new tests::StringHelperTest());
 
-	helper::UiHelper::printok();
+	helper::Ui::printok();
 
-	helper::UiHelper::println(" - running tests...");
+	helper::Ui::println(" - running tests...");
 
 	/** run tests **/
 	std::vector<tests::Test*>::iterator i = tests.begin();
@@ -43,12 +43,12 @@ int main()
 		(*i)->run();
 
 	/** shut down **/
-	helper::UiHelper::println(" - shutting down...");
-	helper::UiHelper::printok();
-	helper::UiHelper::println(" DBTesMa tests finished");
+	helper::Ui::println(" - shutting down...");
+	helper::Ui::printok();
+	helper::Ui::println(" DBTesMa tests finished");
 
 	/** finished **/
-	helper::UiHelper::printTime();
+	helper::Ui::printTime();
 
 	return 0;
 }

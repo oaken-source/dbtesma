@@ -22,7 +22,7 @@
 
 #define REGISTER_TESTCASE(FUNC, NAME) _testCases.push_back(std::pair<bool(Test::*)(), std::string>((bool (tests::Test::*)())FUNC, std::string(NAME)))
 
-#include "../helper/uihelper.h"
+#include "../helper/ui.h"
 
 #include <vector>
 
