@@ -7,6 +7,3 @@ dbtesma_test
 # generated test files
 tesmafile
 *.csv
-
-# build system generated files
-makefile
