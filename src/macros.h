@@ -20,23 +20,17 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#include <config.h>
 
 /** default values **/
 #define DEFAULT_VALUE_LENGTH 11
 
-/** set debug flag **/
-#ifdef HAVE_DEBUG
-  #define DEBUG 1
-#else
-  #define DEBUG 0
-#endif
-
 /** set some string constants **/
-#define VERSION_STR     "  dbtesma version 1.0.5"
-#define ABOUT_STR       "  written by Andreas Grapentin - andreas@grapentin.org"
+#define VERSION_STR     "  " PACKAGE " version " PACKAGE_VERSION
+#define ABOUT_STR       "  written by Andreas Grapentin - " PACKAGE_BUGREPORT
 
 #define USAGE_STR "\n\
-  usage:         DBTesMa [OPTIONS] [PARAMS]\n\
+  usage:         " PACKAGE " [OPTIONS] [PARAMS]\n\
 \n\
   params:\n\
     -f [file]    specify custom metrics input file (default: `tesmafile`)\n\

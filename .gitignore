@@ -4,6 +4,19 @@
 dbtesma
 dbtesma_test
 
-# generated test files
+# build system generated files
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.*
+configure
+libtool
+scripts/
+stamp-h1
+.dirstamp
+.deps/
+
+# dbtesma generated files
 tesmafile
 *.csv
