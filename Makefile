@@ -3,11 +3,11 @@ include config.mk
 
 BIN = dbtesma
 
-OBJ = main.o \
-      conf/parser.o conf/validator.o \
-      data/column.o data/funcdep.o data/funcdepgraph.o data/table.o data/schema.o data/condincdep.o \
-      data/wrapper/charwrapper.o data/wrapper/datatypewrapper.o data/wrapper/intwrapper.o data/wrapper/varcharwrapper.o \
-      helper/cliargs.o helper/file.o helper/fontcolor.o helper/strings.o helper/ui.o
+OBJ = src/main.o \
+      src/conf/parser.o src/conf/validator.o \
+      src/data/column.o src/data/funcdep.o src/data/funcdepgraph.o src/data/table.o src/data/schema.o src/data/condincdep.o \
+      src/data/wrapper/charwrapper.o src/data/wrapper/datatypewrapper.o src/data/wrapper/intwrapper.o src/data/wrapper/varcharwrapper.o \
+      src/helper/cliargs.o src/helper/file.o src/helper/fontcolor.o src/helper/strings.o src/helper/ui.o
 
 .PHONY: all clean
 
