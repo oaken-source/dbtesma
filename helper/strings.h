@@ -20,11 +20,6 @@
 #ifndef STRINGS_H
 #define STRINGS_H
 
-/** include testing functionality, if building the test suite **/
-#ifdef MAKE_TESTS
-  #include "../tests/stringhelpertest.h"
-#endif
-
 #include <string>
 #include <sstream>
 
@@ -36,10 +31,6 @@ class Strings
   /** Strings helper class
   tasks:
     provides string functionality used mainly for schema parsing **/
-
-  #ifdef MAKE_TESTS
-    friend class StringsTest;
-  #endif
 
 public:
   /** remove a comment from a string - use _commentDelimiter as delimiter **/
