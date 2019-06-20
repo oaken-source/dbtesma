@@ -1,7 +1,7 @@
  /******************************************************************************
  *                          dbtesma data generator                             *
  *                                                                             *
- *    Copyright (C) 2011  Andreas Henning                                      *
+ *    Copyright (C) 2011  Andreas Grapentin                                    *
  *                                                                             *
  *    This program is free software: you can redistribute it and/or modify     *
  *    it under the terms of the GNU General Public License as published by     *
@@ -33,7 +33,7 @@
 
 /** set some string constants **/
 #define VERSION_STR     "  dbtesma version 1.0.5"
-#define ABOUT_STR       "  written by Andreas Henning - a.henning.dev@gmail.com"
+#define ABOUT_STR       "  written by Andreas Grapentin - andreas@grapentin.org"
 
 #define USAGE_STR "\n\
   usage:         DBTesMa [OPTIONS] [PARAMS]\n\
