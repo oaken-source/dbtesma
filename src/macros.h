@@ -20,35 +20,11 @@
 #ifndef MACROS_H
 #define MACROS_H
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-/** default values **/
 #define DEFAULT_VALUE_LENGTH 11
-
-/** set some string constants **/
-#define VERSION_STR     "  " PACKAGE " version " PACKAGE_VERSION
-#define ABOUT_STR       "  written by Andreas Grapentin - " PACKAGE_BUGREPORT
-
-#define USAGE_STR "\n\
-  usage:         " PACKAGE " [OPTIONS] [PARAMS]\n\
-\n\
-  params:\n\
-    -f [file]    specify custom metrics input file (default: `tesmafile`)\n\
-\n\
-  options:\n\
-    --generate   generate default tesmafile in working directory\n\
-    --schema     print parsed schema to stdout\n\
-    --hidden     requires --schema, omits datatype information \n\
-    --asJSON     requires --schema, prints schma information as JSON \n\
-    --verbose    increase program output\n\
-    --noheader   omits header when generating tables\n\
-    --hardenFDs  eliminates any false positives functional dependencies \n\
-\n\
-    --help       show this page\n\
-    --version    display program version\n\
-    --about      display additional information\n\
-\n\
-"
 
 #define TESMAFILE_STR  "\
 ###############################################################\n\

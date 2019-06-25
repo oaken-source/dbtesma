@@ -13,5 +13,5 @@ dbtesma_SOURCES = \
   src/data/table.cpp src/data/schema.cpp src/data/condincdep.cpp \
   src/data/wrapper/charwrapper.cpp src/data/wrapper/datatypewrapper.cpp \
   src/data/wrapper/intwrapper.cpp src/data/wrapper/varcharwrapper.cpp \
-  src/helper/cliargs.cpp src/helper/file.cpp src/helper/fontcolor.cpp \
+  src/helper/file.cpp src/helper/fontcolor.cpp \
   src/helper/strings.cpp src/helper/ui.cpp
