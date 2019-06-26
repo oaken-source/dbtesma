@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef INTwrapper_H
 #define INTwrapper_H
 
@@ -37,18 +37,18 @@ public:
   void generateRandom();
   void print();
   void resetToBasevalue();
-  
+
   void getBasevalue(std::string&);
   bool setBasevalue(std::string&);
   void zeroBasevalue() { _basevalue = 0; _value = 0; }
   void seedBasevalue();
-  
+
   void setValue(unsigned long long);
   void setValueInRange(unsigned long long);
   unsigned long long getValue();
 
   IntWrapper& operator++();
-  
+
   std::string translate(unsigned int);
 
 private:

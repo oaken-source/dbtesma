@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "datatypewrapper.h"
 
 namespace data { namespace wrapper {
@@ -42,5 +42,5 @@ namespace data { namespace wrapper {
   {
     _range = range;
   }
-  
+
 }} // namespaces

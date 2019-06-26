@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "intwrapper.h"
 
 namespace data { namespace wrapper {
@@ -36,9 +36,9 @@ namespace data { namespace wrapper {
     unsigned long long x = rand() % _range;
     _value = _basevalue + x;
   }
-  
+
   void IntWrapper::print()
-  { 
+  {
     (*_out) << _value;
   }
 
@@ -81,17 +81,17 @@ namespace data { namespace wrapper {
   {
     _value = _basevalue + in;
   }
-  
+
   void IntWrapper::setValueInRange(unsigned long long in)
   {
     _value = _basevalue + (in % _range);
   }
-  
+
   unsigned long long IntWrapper::getValue()
   {
     return _value - _basevalue;
   }
-  
+
   IntWrapper& IntWrapper::operator++()
   {
     _value++;
@@ -113,7 +113,7 @@ namespace data { namespace wrapper {
     x << in;
     return x.str();
   }
-  
+
 /** private *******************************************************************/
 
 }} // namespaces

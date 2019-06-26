@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef VARCHARwrapper_H
 #define VARCHARwrapper_H
 
@@ -32,12 +32,12 @@ class VarcharWrapper : public data::wrapper::DatatypeWrapper
   **/
 
 public:
-  VarcharWrapper(int width) : _basevalue(), _value(), _intvalue(0), 
-    _width(width), _alphabet("abcdefghijklmnopqrstuvwxyz"), 
+  VarcharWrapper(int width) : _basevalue(), _value(), _intvalue(0),
+    _width(width), _alphabet("abcdefghijklmnopqrstuvwxyz"),
     _alphabetSize(26) {};
-  VarcharWrapper(const VarcharWrapper &obj) : DatatypeWrapper(), 
-    _basevalue(obj._basevalue), _value(obj._value), _intvalue(obj._intvalue), 
-    _width(obj._width), _alphabet(obj._alphabet), 
+  VarcharWrapper(const VarcharWrapper &obj) : DatatypeWrapper(),
+    _basevalue(obj._basevalue), _value(obj._value), _intvalue(obj._intvalue),
+    _width(obj._width), _alphabet(obj._alphabet),
     _alphabetSize(obj._alphabetSize) {};
   VarcharWrapper& operator=(const VarcharWrapper&);
   ~VarcharWrapper();
@@ -46,7 +46,7 @@ public:
   void generateRandom();
   void print();
   void resetToBasevalue();
-  
+
   void getBasevalue(std::string&);
   bool setBasevalue(std::string&);
   void zeroBasevalue();
@@ -55,7 +55,7 @@ public:
   void setValue(unsigned long long);
   void setValueInRange(unsigned long long);
   unsigned long long getValue();
-  
+
   VarcharWrapper& operator++();
 
   std::string translate(unsigned int);
@@ -64,14 +64,14 @@ private:
 
   unsigned char *_basevalue;
   unsigned char *_value;
-  
+
   unsigned long long _intvalue;
-  
+
   unsigned int _width;
 
   const char *_alphabet;
   unsigned int _alphabetSize;
-  
+
 };
 
 }} // namespaces

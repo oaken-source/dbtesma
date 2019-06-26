@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "charwrapper.h"
 
 namespace data { namespace wrapper {
@@ -30,8 +30,8 @@ namespace data { namespace wrapper {
     _intvalue = rhs._intvalue;
     _width = rhs._width;
     _alphabet = rhs._alphabet;
-    _alphabetSize = rhs._alphabetSize;    
-  
+    _alphabetSize = rhs._alphabetSize;
+
     return *this;
   }
 
@@ -43,7 +43,7 @@ namespace data { namespace wrapper {
     unsigned long long x = rand() % _range;
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -63,14 +63,14 @@ namespace data { namespace wrapper {
       i++;
     }
   }
-  
+
   void CharWrapper::generateRandom()
   {
     resetToBasevalue();
     unsigned long long x = rand();
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -117,7 +117,7 @@ namespace data { namespace wrapper {
   }
 
   bool CharWrapper::setBasevalue(std::string &in)
-  {  
+  {
     unsigned int length = in.length();
     if(length == _width)
     {
@@ -140,11 +140,11 @@ namespace data { namespace wrapper {
   }
 
   void CharWrapper::zeroBasevalue()
-  {  
+  {
       _basevalue = (unsigned char*)malloc(sizeof(unsigned char) * (_width+1));
       for(unsigned int i = 0; i < _width; i++)
         _basevalue[i] = 0;
-        
+
       _basevalue[_width] = -1;
       resetToBasevalue();
   }
@@ -164,7 +164,7 @@ namespace data { namespace wrapper {
     resetToBasevalue();
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -184,14 +184,14 @@ namespace data { namespace wrapper {
       i++;
     }
   }
-  
+
   void CharWrapper::setValueInRange(unsigned long long in)
   {
     resetToBasevalue();
     unsigned long long x = in % _range;
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -211,7 +211,7 @@ namespace data { namespace wrapper {
       i++;
     }
   }
-  
+
   unsigned long long CharWrapper::getValue()
   {
     return _intvalue;
@@ -229,7 +229,7 @@ namespace data { namespace wrapper {
     }
     return *this;
   }
-  
+
   std::string CharWrapper::translate(unsigned int in)
   {
     setValue(in);

@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #include "varcharwrapper.h"
 
 namespace data { namespace wrapper {
@@ -30,8 +30,8 @@ namespace data { namespace wrapper {
     _intvalue = rhs._intvalue;
     _width = rhs._width;
     _alphabet = rhs._alphabet;
-    _alphabetSize = rhs._alphabetSize;    
-  
+    _alphabetSize = rhs._alphabetSize;
+
     return *this;
   }
 
@@ -43,7 +43,7 @@ namespace data { namespace wrapper {
     unsigned long long x = rand() % _range;
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -70,7 +70,7 @@ namespace data { namespace wrapper {
     unsigned long long x = rand();
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -90,7 +90,7 @@ namespace data { namespace wrapper {
       i++;
     }
   }
-  
+
   void VarcharWrapper::print()
   {
     unsigned int i;
@@ -121,7 +121,7 @@ namespace data { namespace wrapper {
   }
 
   bool VarcharWrapper::setBasevalue(std::string &in)
-  {  
+  {
     unsigned int length = in.length();
     if(length <= _width)
     {
@@ -144,7 +144,7 @@ namespace data { namespace wrapper {
   }
 
   void VarcharWrapper::zeroBasevalue()
-  {  
+  {
       _basevalue = (unsigned char*)malloc(sizeof(unsigned char) * 2);
       _basevalue[0] = 0;
       _basevalue[1] = -1;
@@ -166,7 +166,7 @@ namespace data { namespace wrapper {
     resetToBasevalue();
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -186,14 +186,14 @@ namespace data { namespace wrapper {
       i++;
     }
   }
-  
+
   void VarcharWrapper::setValueInRange(unsigned long long in)
   {
     resetToBasevalue();
     unsigned long long x = in % _range;
 
     _intvalue = x;
-    
+
     int diff;
     int i = 0;
     while(x > 0)
@@ -213,12 +213,12 @@ namespace data { namespace wrapper {
       i++;
     }
   }
-  
+
   unsigned long long VarcharWrapper::getValue()
   {
     return _intvalue;
   }
-  
+
   VarcharWrapper& VarcharWrapper::operator++()
   {
     _intvalue++;
@@ -238,7 +238,7 @@ namespace data { namespace wrapper {
     }
     return *this;
   }
-  
+
   std::string VarcharWrapper::translate(unsigned int in)
   {
     setValue(in);

@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License        *
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
- 
+
 #ifndef dataTYPEwrapper_H
 #define dataTYPEwrapper_H
 
@@ -38,7 +38,7 @@ class DatatypeWrapper
 public:
 
   DatatypeWrapper() : _range(0), _out(new std::ofstream()) {};
-  DatatypeWrapper(const DatatypeWrapper &obj) : _range(obj._range), 
+  DatatypeWrapper(const DatatypeWrapper &obj) : _range(obj._range),
     _out(obj._out) {};
   DatatypeWrapper& operator=(const DatatypeWrapper&);
   virtual ~DatatypeWrapper();
@@ -51,26 +51,26 @@ public:
   virtual void print() = 0;
 
   virtual void resetToBasevalue() = 0;
-  
+
   virtual void getBasevalue(std::string&) = 0;
   virtual bool setBasevalue(std::string&) = 0;
   virtual void zeroBasevalue() = 0;
   virtual void seedBasevalue() = 0;
-  
+
   virtual void setValue(unsigned long long) = 0;
   virtual void setValueInRange(unsigned long long) = 0;
   virtual unsigned long long getValue() = 0;
 
   virtual DatatypeWrapper& operator++() = 0;
-  
+
   virtual std::string translate(unsigned int) = 0;
-  
+
 protected:
-  
+
   unsigned long long _range;
 
   std::ofstream *_out;
-  
+
 };
 
 }} // namespaces
