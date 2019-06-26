@@ -17,8 +17,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  ******************************************************************************/
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef DBTESMA_H
+#define DBTESMA_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
