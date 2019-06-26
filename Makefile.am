@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 bin_PROGRAMS = dbtesma
 
 dbtesma_SOURCES = \
-  src/main.cpp \
+  src/dbtesma.cpp \
   src/conf/parser.cpp src/conf/validator.cpp \
   src/data/column.cpp src/data/funcdep.cpp src/data/funcdepgraph.cpp \
   src/data/table.cpp src/data/schema.cpp src/data/condincdep.cpp \
