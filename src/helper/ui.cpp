@@ -22,6 +22,11 @@
 #include <cstdarg>
 #include <cstdio>
 
+static const char *fg_red = "\033[1;31m";
+static const char *fg_green = "\033[1;32m";
+static const char *fg_yellow = "\033[1;33m";
+static const char *fg_reset = "\033[0m";
+
 namespace helper {
 
 /** public ********************************************************************/
@@ -56,11 +61,8 @@ namespace helper {
 
   void Ui::printerr(const char in[], ...)
   {
-    std::cout << "      [";
-    helper::FontColor::red();
-    std::cout << " !! ";
-    helper::FontColor::reset();
-    std::cout << "]  ";
+    std::cout << "      [" << fg_red << " !! " << fg_reset << "]  ";
+
     va_list vl;
     va_start(vl, in);
     char buf[512];
@@ -71,11 +73,8 @@ namespace helper {
 
   void Ui::printwrn(const char in[], ...)
   {
-    std::cout << "      [";
-    helper::FontColor::yellow();
-    std::cout << " -- ";
-    helper::FontColor::reset();
-    std::cout << "]  ";
+    std::cout << "      [" << fg_yellow << " -- " << fg_reset << "]  ";
+
     va_list vl;
     va_start(vl, in);
     char buf[512];
@@ -86,29 +85,17 @@ namespace helper {
 
   void Ui::printok()
   {
-    std::cout << "      [";
-    helper::FontColor::green();
-    std::cout << " ok ";
-    helper::FontColor::reset();
-    std::cout << "]" << std::endl;
+    std::cout << "      [" << fg_green << " ok " << fg_reset << "]" << std::endl;
   }
 
   void Ui::overrok()
   {
-    std::cout << "\r" << "      [";
-    helper::FontColor::green();
-    std::cout << " ok ";
-    helper::FontColor::reset();
-    std::cout << "]" << std::endl;
+    std::cout << "\r      [" << fg_green << " ok " << fg_reset << "]" << std::endl;
   }
 
   void Ui::overrfail()
   {
-    std::cout << "\r" << "      [";
-    helper::FontColor::red();
-    std::cout << " !! ";
-    helper::FontColor::reset();
-    std::cout << "]" << std::endl;
+    std::cout << "\r      [" << fg_red << " !! " << fg_reset << "]" << std::endl;
   }
 
   void Ui::printTime()
@@ -126,7 +113,7 @@ namespace helper {
 
   void Ui::startProgress(const char name[])
   {
-    std::cout << "      [    ] " << name  << std::flush;
+    std::cout << "      [    ] " << name << std::flush;
   }
 
 } // namespaces

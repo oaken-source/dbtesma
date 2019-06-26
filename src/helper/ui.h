@@ -21,7 +21,6 @@
 #define UI_H
 
 #include "../macros.h"
-#include "fontcolor.h"
 
 #include <iostream>
 #include <iomanip>
